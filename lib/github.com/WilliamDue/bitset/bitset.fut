@@ -1,10 +1,11 @@
 module type bitset = {
   -- | The bitset type.
   type bitset[n]
+  val num_bits : i64
   -- | Makes a empty bitset of a given capacity.
-  val empty : i64 -> bitset[]
+  val empty : (capacity : i64) -> bitset[(capacity - 1) / num_bits + 1]
   -- | Makes a singleton bitset with a given capacity.
-  val singleton : i64 -> i64 -> bitset[]
+  val singleton : (capacity : i64) -> i64 -> bitset[(capacity - 1) / num_bits + 1]
   -- | Checks if a bitset is empty.
   val is_empty [n] : bitset[n] -> bool
   -- | Inserts a single bit in a bitset.
@@ -24,13 +25,15 @@ module type bitset = {
   -- | Finds the complement of a bitset.
   val complement [n] : bitset[n] -> bitset[n]
   -- | Sets the bitset capacity to a new value.
-  val set_capacity [n] : i64 -> bitset[n] -> bitset[]
+  -- val set_capacity [n] : (capacity : i64) -> bitset[n] -> bitset[(capacity - 1) / num_bits + 1]
   -- | Computes the size of the set i.e. the population count.
   val size [n] : bitset[n] -> i64
   -- | If a two bitsets contains the same bits then they are equal.
   val == [n] : bitset[n] -> bitset[n] -> bool
-  -- | Turn an array of indices to a bitset.
-  val from_array [n] : i64 -> [n]i64 -> bitset[]
+  -- | Convert an array of indices to a bitset.
+  val from_array [n] : (capacity : i64) -> [n]i64 -> bitset[(capacity - 1) / num_bits + 1]
+  -- | Convert a bitset to an array of indices to a bitset.
+  val to_array [n] : bitset[n] -> []i64
 }
 
 module mk_bitset (I: integral) : bitset = {
@@ -42,7 +45,8 @@ module mk_bitset (I: integral) : bitset = {
   def zero : int = I.i64 0
 
   def empty (n : i64) : bitset[] =
-    {bits=replicate ((n - 1) / num_bits + 1) zero, capacity=n}
+    let len = (n - 1) / num_bits + 1
+    in {bits=sized len <| replicate len zero, capacity=n}
   
   def find_bitset_index (i : i64) (capacity : i64) : maybe (i64, i32) =
     if i < 0 || capacity <= i
@@ -118,19 +122,31 @@ module mk_bitset (I: integral) : bitset = {
   def difference [n] (a : bitset[n]) (b : bitset[n]) : bitset[n] =
     a `intersection` complement b
   
-  def set_capacity [m] (capacity : i64) (s : bitset[m]) : bitset[] =
-    let n = capacity / num_bits
-    in if n <= m
-       then {bits=take n s.bits, capacity=capacity}
-            |> set_front_bits_zero
-       else let s' = empty capacity
-            let len = length s.bits
-            in {bits=map (\i ->
-              if i < len then s.bits[i] else zero
-            ) (indices s'.bits), capacity=capacity}
-  
+  def set_capacity [m] (capacity : i64) (s : bitset[m]) : bitset[(capacity - 1) / num_bits + 1] =
+    let s' = empty capacity
+    let len = length s.bits
+    in {bits=
+          map (\i ->
+            if i < len then s.bits[i] else zero
+          ) (indices s'.bits), 
+        capacity=capacity}
+        |> set_front_bits_zero
+
   -- There is probably a way to do this more space efficient.
-  def from_array [n] (capacity : i64) (arr : [n]i64) : bitset[] =
-    map (singleton capacity) arr
-    |> reduce_comm union (empty capacity)
+  def from_array [n] (capacity : i64) (arr : [n]i64) : bitset[(capacity - 1) / num_bits + 1] =
+    let empty' = empty capacity
+    in map (singleton capacity) arr
+       |> reduce_comm union empty'
+  
+  def to_array [n] (a : bitset[n]) : []i64 =
+    map2 (\i v ->
+      let m = i * i64.i32 I.num_bits
+      in map (\bit ->
+         if I.get_bit (i32.i64 bit) v i32.== 1
+         then m + bit
+         else -1
+      ) (iota (i64.i32 I.num_bits))
+    ) (indices a.bits) a.bits
+    |> flatten
+    |> filter (0<=)
 }
