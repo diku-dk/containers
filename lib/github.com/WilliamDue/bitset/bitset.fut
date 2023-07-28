@@ -1,6 +1,7 @@
 module type bitset = {
   -- | The bitset type.
   type bitset[n]
+  -- | The number of bits for the chosen integral type.
   val num_bits : i64
   -- | Makes a empty bitset of a given capacity.
   val empty : (capacity : i64) -> bitset[(capacity - 1) / num_bits + 1]
@@ -25,7 +26,7 @@ module type bitset = {
   -- | Finds the complement of a bitset.
   val complement [n] : bitset[n] -> bitset[n]
   -- | Sets the bitset capacity to a new value.
-  -- val set_capacity [n] : (capacity : i64) -> bitset[n] -> bitset[(capacity - 1) / num_bits + 1]
+  val set_capacity [n] : (capacity : i64) -> bitset[n] -> bitset[(capacity - 1) / num_bits + 1]
   -- | Computes the size of the set i.e. the population count.
   val size [n] : bitset[n] -> i64
   -- | If a two bitsets contains the same bits then they are equal.

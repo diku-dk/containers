@@ -115,8 +115,50 @@ entry test_insert (arr : []u8) : bool =
 -- ==
 -- entry: test_union
 -- input { empty([0]i64) empty([0]i64) empty([0]i64) } output { true }
-entry test_union [n] (a : [n]i64) (b : [n]i64) (c : [n]i64) : bool =
+-- input { [0i64] [0i64] [0i64] } output { true }
+-- input { [0i64] [1i64] [0i64, 1i64] } output { true }
+-- input { [0i64, 0i64] [1i64] [0i64, 1i64] } output { true }
+-- input { [0i64, 0i64] [1i64] [0i64, 1i64, 2i64] } output { false }
+entry test_union (a : []i64) (b : []i64) (c : []i64) : bool =
   let a_set = bitset_u8.from_array capacity a
   let b_set = bitset_u8.from_array capacity b
   let c_set = bitset_u8.from_array capacity c
   in bitset_u8.union a_set b_set bitset_u8.== c_set
+
+-- ==
+-- entry: test_intersection
+-- input { empty([0]i64) empty([0]i64) empty([0]i64) } output { true }
+-- input { [0i64] [0i64] [0i64] } output { true }
+-- input { [0i64] [1i64] empty([0]i64) } output { true }
+-- input { [0i64, 0i64] [1i64] empty([0]i64) } output { true }
+-- input { [0i64, 0i64] [1i64] [2i64] } output { false }
+entry test_intersection (a : []i64) (b : []i64) (c : []i64) : bool =
+  let a_set = bitset_u8.from_array capacity a
+  let b_set = bitset_u8.from_array capacity b
+  let c_set = bitset_u8.from_array capacity c
+  in bitset_u8.intersection a_set b_set bitset_u8.== c_set
+
+-- ==
+-- entry: test_difference
+-- input { empty([0]i64) empty([0]i64) empty([0]i64) } output { true }
+-- input { [0i64] [0i64] empty([0]i64)  } output { true }
+-- input { [0i64] [1i64] [0i64] } output { true }
+-- input { [0i64, 0i64] [1i64] [0i64] } output { true }
+-- input { [0i64, 0i64] [1i64] [2i64] } output { false }
+entry test_difference (a : []i64) (b : []i64) (c : []i64) : bool =
+  let a_set = bitset_u8.from_array capacity a
+  let b_set = bitset_u8.from_array capacity b
+  let c_set = bitset_u8.from_array capacity c
+  in bitset_u8.difference a_set b_set bitset_u8.== c_set
+
+-- ==
+-- entry: test_is_subset
+-- input { empty([0]i64) empty([0]i64) } output { true }
+-- input { [0i64] [0i64] } output { true }
+-- input { [1i64] [0i64, 1i64] } output { true }
+-- input { [0i64, 0i64] [1i64] } output { false }
+-- input { [0i64, 3i64] [2i64] } output { false }
+entry test_is_subset (a : []i64) (b : []i64) : bool =
+  let a_set = bitset_u8.from_array capacity a
+  let b_set = bitset_u8.from_array capacity b
+  in bitset_u8.is_subset a_set b_set
