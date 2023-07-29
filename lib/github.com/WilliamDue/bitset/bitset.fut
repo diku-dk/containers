@@ -1,4 +1,6 @@
 module type bitset = {
+  -- | The integer type.
+  type t
   -- | The bitset type.
   type bitset[n]
   -- | The number of bits for the chosen integral type.
@@ -33,6 +35,8 @@ module type bitset = {
   val == [n] : bitset[(n - 1) / nbs + 1] -> bitset[(n - 1) / nbs + 1] -> bool
   -- | Convert an array of indices to a bitset.
   val from_array [m] : (n : i64) -> [m]i64 -> bitset[(n - 1) / nbs + 1]
+  -- | Converts an array of integral types to a bitset.
+  val from_bit_array [m] : (n : i64) -> (arr : [m]t) -> bitset[(n - 1) / nbs + 1]
   -- | Convert a bitset to an array of indices to a bitset.
   val to_array [n] : bitset[(n - 1) / nbs + 1] -> []i64
 }
@@ -40,10 +44,11 @@ module type bitset = {
 module mk_bitset (I: integral) : bitset = {
   def nbs = i64.i32 I.num_bits
 
-  type bitset [n] = [n]I.t
+  type t = I.t
+  type bitset [n] = [n]t
   type maybe 'a = #just a | #nothing 
 
-  def zero : I.t = I.i64 0
+  def zero : t = I.u64 0
   
   def empty (n : i64) : bitset[(n - 1) / nbs + 1] =
     replicate ((n - 1) / nbs + 1) zero
@@ -87,18 +92,17 @@ module mk_bitset (I: integral) : bitset = {
   def intersection [n] (a : bitset[(n - 1) / nbs + 1]) (b : bitset[(n - 1) / nbs + 1]) : bitset[(n - 1) / nbs + 1] =
     map2 (I.&) a b
 
-  def set_front_bits_zero [n] (s : bitset[(n - 1) / nbs + 1]) : bitset[(n - 1) / nbs + 1] =
+  def set_leading_bits_zero [n] (s : bitset[(n - 1) / nbs + 1]) : bitset[(n - 1) / nbs + 1] =
     let l = (n - 1) / nbs + 1
-    let start = 1 + ((n - 1) % nbs)
-    in if l == 0 || start >= nbs
+    let start = 1 + (n - 1) % nbs
+    let to_keep = I.i64 (i64.not (i64.not 0 << start))
+    in if l == 0
        then s
-       else copy s with [l - 1] = 
-        loop v = s[l - 1] for i in (start...nbs - 1) do
-          I.set_bit (i32.i64 i) v 0
+       else copy s with [l - 1] = s[l - 1] I.& to_keep
   
   def complement [n] (s : bitset[(n - 1) / nbs + 1]) : bitset[(n - 1) / nbs + 1] =
     map I.not s
-    |> set_front_bits_zero
+    |> set_leading_bits_zero
   
   def size [n] (s : bitset[(n - 1) / nbs + 1]) : i64 =
     map (i64.i32 <-< I.popc) s
@@ -120,7 +124,11 @@ module mk_bitset (I: integral) : bitset = {
     in map (\i ->
          if i < len then s[i] else zero
        ) (indices s')
-       |> set_front_bits_zero
+       |> set_leading_bits_zero
+
+  def from_bit_array [m] (n : i64) (arr : [m]t) : bitset[(n - 1) / nbs + 1] =
+    sized ((n - 1) / nbs + 1) arr
+    |> set_leading_bits_zero
 
   -- There is probably a way to do this more space efficient.
   def from_array [m] (n : i64) (arr : [m]i64) : bitset[(n - 1) / nbs + 1] =
