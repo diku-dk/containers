@@ -2,144 +2,133 @@ module type bitset = {
   -- | The bitset type.
   type bitset[n]
   -- | The number of bits for the chosen integral type.
-  val num_bits : i64
+  val nbs : i64
   -- | Makes a empty bitset of a given capacity.
-  val empty : (capacity : i64) -> bitset[(capacity - 1) / num_bits + 1]
+  val empty : (n : i64) -> bitset[(n - 1) / nbs + 1]
   -- | Makes a singleton bitset with a given capacity.
-  val singleton : (capacity : i64) -> i64 -> bitset[(capacity - 1) / num_bits + 1]
+  val singleton : (n : i64) -> i64 -> bitset[(n - 1) / nbs + 1]
   -- | Checks if a bitset is empty.
-  val is_empty [n] : bitset[n] -> bool
+  val is_empty [n] : bitset[(n - 1) / nbs + 1] -> bool
   -- | Inserts a single bit in a bitset.
-  val insert [n] : i64 -> bitset[n] -> bitset[n]
+  val insert [n] : i64 -> bitset[(n - 1) / nbs + 1] -> bitset[(n - 1) / nbs + 1]
   -- | Deletes a single bit in a bitset.
-  val delete [n] : i64 -> bitset[n] -> bitset[n]
+  val delete [n] : i64 -> bitset[(n - 1) / nbs + 1] -> bitset[(n - 1) / nbs + 1]
   -- | Checks if a bit is a member of a bitset.
-  val member [n] : i64 -> bitset[n] -> bool
+  val member [n] : i64 -> bitset[(n - 1) / nbs + 1] -> bool
   -- | Bitset union.
-  val union [n] : bitset[n] -> bitset[n] -> bitset[n]
+  val union [n] : bitset[(n - 1) / nbs + 1] -> bitset[(n - 1) / nbs + 1] -> bitset[(n - 1) / nbs + 1]
   -- | Bitset intersection.
-  val intersection [n] : bitset[n] -> bitset[n] -> bitset[n]
+  val intersection [n] : bitset[(n - 1) / nbs + 1] -> bitset[(n - 1) / nbs + 1] -> bitset[(n - 1) / nbs + 1]
   -- | Bitset difference.
-  val difference [n] : bitset[n] -> bitset[n] -> bitset[n]
+  val difference [n] : bitset[(n - 1) / nbs + 1] -> bitset[(n - 1) / nbs + 1] -> bitset[(n - 1) / nbs + 1]
   -- | Checks if a bitset is a subset of another.
-  val is_subset [n] : bitset[n] -> bitset[n] -> bool
+  val is_subset [n] : bitset[(n - 1) / nbs + 1] -> bitset[(n - 1) / nbs + 1] -> bool
   -- | Finds the complement of a bitset.
-  val complement [n] : bitset[n] -> bitset[n]
+  val complement [n] : bitset[(n - 1) / nbs + 1] -> bitset[(n - 1) / nbs + 1]
   -- | Sets the bitset capacity to a new value.
-  val set_capacity [n] : (capacity : i64) -> bitset[n] -> bitset[(capacity - 1) / num_bits + 1]
+  val set_capacity [m] : (n : i64) -> bitset[(m - 1) / nbs + 1] -> bitset[(n - 1) / nbs + 1]
   -- | Computes the size of the set i.e. the population count.
-  val size [n] : bitset[n] -> i64
+  val size [n] : bitset[(n - 1) / nbs + 1] -> i64
   -- | If a two bitsets contains the same bits then they are equal.
-  val == [n] : bitset[n] -> bitset[n] -> bool
+  val == [n] : bitset[(n - 1) / nbs + 1] -> bitset[(n - 1) / nbs + 1] -> bool
   -- | Convert an array of indices to a bitset.
-  val from_array [n] : (capacity : i64) -> [n]i64 -> bitset[(capacity - 1) / num_bits + 1]
+  val from_array [m] : (n : i64) -> [m]i64 -> bitset[(n - 1) / nbs + 1]
   -- | Convert a bitset to an array of indices to a bitset.
-  val to_array [n] : bitset[n] -> []i64
+  val to_array [n] : bitset[(n - 1) / nbs + 1] -> []i64
 }
 
 module mk_bitset (I: integral) : bitset = {
-  type int = I.t
-  type bitset [n] = {bits: [n]int, capacity: i64}
+  def nbs = i64.i32 I.num_bits
+
+  type bitset [n] = [n]I.t
   type maybe 'a = #just a | #nothing 
 
-  def num_bits = i64.i32 I.num_bits
-  def zero : int = I.i64 0
-
-  def empty (n : i64) : bitset[] =
-    let len = (n - 1) / num_bits + 1
-    in {bits=sized len <| replicate len zero, capacity=n}
+  def zero : I.t = I.i64 0
   
-  def find_bitset_index (i : i64) (capacity : i64) : maybe (i64, i32) =
-    if i < 0 || capacity <= i
+  def empty (n : i64) : bitset[(n - 1) / nbs + 1] =
+    replicate ((n - 1) / nbs + 1) zero
+  
+  def find_bitset_index (i : i64) (n : i64) : maybe (i64, i32) =
+    if i < 0 || n <= i
     then #nothing
-    else let num_bits = i64.i32 I.num_bits
-         let j = i / num_bits
-         let bit = i % num_bits
+    else let nbs = i64.i32 I.num_bits
+         let j = i / nbs
+         let bit = i % nbs
          in #just (j, i32.i64 bit)
 
-  def set_bit [n] ((i, bit) : (i64, i32)) (bits : [n]int) (value : i32) =
-    copy bits with [i] = I.set_bit bit bits[i] value
+  def set_bit [n] ((i, bit) : (i64, i32)) (s : bitset[(n - 1) / nbs + 1]) (value : i32) =
+    copy s with [i] = I.set_bit bit s[i] value
 
-  def insert [n] (i : i64) (s : bitset[n]) : bitset[n] =
-    match find_bitset_index i s.capacity
-    case #just index -> s with bits = set_bit index s.bits 1
+  def insert [n] (i : i64) (s : bitset[(n - 1) / nbs + 1]) : bitset[(n - 1) / nbs + 1] =
+    match find_bitset_index i n
+    case #just index -> set_bit index s 1
     case #nothing -> s
 
-  def singleton (capacity : i64) (i : i64) : bitset[] =
-    empty capacity
+  def singleton (n : i64) (i : i64) : bitset[(n - 1) / nbs + 1] =
+    empty n
     |> insert i
 
-  def is_empty [n] (s : bitset[n]) : bool =
-    all (I.==zero) s.bits
+  def is_empty [n] (s : bitset[(n - 1) / nbs + 1]) : bool =
+    all (I.==zero) s
   
-  def delete [n] (i : i64) (s : bitset[n]) : bitset[n] =
-    match find_bitset_index i s.capacity
-    case #just index -> s with bits = set_bit index s.bits 0
+  def delete [n] (i : i64) (s : bitset[(n - 1) / nbs + 1]) : bitset[(n - 1) / nbs + 1] =
+    match find_bitset_index i n
+    case #just index -> set_bit index s 0
     case #nothing -> s
 
-  def member [n] (i : i64) (s : bitset[n]) : bool =
-    match find_bitset_index i s.capacity
-    case #just (i, bit) -> I.get_bit bit s.bits[i] == 1
+  def member [n] (i : i64) (s : bitset[(n - 1) / nbs + 1]) : bool =
+    match find_bitset_index i n
+    case #just (i, bit) -> I.get_bit bit s[i] == 1
     case #nothing -> false
 
-  def union [n] (a : bitset[n]) (b : bitset[n]) : bitset[n] =
-    if a.capacity != b.capacity
-    then assert false a
-    else {bits=map2 (I.|) a.bits b.bits, capacity=a.capacity}
+  def union [n] (a : bitset[(n - 1) / nbs + 1]) (b : bitset[(n - 1) / nbs + 1]) : bitset[(n - 1) / nbs + 1] =
+    map2 (I.|) a b
   
-  def intersection [n] (a : bitset[n]) (b : bitset[n]) : bitset[n] =
-    if a.capacity != b.capacity
-    then assert false a
-    else {bits=map2 (I.&) a.bits b.bits, capacity=a.capacity}
+  def intersection [n] (a : bitset[(n - 1) / nbs + 1]) (b : bitset[(n - 1) / nbs + 1]) : bitset[(n - 1) / nbs + 1] =
+    map2 (I.&) a b
 
-  def set_front_zero (start : i32) (value : int) : int =
-    loop v = value for i in (start...I.num_bits - 1) do
-      I.set_bit i v 0
+  def set_front_bits_zero [n] (s : bitset[(n - 1) / nbs + 1]) : bitset[(n - 1) / nbs + 1] =
+    let l = (n - 1) / nbs + 1
+    let start = 1 + ((n - 1) % nbs)
+    in if l == 0 || start >= nbs
+       then s
+       else copy s with [l - 1] = 
+        loop v = s[l - 1] for i in (start...nbs - 1) do
+          I.set_bit (i32.i64 i) v 0
   
-  def set_front_zero_bits [n] (capacity : i64) (bits : [n]int) : [n]int =
-    let start = i32.i64 <| 1 + ((capacity - 1) % num_bits)
-    in if capacity == 0 || start >= I.num_bits
-       then bits
-       else copy bits with [n - 1] = set_front_zero start bits[n - 1]
-
-  def set_front_bits_zero [n] (s : bitset[n]) : bitset[n] =
-    s with bits = set_front_zero_bits s.capacity s.bits
-  
-  def complement [n] (s : bitset[n]) : bitset[n] =
-    {bits=map I.not s.bits, capacity=s.capacity}
+  def complement [n] (s : bitset[(n - 1) / nbs + 1]) : bitset[(n - 1) / nbs + 1] =
+    map I.not s
     |> set_front_bits_zero
   
-  def size [n] (s : bitset[n]) : i64 =
-    map (i64.i32 <-< I.popc) s.bits
+  def size [n] (s : bitset[(n - 1) / nbs + 1]) : i64 =
+    map (i64.i32 <-< I.popc) s
     |> i64.sum
 
-  def (==) [n] (a : bitset[n]) (b : bitset[n]) : bool =
-    map2 (I.==) a.bits b.bits
+  def (==) [n] (a : bitset[(n - 1) / nbs + 1]) (b : bitset[(n - 1) / nbs + 1]) : bool =
+    map2 (I.==) a b
     |> and
 
-  def is_subset [n] (a : bitset[n]) (b : bitset[n]) : bool =
+  def is_subset [n] (a : bitset[(n - 1) / nbs + 1]) (b : bitset[(n - 1) / nbs + 1]) : bool =
     (a `union` b) == b
   
-  def difference [n] (a : bitset[n]) (b : bitset[n]) : bitset[n] =
+  def difference [n] (a : bitset[(n - 1) / nbs + 1]) (b : bitset[(n - 1) / nbs + 1]) : bitset[(n - 1) / nbs + 1] =
     a `intersection` complement b
   
-  def set_capacity [m] (capacity : i64) (s : bitset[m]) : bitset[(capacity - 1) / num_bits + 1] =
-    let s' = empty capacity
-    let len = length s.bits
-    in {bits=
-          map (\i ->
-            if i < len then s.bits[i] else zero
-          ) (indices s'.bits), 
-        capacity=capacity}
-        |> set_front_bits_zero
+  def set_capacity [m] (n : i64) (s : bitset[(m - 1) / nbs + 1]) : bitset[(n - 1) / nbs + 1] =
+    let s' = empty n
+    let len = length s
+    in map (\i ->
+         if i < len then s[i] else zero
+       ) (indices s')
+       |> set_front_bits_zero
 
   -- There is probably a way to do this more space efficient.
-  def from_array [n] (capacity : i64) (arr : [n]i64) : bitset[(capacity - 1) / num_bits + 1] =
-    let empty' = empty capacity
-    in map (singleton capacity) arr
+  def from_array [m] (n : i64) (arr : [m]i64) : bitset[(n - 1) / nbs + 1] =
+    let empty' = empty n
+    in map (singleton n) arr
        |> reduce_comm union empty'
   
-  def to_array [n] (a : bitset[n]) : []i64 =
+  def to_array [n] (s : bitset[(n - 1) / nbs + 1]) : []i64 =
     map2 (\i v ->
       let m = i * i64.i32 I.num_bits
       in map (\bit ->
@@ -147,7 +136,7 @@ module mk_bitset (I: integral) : bitset = {
          then m + bit
          else -1
       ) (iota (i64.i32 I.num_bits))
-    ) (indices a.bits) a.bits
+    ) (indices s) s
     |> flatten
     |> filter (0<=)
 }

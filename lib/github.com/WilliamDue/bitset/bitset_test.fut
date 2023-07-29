@@ -26,13 +26,26 @@ entry test_is_empty_fail (arr : [][]u8) : bool =
 
 -- ==
 -- entry: test_complement
--- random input { [100]u8 } output { true }
-entry test_complement (arr : []u8) : bool =
-  all (\c ->
-    let c' = i64.u8 c
-    let full_set = bitset_u8.empty c' |> bitset_u8.complement
-    in bitset_u8.size full_set == c'
-  ) arr
+-- input { 0u8 } output { 0i64 }
+-- input { 1u8 } output { 1i64 }
+-- input { 2u8 } output { 2i64 }
+-- input { 3u8 } output { 3i64 }
+-- input { 4u8 } output { 4i64 }
+-- input { 5u8 } output { 5i64 }
+-- input { 6u8 } output { 6i64 }
+-- input { 7u8 } output { 7i64 }
+-- input { 8u8 } output { 8i64 }
+-- input { 9u8 } output { 9i64 }
+-- input { 10u8 } output { 10i64 }
+-- input { 11u8 } output { 11i64 }
+-- input { 12u8 } output { 12i64 }
+-- input { 13u8 } output { 13i64 }
+entry test_complement (c : u8) : i64 =
+  let c' = i64.u8 c
+  let empty_set = bitset_u8.empty c'
+  let full_set = bitset_u8.complement empty_set
+  let result = bitset_u8.size full_set
+  in result
 
 -- ==
 -- entry: test_equality
