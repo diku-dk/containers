@@ -1,4 +1,4 @@
-package github.com/WilliamDue/bitset
+package github.com/diku-dk/data-structures
 
 require {
 }
