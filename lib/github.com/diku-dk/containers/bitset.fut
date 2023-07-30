@@ -6,8 +6,8 @@
 -- these bits can then be related to the indexes of 
 -- another array.
 --
--- The work and span is computed assuming `nbs`@term is
--- some constant.
+-- `nbs`@term is assumed to be constant in the time
+-- complexities.
 
 module type bitset = {
   -- | The integral type used to construct the bitset.
