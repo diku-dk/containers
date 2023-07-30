@@ -1,4 +1,4 @@
-package github.com/diku-dk/data-structures
+package github.com/diku-dk/containers
 
 require {
 }
