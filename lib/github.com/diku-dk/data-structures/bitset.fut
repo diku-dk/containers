@@ -1,73 +1,153 @@
+-- | Bitset module
+--
+-- A bitset data structure is an array of bits where a bit
+-- can be set or not set. If the bit is set then it is a
+-- member of the set otherwise it is not. The indexes of
+-- these bits can then be related to the indexes of 
+-- another array.
+--
+-- The work and span is computed assuming `nbs`@term is
+-- some constant.
+
 module type bitset = {
-  -- | The integer type.
+  -- | The integral type used to construct the bitset.
   type t
   -- | The bitset type.
   type bitset[n]
   -- | The number of bits for the chosen integral type.
   val nbs : i64
   -- | Makes a empty bitset of a given capacity.
+  --
+  -- **Work:** *O(n)*
+  --
+  -- **Span:** *O(1)*
   val empty : (n : i64) -> bitset[(n - 1) / nbs + 1]
   -- | Makes a singleton bitset with a given capacity.
+  --
+  -- **Work:** *O(n)*
+  --
+  -- **Span:** *O(1)*
   val singleton : (n : i64) -> i64 -> bitset[(n - 1) / nbs + 1]
   -- | Checks if a bitset is empty.
+  --
+  -- **Work:** *O(n)*
+  --
+  -- **Span:** *O(log n)*
   val is_empty [n] : bitset[(n - 1) / nbs + 1] -> bool
   -- | Inserts a single bit in a bitset.
+  --
+  -- **Work:** *O(1)*
+  --
+  -- **Span:** *O(1)*
   val insert [n] : i64 -> bitset[(n - 1) / nbs + 1] -> bitset[(n - 1) / nbs + 1]
   -- | Deletes a single bit in a bitset.
+  --
+  -- **Work:** *O(1)*
+  --
+  -- **Span:** *O(1)*
   val delete [n] : i64 -> bitset[(n - 1) / nbs + 1] -> bitset[(n - 1) / nbs + 1]
   -- | Checks if a bit is a member of a bitset.
+  --
+  -- **Work:** *O(1)*
+  --
+  -- **Span:** *O(1)*
   val member [n] : i64 -> bitset[(n - 1) / nbs + 1] -> bool
   -- | Bitset union.
+  --
+  -- **Work:** *O(n)*
+  --
+  -- **Span:** *O(1)*
   val union [n] : bitset[(n - 1) / nbs + 1] -> bitset[(n - 1) / nbs + 1] -> bitset[(n - 1) / nbs + 1]
   -- | Bitset intersection.
+  --
+  -- **Work:** *O(n)*
+  --
+  -- **Span:** *O(1)*
   val intersection [n] : bitset[(n - 1) / nbs + 1] -> bitset[(n - 1) / nbs + 1] -> bitset[(n - 1) / nbs + 1]
   -- | Bitset difference.
+  --
+  -- **Work:** *O(n)*
+  --
+  -- **Span:** *O(1)*
   val difference [n] : bitset[(n - 1) / nbs + 1] -> bitset[(n - 1) / nbs + 1] -> bitset[(n - 1) / nbs + 1]
   -- | Checks if a bitset is a subset of another.
+  --
+  -- **Work:** *O(n)*
+  --
+  -- **Span:** *O(1)*
   val is_subset [n] : bitset[(n - 1) / nbs + 1] -> bitset[(n - 1) / nbs + 1] -> bool
   -- | Finds the complement of a bitset.
+  --
+  -- **Work:** *O(n)*
+  --
+  -- **Span:** *O(1)*
   val complement [n] : bitset[(n - 1) / nbs + 1] -> bitset[(n - 1) / nbs + 1]
   -- | Sets the bitset capacity to a new value.
+  --
+  -- **Work:** *O(n)*
+  --
+  -- **Span:** *O(1)*
   val set_capacity [m] : (n : i64) -> bitset[(m - 1) / nbs + 1] -> bitset[(n - 1) / nbs + 1]
   -- | Computes the size of the set i.e. the population count.
+  --
+  -- **Work:** *O(n)*
+  --
+  -- **Span:** *O(log n)*
   val size [n] : bitset[(n - 1) / nbs + 1] -> i64
   -- | If a two bitsets contains the same bits then they are equal.
+  --
+  -- **Work:** *O(n)*
+  --
+  -- **Span:** *O(log n)*
   val == [n] : bitset[(n - 1) / nbs + 1] -> bitset[(n - 1) / nbs + 1] -> bool
   -- | Convert an array of indices to a bitset.
+  --
+  -- **Work:** *O(n)*
+  --
+  -- **Span:** *O(log n)*
   val from_array [m] : (n : i64) -> [m]i64 -> bitset[(n - 1) / nbs + 1]
   -- | Converts an array of integral types to a bitset.
+  --
+  -- **Work:** *O(1)*
+  --
+  -- **Span:** *O(1)*
   val from_bit_array [m] : (n : i64) -> (arr : [m]t) -> bitset[(n - 1) / nbs + 1]
   -- | Convert a bitset to an array of indices to a bitset.
+  --
+  -- **Work:** *O(n)*
+  --
+  -- **Span:** *O(log n)*
   val to_array [n] : bitset[(n - 1) / nbs + 1] -> []i64
 }
 
+-- | Creates a bitset module depending on a intergral type.
 module mk_bitset (I: integral) : bitset = {
   def nbs = i64.i32 I.num_bits
 
   type t = I.t
   type bitset [n] = [n]t
-  type maybe 'a = #just a | #nothing 
 
   def zero : t = I.u64 0
   
   def empty (n : i64) : bitset[(n - 1) / nbs + 1] =
     replicate ((n - 1) / nbs + 1) zero
   
-  def find_bitset_index (i : i64) (n : i64) : maybe (i64, i32) =
+  def find_bitset_index (i : i64) (n : i64) : (i64, i32) =
     if i < 0 || n <= i
-    then #nothing
+    then (-1, -1)
     else let nbs = i64.i32 I.num_bits
          let j = i / nbs
          let bit = i % nbs
-         in #just (j, i32.i64 bit)
+         in (j, i32.i64 bit)
 
-  def set_bit [n] ((i, bit) : (i64, i32)) (s : bitset[(n - 1) / nbs + 1]) (value : i32) =
+  def set_bit [n] ((i, bit) : (i64, i32)) (s : bitset[(n - 1) / nbs + 1]) (value : i32) : bitset[(n - 1) / nbs + 1] =
     copy s with [i] = I.set_bit bit s[i] value
 
   def insert [n] (i : i64) (s : bitset[(n - 1) / nbs + 1]) : bitset[(n - 1) / nbs + 1] =
-    match find_bitset_index i n
-    case #just index -> set_bit index s 1
-    case #nothing -> s
+    let index = find_bitset_index i n
+    in if index.0 < 0 || index.1 < 0
+       then s
+       else set_bit index s 1
 
   def singleton (n : i64) (i : i64) : bitset[(n - 1) / nbs + 1] =
     empty n
@@ -77,14 +157,16 @@ module mk_bitset (I: integral) : bitset = {
     all (I.==zero) s
   
   def delete [n] (i : i64) (s : bitset[(n - 1) / nbs + 1]) : bitset[(n - 1) / nbs + 1] =
-    match find_bitset_index i n
-    case #just index -> set_bit index s 0
-    case #nothing -> s
+    let index = find_bitset_index i n
+    in if index.0 < 0 || index.1 < 0
+       then s
+       else set_bit index s 0
 
   def member [n] (i : i64) (s : bitset[(n - 1) / nbs + 1]) : bool =
-    match find_bitset_index i n
-    case #just (i, bit) -> I.get_bit bit s[i] == 1
-    case #nothing -> false
+    let (i, bit) = find_bitset_index i n
+    in if i < 0 || bit < 0
+       then false
+       else I.get_bit bit s[i] == 1
 
   def union [n] (a : bitset[(n - 1) / nbs + 1]) (b : bitset[(n - 1) / nbs + 1]) : bitset[(n - 1) / nbs + 1] =
     map2 (I.|) a b
