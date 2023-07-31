@@ -65,6 +65,6 @@ def combine' = add_identity combine
 -- random input { [100]i64 [100]i64 } output { true }
 entry test_add_identity (arr : []i64) (arr' : []i64) =
     zip arr arr'
-    |> map (\a -> #just)
+    |> map to_just
     |> reduce combine' #nothing
     |> is_just
