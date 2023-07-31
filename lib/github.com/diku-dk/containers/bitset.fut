@@ -102,9 +102,9 @@ module type bitset = {
   val == [n] : bitset[(n - 1) / nbs + 1] -> bitset[(n - 1) / nbs + 1] -> bool
   -- | Convert an array of indices to a bitset.
   --
-  -- **Work:** *O(n)*
+  -- **Work:** *O(n × m)*
   --
-  -- **Span:** *O(log n)*
+  -- **Span:** *O(log m)*
   val from_array [m] : (n : i64) -> [m]i64 -> bitset[(n - 1) / nbs + 1]
   -- | Converts an array of integral types to a bitset.
   --
