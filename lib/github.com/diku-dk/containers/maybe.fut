@@ -35,3 +35,37 @@ def map_maybe 'a 'b (f : a -> b) (a : maybe a) : maybe b =
   match a
   case #just a' -> #just (f a')
   case #nothing -> #nothing
+
+-- | Definition of a `maybe`@term equality.
+-- 
+-- The equality holds if they are both `#nothing`@term or they are both
+-- `#just` and the values inside `#just` are equal.
+def equal_maybe 'a (eq : a -> a -> bool) : maybe a -> maybe a -> bool =
+  (\a b ->
+    match (a, b)
+    case (#just a', #just b') -> a' `eq` b'
+    case (#nothing, #nothing) -> true
+    case _ -> false
+  )
+
+-- | Maps a value to a `maybe`@term type.
+-- 
+-- This is just syntactic sugar for `#just a`@term, it may be nicer
+-- to use then a lambda function.
+def to_just 'a (a : a) : maybe a =
+  #just a
+
+-- | Predicate for determing if a maybe type is the `#just`@term constructor.
+-- 
+-- Holds true if `a`@term is `#just`@term.
+def is_just 'a (a : maybe a) : bool =
+  match a
+  case #just _ -> true
+  case _ -> false
+
+-- | Predicate for determing if a maybe type is the `#nothing`@term constructor.
+-- 
+-- Holds true if `a`@term is `#nothing`@term.
+def is_nothing 'a (a : maybe a) : bool =
+  is_just a
+  |> not
