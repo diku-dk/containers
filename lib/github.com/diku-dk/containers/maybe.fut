@@ -23,7 +23,7 @@ def add_identity 'a (op : a -> a -> a) : maybe a -> maybe a -> maybe a =
 -- | Unpacks a `maybe`@term type.
 -- 
 -- If `#just a`@term then `a` is returned, otherwise `ne`@term is returned.
-def from_maybe 'a (a : maybe a) (ne : a) : a =
+def from_maybe 'a (ne : a) (a : maybe a) : a =
   match a
   case #just a' -> a'
   case #nothing -> ne
