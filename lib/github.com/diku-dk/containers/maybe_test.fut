@@ -8,7 +8,7 @@ import "maybe"
 -- input { 3i64 } output { 3i64 }
 entry test_from_maybe_nothing (c : i64) : i64 =
   let n : maybe i64 = #nothing
-  in from_maybe n c
+  in from_maybe c n
 
 -- ==
 -- entry: test_from_maybe_just
@@ -18,7 +18,7 @@ entry test_from_maybe_nothing (c : i64) : i64 =
 -- input { 3i64 } output { 3i64 }
 entry test_from_maybe_just (c : i64) : i64 =
   let n : maybe i64 = #just c
-  in from_maybe n (-1)
+  in from_maybe (-1) n
 
 -- ==
 -- entry: test_map_maybe_nothing
@@ -29,7 +29,7 @@ entry test_from_maybe_just (c : i64) : i64 =
 entry test_map_maybe_nothing : i64 =
   let n : maybe i64 = #nothing
   in map_maybe (*2) n
-     |> flip from_maybe (-1)
+     |> from_maybe (-1)
 
 -- ==
 -- entry: test_map_maybe_just
@@ -40,7 +40,7 @@ entry test_map_maybe_nothing : i64 =
 entry test_map_maybe_just (c : i64) : i64 =
   let n : maybe i64 = #just c
   in map_maybe (*2) n
-     |> flip from_maybe (-1)
+     |> from_maybe (-1)
 
 -- ==
 -- entry: test_equal_maybe
