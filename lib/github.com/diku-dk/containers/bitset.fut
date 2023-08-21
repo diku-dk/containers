@@ -10,6 +10,8 @@
 -- complexities.
 
 module type bitset = {
+  -- | The integral module used in the definition of the bitset.
+  module int : integral
   -- | The integral type used to construct the bitset.
   type t
   -- | The bitset type.
@@ -124,6 +126,7 @@ module type bitset = {
 module mk_bitset (I: integral) : bitset = {
   def nbs = i64.i32 I.num_bits
 
+  module int = I
   type t = I.t
   type bitset [n] = [n]t
 
