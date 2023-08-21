@@ -113,7 +113,7 @@ module type bitset = {
   -- **Work:** *O(1)*
   --
   -- **Span:** *O(1)*
-  val from_bit_array [m] : (n : i64) -> (arr : [m]t) -> bitset[(n - 1) / nbs + 1]
+  val from_bit_array [m] : (n : i64) -> (arr : [m]u64) -> bitset[(n - 1) / nbs + 1]
   -- | Convert a bitset to an array of indices to a bitset.
   --
   -- **Work:** *O(n)*
@@ -211,8 +211,9 @@ module mk_bitset (I: integral) : bitset = {
        ) (indices s')
        |> set_leading_bits_zero
 
-  def from_bit_array [m] (n : i64) (arr : [m]t) : bitset[(n - 1) / nbs + 1] =
-    sized ((n - 1) / nbs + 1) arr
+  def from_bit_array [m] (n : i64) (arr : [m]u64) : bitset[(n - 1) / nbs + 1] =
+    map (I.u64) arr
+    |> sized ((n - 1) / nbs + 1)
     |> set_leading_bits_zero
 
   -- There is probably a way to do this more space efficient.
