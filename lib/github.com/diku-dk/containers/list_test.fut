@@ -42,3 +42,19 @@ entry test_concat (xs: []i32) (ys: []i32) =
 
 entry test_scan (xs: []i32) =
   list.from_array xs |> list.scan (*) |> list.to_array
+
+-- ==
+-- entry: test_reduce
+-- input { [1,2,3] } output { 6 }
+-- input { [0,1,2] } output { 0 }
+
+entry test_reduce (xs: []i32) =
+  list.from_array xs |> list.reduce (*) 1
+
+-- ==
+-- entry: test_reduce_comm
+-- input { [1,2,3] } output { 6 }
+-- input { [0,1,2] } output { 0 }
+
+entry test_reduce_comm (xs: []i32) =
+  list.from_array xs |> list.rev |> list.reduce_comm (*) 1
