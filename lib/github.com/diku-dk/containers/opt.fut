@@ -19,7 +19,7 @@ def add_identity 'a (op: a -> a -> a) (a: opt a) (b: opt a) : opt a =
   case (#none, #some _) -> b
   case (#none, #none) -> #none
 
--- | Unpacks a `opt`@term type.
+-- | Unpacks a `opt` type.
 --
 -- If `#some a`@term then `a` is returned, otherwise `ne`@term is returned.
 def from_opt 'a (ne: a) (a: opt a) : a =
@@ -27,7 +27,7 @@ def from_opt 'a (ne: a) (a: opt a) : a =
   case #some a' -> a'
   case #none -> ne
 
--- | Maps a function inside `opt`@term.
+-- | Maps a function inside `opt`.
 --
 -- Applies the function `f`@term to the value `'a`.
 def map_opt 'a 'b (f: a -> b) (a: opt a) : opt b =
@@ -35,7 +35,7 @@ def map_opt 'a 'b (f: a -> b) (a: opt a) : opt b =
   case #some a' -> #some (f a')
   case #none -> #none
 
--- | Definition of a `opt`@term equality.
+-- | Definition of a `opt` equality.
 --
 -- The equality holds if they are both `#none` or they are both
 -- `#some` and the values inside `#some` are equal.
@@ -45,7 +45,7 @@ def equal_opt 'a (eq : a -> a -> bool) (a: opt a) (b: opt a) : bool =
   case (#none, #none) -> true
   case _ -> false
 
--- | Maps a value to a `opt`@term type.
+-- | Maps a value to a `opt` type.
 --
 -- This is syntactic sugar for `#some a`, it may be nicer to use then
 -- a lambda function.
