@@ -29,12 +29,18 @@ module type list = {
   -- function. Work *O(i)*, span *O(i)*.
   val sub [n] 'a : list [n] a -> i64 -> a
 
+  -- Concatenate two lists.  Work *O(n)*, span *O(1)*.
+  val ++ [n] [m] 'a : list [n] a -> list [m] a -> list [n+m] a
+
   -- | Inclusive scan of list, given an associative operator. Work
   -- *O(n log(n))*, span *O (log(n))*.
   val scan [n] 'a : (a -> a -> a) -> list [n] a -> list [n] a
 
-  -- Concatenate two lists.  Work *O(n)*, span *O(1)*.
-  val ++ [n] [m] 'a : list [n] a -> list [m] a -> list [n+m] a
+  -- | Reduction with an associative operator.
+  val reduce [n] 'a : (a -> a -> a) -> a -> list [n] a -> a
+
+  -- | Reduction with an associative *and commutative* operator.
+  val reduce_comm [n] 'a : (a -> a -> a) -> a -> list [n] a -> a
 }
 
 module list : list = {
@@ -97,4 +103,10 @@ module list : list = {
   def sub [n] 'a (l: list [n] a) i =
     assert (i >= 0 && i < n)
     l.V[iterate (i32.i64 i) (\j -> l.S[j]) 0]
+
+  def reduce [n] 'a (op: a -> a -> a) (_ne: a) (l: list [n] a) =
+    last (scan op l)
+
+  def reduce_comm [n] 'a (op: a -> a -> a) (ne: a) (l: list [n] a) =
+    reduce_comm op ne l.V
 }
