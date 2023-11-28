@@ -32,6 +32,9 @@ module type list = {
   -- Concatenate two lists.  Work *O(n)*, span *O(1)*.
   val ++ [n] [m] 'a : list [n] a -> list [m] a -> list [n+m] a
 
+  -- | Apply function to every element of list.
+  val map [n] 'a 'b : (a -> b) -> list [n] a -> list [n] b
+
   -- | Inclusive scan of list, given an associative operator. Work
   -- *O(n log(n))*, span *O (log(n))*.
   val scan [n] 'a : (a -> a -> a) -> list [n] a -> list [n] a
@@ -92,9 +95,10 @@ module list : list = {
     in l with V = (wyllie_scan op l'.V l'.S)
 
   def (++) [n] [m] 'a (x: list [n] a) (y: list [m] a) =
-    { S = (if n == 0 then x.S else copy x.S with [x.last] = n + y.head)
-          ++
-          map (\i -> if i == n then n else i+n) y.S
+    { S = if n == 0 || m == 0 then x.S ++ y.S
+          else (copy x.S with [x.last] = n + y.head)
+               ++
+               map (\i -> if i == n then n else i+n) y.S
     , V = x.V ++ y.V
     , head = x.head
     , last = y.last + n
@@ -109,4 +113,7 @@ module list : list = {
 
   def reduce_comm [n] 'a (op: a -> a -> a) (ne: a) (l: list [n] a) =
     reduce_comm op ne l.V
+
+  def map [n] 'a 'b (f: a -> b) (l: list [n] a) : list [n] b =
+    {S = l.S, V = map f l.V, last = l.last, head = l.head}
 }
