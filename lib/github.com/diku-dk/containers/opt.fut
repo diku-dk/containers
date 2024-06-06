@@ -62,3 +62,9 @@ def is_some 'a (a: opt a) : bool =
 def is_none 'a (a: opt a) : bool =
   is_some a
   |> not
+
+-- | The bind operation for the optional type.
+def bind_opt 'a 'b (a: opt a) (f: a -> opt b): opt b =
+  match a
+  case #some a -> f a
+  case #none -> #none
