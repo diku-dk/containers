@@ -256,7 +256,7 @@ local def blocked_partition_auxiliary [n] [m] [r] 't
 
 -- | The inherently evil blocked partition, this leads to a speed up
 -- compared to the partition given in Futharks prelude. It works much
--- liked a blocked radix sort [1] but just with one bit.
+-- like a blocked radix sort [1] but just with one bit.
 --
 -- [1] N. Satish, M. Harris and M. Garland, "Designing efficient
 -- sorting algorithms for manycore GPUs," 2009 IEEE International
