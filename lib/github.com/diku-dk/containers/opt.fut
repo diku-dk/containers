@@ -39,7 +39,7 @@ def map_opt 'a 'b (f: a -> b) (a: opt a) : opt b =
 --
 -- The equality holds if they are both `#none` or they are both
 -- `#some` and the values inside `#some` are equal.
-def equal_opt 'a (eq : a -> a -> bool) (a: opt a) (b: opt a) : bool =
+def equal_opt 'a (eq: a -> a -> bool) (a: opt a) (b: opt a) : bool =
   match (a, b)
   case (#some a', #some b') -> a' `eq` b'
   case (#none, #none) -> true
@@ -64,7 +64,7 @@ def is_none 'a (a: opt a) : bool =
   |> not
 
 -- | The bind operation for the optional type.
-def bind_opt 'a 'b (f: a -> opt b) (a: opt a): opt b =
+def bind_opt 'a 'b (f: a -> opt b) (a: opt a) : opt b =
   match a
   case #some a -> f a
   case #none -> #none
