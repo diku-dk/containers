@@ -62,9 +62,9 @@ module list : list = {
   def rev [n] 'a (l: list [n] a) =
     let f i = (l.S[i], i)
     let (is, vs) = unzip (tabulate n f)
-    in l with S = scatter (replicate n n) is vs with head =
-         l.last with last =
-         l.head
+    in l with S = scatter (replicate n n) is vs
+         with head = l.last
+         with last = l.head
 
   def from_array 'a [n] (V: [n]a) : list [n] a =
     { S = map (+ 1) (iota n)

@@ -9,9 +9,10 @@ import "list"
 
 entry test_rev (xs: []i32) =
   let l = xs |> list.from_array |> list.rev
-  in (list.to_array l,
-      list.head l,
-      list.last l)
+  in ( list.to_array l
+     , list.head l
+     , list.last l
+     )
 
 -- ==
 -- entry: test_sub
@@ -30,9 +31,10 @@ entry test_sub (xs: []i32) i =
 -- input { empty([0]i32) [4,5,6] } output { [4,5,6] 4 6 }
 entry test_concat (xs: []i32) (ys: []i32) =
   let l = list.from_array xs list.++ list.from_array ys
-  in (list.to_array l,
-      list.head l,
-      list.last l)
+  in ( list.to_array l
+     , list.head l
+     , list.last l
+     )
 
 -- ==
 -- entry: test_scan
