@@ -6,7 +6,8 @@
 --
 -- A `opt`@term type is a sum type. It is either `#some` containg a
 -- value `a`@term or `#none`.
-type opt 'a = #some a | #none
+type^ opt '~a = #none | #some a
+
 
 -- | Extents a binary operation to have `#none` as a identity element.
 --
@@ -30,10 +31,10 @@ def from_opt 'a (ne: a) (a: opt a) : a =
 -- | Maps a function inside `opt`.
 --
 -- Applies the function `f`@term to the value `'a`.
-def map_opt 'a 'b (f: a -> b) (a: opt a) : opt b =
-  match a
-  case #some a' -> #some (f a')
-  case #none -> #none
+def map_opt 'a '~b (f: a -> b) (x: opt a) : opt b =
+  match x
+  case #none -> (#none : opt b)
+  case #some x' -> #some (f x')
 
 -- | Definition of a `opt` equality.
 --
