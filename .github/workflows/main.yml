@@ -2,13 +2,15 @@ name: CI
 
 on:
   pull_request:
-    types: [review_requested, ready_for_review]
+    branches: [ master ]
 
   push:
-    branches: [ main ]
+    branches: [ master ]
 
+  # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
+  # Run weekly to detect compiler or dependency regressions.
   schedule:
     - cron: "0 0 * * 0"
 
@@ -24,5 +26,11 @@ jobs:
         version: 'nightly'
 
     - run: futhark pkg sync
-    
-    - run: futhark test --pass-compiler-option=--Werror lib/github.com/diku-dk/containers/*_test.fut
+
+    - run: futhark test --pass-compiler-option=--Werror lib
+
+    - run: futhark pkg upgrade
+
+    - run: futhark pkg sync
+
+    - run: futhark test --pass-compiler-option=--Werror lib
