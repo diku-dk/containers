@@ -12,14 +12,21 @@ import "../sorts/merge_sort"
 module engine = xorshift128plus
 type rng = xorshift128plus.rng
 
+local def generate_seeds r n =
+  let (new_rng, seeds) =
+    loop (r', s) = (r, []) for _i < n do
+    let (r'', s') = engine.rand r'
+    in (r'', s ++ [i64.u64 s'])
+  in (new_rng, sized n seeds)
+  
 local
-def estimate_distinct' [n] 't
+def estimate_distinct' [n] [m] 't
                        (r: rng)
-                       (hash: i64 -> t -> i64)
+                       (hash: [m]i64 -> t -> i64)
                        (arr: [n]t) =
-  let (new_rng, seed) = engine.rand r
+  let (new_rng, seeds) = generate_seeds r m
   let hashes =
-    map (hash (i64.u64 seed)) arr
+    map (hash seeds) arr
     |> merge_sort (<=)
   let count =
     tabulate n (\i -> i64.bool (i == 0 || hashes[i - 1] != hashes[i]))
@@ -45,11 +52,11 @@ def create_sample [n] 't
   in (new_rng, sample)
 
 local
-def estimate_distinct [n] 't
+def estimate_distinct [n] [m] 't
                       (rng: rng)
                       (sample_size: i64)
                       (times: i64)
-                      (hash: i64 -> t -> i64)
+                      (hash: [m]i64 -> t -> i64)
                       (arr: [n]t) : (rng, i64) =
   let (new_rng, count) =
     loop (rng, acc) = (rng, 0)
@@ -69,11 +76,11 @@ def estimate_distinct [n] 't
 -- (*n / 2*) while a value of *x* will sample *x* of the pairs (*n / x*).
 -- The `times`@term parameter will determine how many times the estimate
 -- will be computed to find an average of the estimates.
-def reduce_by_key_param [n] 'k 'v
+def reduce_by_key_param [n] [m] 'k 'v
                         (seed: i32)
                         (sample_fraction: i64)
                         (times: i64)
-                        (hash: i64 -> k -> i64)
+                        (hash: [m]i64 -> k -> i64)
                         (eq: k -> k -> bool)
                         (ne: v)
                         (op: v -> v -> v)
@@ -83,13 +90,13 @@ def reduce_by_key_param [n] 'k 'v
     -- Expected number of iterations is O(log n).
     loop (reduced, not_reduced, old_rng) = ([], arr, r)
     while length not_reduced != 0 do
-      let (new_rng, seed) = engine.rand old_rng
+      let (new_rng, seeds) = generate_seeds old_rng m
       let keys = map (.0) not_reduced
       let sample_size = i64.max 1 (length not_reduced / sample_fraction)
       let (new_rng, size) =
         estimate_distinct new_rng sample_size times hash keys
       let size = i64.max 1024 (size + size / 2)
-      let h = (% size) <-< hash (i64.u64 seed)
+      let h = (% size) <-< hash seeds
       let hashes = map h keys
       let collision_idxs =
         -- Find the smallest indices in regards to each hash to resolve collisions.
@@ -112,23 +119,23 @@ def reduce_by_key_param [n] 'k 'v
 
 -- | `dedup`@term, but paramatized. The parameters are the same as in
 -- `reduce_by_key`@term.
-def dedup_param [n] 't
+def dedup_param [n] [m] 't
                 (seed: i32)
                 (sample_fraction: i64)
                 (times: i64)
-                (hash: i64 -> t -> i64)
+                (hash: [m]i64 -> t -> i64)
                 (eq: t -> t -> bool)
                 (arr: [n]t) : []t =
   let r = engine.rng_from_seed [seed]
   let (uniques, _, _) =
     loop (uniques, elems, old_rng) = ([], arr, r)
     while length elems != 0 do
-      let (new_rng, seed) = engine.rand old_rng
+      let (new_rng, seeds) = generate_seeds old_rng m
       let sample_size = i64.max 1 (length elems / sample_fraction)
       let (new_rng, size) =
         estimate_distinct new_rng sample_size times hash elems
       let size = i64.max 1024 (size + size / 2)
-      let h = (% size) <-< hash (i64.u64 seed)
+      let h = (% size) <-< hash seeds
       let hashes = map h elems
       let collision_idxs =
         hist i64.min i64.highest size hashes (indices hashes)
@@ -146,8 +153,8 @@ def dedup_param [n] 't
 --| A hash function that seems to work great for i64 in regards to
 -- removing duplicates or reduce by key.
 -- The hash function was found [here](http://stackoverflow.com/a/12996028).
-def hash_i64 (a: i64) (x: i64) : i64 =
-  let x = a * x
+def hash_i64 (a: [1]i64) (x: i64) : i64 =
+  let x = a[0] * x
   let x = (x ^ (x >> 30)) * (i64.u64 0xbf58476d1ce4e5b9)
   let x = (x ^ (x >> 27)) * (i64.u64 0x94d049bb133111eb)
   let y = (x ^ (x >> 31))
@@ -169,8 +176,8 @@ def hash_i64 (a: i64) (x: i64) : i64 =
 -- the span of `reduce_by_index` is not given in the documentation. It
 -- generally performs much better for inputs with duplicate keys. The
 -- output is most likely unordered.
-def reduce_by_key [n] 'k 'v
-                  (hash: i64 -> k -> i64)
+def reduce_by_key [n] [m] 'k 'v
+                  (hash: [m]i64 -> k -> i64)
                   (eq: k -> k -> bool)
                   (ne: v)
                   (op: v -> v -> v)
@@ -185,14 +192,14 @@ def reduce_by_key [n] 'k 'v
 -- for the same reason as `reduce_by_key`@term. It also performs about
 -- as well as `reduce_by_key`@term. The output is most likely
 -- unordered.
-def dedup [n] 't
-          (hash: i64 -> t -> i64)
+def dedup [n] [m] 't
+          (hash: [m]i64 -> t -> i64)
           (eq: t -> t -> bool)
           (arr: [n]t) : []t =
   dedup_param 1 1024 5 hash eq arr
 
-local def hash_i32 a x = hash_i64 a (i64.i32 x)
-
+local def hash_i32 (a: [1]i64) x = hash_i64 a (i64.i32 x)
+;6u
 local
 entry replicate_i32 (n: i64) (m: i32) : [n]i32 =
   replicate n m
