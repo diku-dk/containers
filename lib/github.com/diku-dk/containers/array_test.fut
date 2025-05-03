@@ -28,7 +28,7 @@ def dedup_sort [n] (arr: [n]i32) : []i32 =
      |> filter (.0)
      |> map (.1)
 
-local def hash_i32 a x = hash_i64 a (i64.i32 x)
+local def hash_i32 (a: [1]i64) x = hash_i64 a (i64.i32 x)
 
 local
 def count_occourences [n] (arr: [n]i32) : [](i32, i32) =
