@@ -56,7 +56,7 @@ def loop_body [n] [w] [m] 'k
     segmented_reduce (&&) true flags has_no_collisions
     |> sized w
   let (_, new_offsets) =
-    map2 (\f s -> if f then 0 else s) seg_has_no_collision old_shape
+    map (\f -> if f then 0 else 1) seg_has_no_collision
     |> exscan (+) 0
   let (done_shape, not_done_shape) =
     zip seg_has_no_collision old_shape
