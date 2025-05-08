@@ -199,7 +199,7 @@ def dedup [n] [m] 't
   dedup_param 1 1024 5 hash eq arr
 
 local def hash_i32 (a: [1]i64) x = hash_i64 a (i64.i32 x)
-;6u
+
 local
 entry replicate_i32 (n: i64) (m: i32) : [n]i32 =
   replicate n m

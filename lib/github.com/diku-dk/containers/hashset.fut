@@ -64,7 +64,26 @@ def member [n] [m] 'k
   let key' = set.keys[set.offsets[i]]
   in set.eq key' key
 
+type cmp 'a = #id | #elem a | #collision
+
+local def equiv 'a (eq: a -> a -> bool) (a: cmp a) (b: cmp a): cmp a =
+  match (a, b)
+  case (_, #id) -> a
+  case (#id, _) -> b
+  case (_, #collision) -> #collision
+  case (#collision, _) -> #collision
+  case (#elem a', #elem b') -> if a' `eq` b'
+                               then #elem a'
+                               else #collision
+
+local def is_not_collision 'a (a: cmp a): bool =
+  match a
+  case #elem _ -> true
+  case #id -> true
+  case #collision -> false
+  
 def loop_body [n] [w] [m] 'k
+              (eq: k -> k -> bool)
               (hash: [m]i64 -> k -> i64)
               (old_rng: rng)
               (old_keys: [n](k, i64))
@@ -79,7 +98,10 @@ def loop_body [n] [w] [m] 'k
     map (\(k, o) ->
            old_shape_offsets[o] + (hash old_consts[o] k % old_shape[o]))
         old_keys
-  let has_no_collisions = replicate n 1 |> hist (+) 0i64 flat_size is |> map (<= 1)
+  let has_no_collisions =
+    map (\(k, _) -> #elem k) old_keys
+    |> hist (equiv eq) #id flat_size is
+    |> map is_not_collision
   let flag_idxs =
     map2 (\i j -> if i == 0 then -1 else j) old_shape old_shape_offsets
   let flags =
@@ -153,7 +175,7 @@ def construct [n] [m] 'k
           , new_not_done
           , new_done
           ) =
-        loop_body hash old_rng old_keys old_not_done
+        loop_body eq hash old_rng old_keys old_not_done
       in ( new_rng
          , new_keys
          , new_not_done
