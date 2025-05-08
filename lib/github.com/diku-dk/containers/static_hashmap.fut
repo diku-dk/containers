@@ -1,4 +1,4 @@
--- | Static Hashset module
+-- | Static Hashmap module
 --
 -- | This is an implementation of a static hash table using two level
 -- hasing https://en.wikipedia.org/wiki/Double_hashing. The modules
