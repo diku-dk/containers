@@ -20,12 +20,49 @@ def exscan [n] 'a (op: a -> a -> a) (ne: a) (as: [n]a) =
        let res[0] = ne
        in (l, res)
 
-type~ hashset [n] [m] [w] 'k =
-  { offsets: [n]i64
+type^ hashset [n] [m] 'k =
+  { keys: [n]k
+  , offsets: []i64
   , level_one_consts: [m]i64
+  , level_one_offsets: []i64
+  , level_two_offsets: []i64
   , level_two_consts: [][m]i64
-  , keys: [w]k
+  , level_two_shape: []i64
+  , hash: [m]i64 -> k -> i64
+  , eq: k -> k -> bool
   }
+
+local
+def level_two_hash 'k [m] [w]
+                   (hash: [m]i64 -> k -> i64)
+                   (level_one_consts: [m]i64)
+                   (n: i64)
+                   (level_one_offsets: []i64)
+                   (level_two_offsets: [w]i64)
+                   (level_two_consts: [w][m]i64)
+                   (level_two_shape: [w]i64)
+                   (key: k) =
+  let x = hash level_one_consts key % n
+  let o = level_one_offsets[x]
+  let cs = level_two_consts[o]
+  let s = level_two_shape[o]
+  let y = hash cs key % s
+  in level_two_offsets[o] + y
+
+def member [n] [m] 'k
+           (set: hashset [n] [m] k)
+           (key: k) : bool =
+  let i =
+    level_two_hash set.hash
+                   set.level_one_consts
+                   n
+                   set.level_one_offsets
+                   set.level_two_offsets
+                   set.level_two_consts
+                   set.level_two_shape
+                   key
+  let key' = set.keys[set.offsets[i]]
+  in set.eq key' key
 
 def loop_body [n] [w] [m] 'k
               (hash: [m]i64 -> k -> i64)
@@ -77,7 +114,11 @@ def loop_body [n] [w] [m] 'k
      , done :> [z](i64, i64, [m]i64)
      )
 
-def construct [n] [m] 'k (r: rng) (hash: [m]i64 -> k -> i64) (keys: [n]k) =
+def construct [n] [m] 'k
+              (r: rng)
+              (eq: k -> k -> bool)
+              (hash: [m]i64 -> k -> i64)
+              (keys: [n]k) =
   let (r, level_one_consts) = generate_consts m r
   let is = map ((% n) <-< hash level_one_consts) keys
   let level_one_counts_squared =
@@ -126,10 +167,30 @@ def construct [n] [m] 'k (r: rng) (hash: [m]i64 -> k -> i64) (keys: [n]k) =
   let shape_dest = replicate s 0
   let level_two_shape =
     scatter shape_dest order unordered_level_two_shape
+  let (flat_size, level_two_offsets) = exscan (+) 0 level_two_shape
   let consts_dest = replicate s (replicate m 0)
   let level_two_consts =
     scatter consts_dest order unordered_level_two_consts
-  in (final_r, level_one_consts, level_two_consts, level_two_shape)
-
-def seed = engine.rng_from_seed [1]
-def hashi64 (a: [1]i64) (b: i64) = a[0] * b
+  let hash2 =
+    level_two_hash hash
+                   level_one_consts
+                   n
+                   level_one_offsets
+                   level_two_offsets
+                   level_two_consts
+                   level_two_shape
+  let js = map hash2 keys
+  let offsets =
+    scatter (replicate flat_size 0) js (iota n)
+  in ( final_r
+     , { keys = keys
+       , offsets = offsets
+       , level_one_consts = level_one_consts
+       , level_one_offsets = level_one_offsets
+       , level_two_offsets = level_two_offsets
+       , level_two_consts = level_two_consts
+       , level_two_shape = level_two_shape
+       , eq = eq
+       , hash = hash
+       }
+     )
