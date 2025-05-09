@@ -1,4 +1,4 @@
--- | Static Unlifted Hashset module
+-- | Static Hashset module
 --
 -- | This is an implementation of a static hash table using two level
 -- hasing https://en.wikipedia.org/wiki/Double_hashing. The modules
@@ -6,7 +6,7 @@
 -- work with duplicate keys.
 
 import "../cpprandom/random"
-import "hashmap_unlifted"
+import "hashset_unlifted"
 import "key"
 
 module type hashset = {
@@ -17,21 +17,21 @@ module type hashset = {
   type rng
 
   -- | The hashset type.
-  type hashset [n] [w] [f] [s]
+  type~ hashset
 
   -- | Check if a key is member of the hashset.
   --
   -- **Work:** *O(1)*
   --
   -- **Span:** *O(1)*
-  val member [n] [w] [f] [s] : k -> hashset [n] [w] [f] [s] -> bool
+  val member : k -> hashset -> bool
 
   -- | Check if a key is not member of the hashset
   --
   -- **Work:** *O(1)*
   --
   -- **Span:** *O(1)*
-  val not_member [n] [w] [f] [s] : k -> hashset [n] [w] [f] [s] -> bool
+  val not_member : k -> hashset -> bool
 
   -- | Given a random number generator, equality, hash function, and
   -- an array keys construct a hashset. Assumes unique keys but works
@@ -41,53 +41,47 @@ module type hashset = {
   -- **Expected Work:** *O(n)*
   --
   -- **Expected Span:** *O(log n)*
-  val from_array [n] : rng -> [n]k -> ?[f][w][s].(rng, hashset [n] [w] [f] [s])
+  val from_array [n] : rng -> [n]k -> (rng, hashset)
 
   -- | Convert hashset to an array of keys.
   --
   -- **Work:** *O(1)*
   --
   -- **Span:** *O(1)*
-  val to_array [n] [w] [f] [s] : hashset [n] [w] [f] [s] -> []k
+  val to_array : hashset -> []k
 
   -- | The number of elements in the hashset.
   --
   -- **Work:** *O(1)*
   --
   -- **Span:** *O(1)*
-  val size [n] [w] [f] [s] : hashset [n] [w] [f] [s] -> i64
+  val size : hashset -> i64
 }
 
 module hashset (K: key) (E: rng_engine with int.t = K.i)
   : hashset
     with rng = E.rng
     with k = K.k = {
-  module hashmap = hashmap K E
-  type rng = hashmap.rng
-  type k = hashmap.k
+  module hashset = hashset K E
+  type rng = hashset.rng
+  type k = hashset.k
 
-  type hashset [n] [w] [f] [s] =
-    hashmap.hashmap [n] [w] [f] [s] ()
+  type~ hashset = ?[n][w][f][s].hashset.hashset [n] [w] [f] [s]
 
   def from_array [n]
                  (r: rng)
-                 (keys: [n]k) : ?[f][w][s].(rng, hashset [n] [w] [f] [s]) =
-    hashmap.from_array_fill r keys ()
+                 (keys: [n]k) : (rng, hashset) =
+    hashset.from_array r keys
 
-  def to_array [n] [w] [f] [s] (set: hashset [n] [w] [f] [s]) : []k =
-    hashmap.to_array set
-    |> map (.0)
+  def to_array (set: hashset) : []k =
+    hashset.to_array set
 
-  def size [n] [w] [f] [s] (set: hashset [n] [w] [f] [s]) =
-    hashmap.size set
+  def size (set: hashset) =
+    hashset.size set
 
-  def member [n] [w] [f] [s]
-             (key: k)
-             (set: hashset [n] [w] [f] [s]) : bool =
-    hashmap.member key set
+  def member (key: k) (set: hashset) : bool =
+    hashset.member key set
 
-  def not_member [n] [w] [f] [s]
-                 (key: k)
-                 (set: hashset [n] [w] [f] [s]) : bool =
-    hashmap.not_member key set
+  def not_member (key: k) (set: hashset) : bool =
+    hashset.not_member key set
 }
