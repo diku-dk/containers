@@ -1,4 +1,4 @@
--- | Static Hashmap module
+-- | Static Unlifted Hashmap module
 --
 -- | This is an implementation of a static hash table using two level
 -- hasing https://en.wikipedia.org/wiki/Double_hashing. The modules
@@ -75,7 +75,7 @@ module type hashmap = {
   -- **Work:** *O(s ✕ W(g))*
   --
   -- **Span:** *O(s(g))*
-  val hashmap_map [m] [n] [w] [f] [s] 'v 't :
+  val hashmap_map [n] [w] [f] [s] 'v 't :
     (g: v -> t)
     -> hashmap [n] [w] [f] [s] v
     -> hashmap [n] [w] [f] [s] t
