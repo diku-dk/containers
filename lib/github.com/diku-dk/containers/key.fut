@@ -11,7 +11,7 @@ module type key = {
   type k
 
   -- | Number constants the hash function is depended on.
-  val m: i64
+  val m : i64
 
   -- | Equality definition for the key.
   val eq : k -> k -> bool
