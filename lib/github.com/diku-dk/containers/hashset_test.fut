@@ -1,6 +1,7 @@
-import "hashset_unlifted"
 import "../cpprandom/random"
-                           
+module unlifted = import "hashset_unlifted"        
+module lifted = import "hashset"
+
 --| A hash function that seems to work great for i64 in regards to
 -- removing duplicates or reduce by key.
 -- The hash function was found [here](http://stackoverflow.com/a/12996028).
@@ -20,32 +21,37 @@ module i64_key = {
   def eq: i64 -> i64 -> bool = (==)
 }
 
-
 module engine = xorshift128plus
-module set = hashset i64_key engine
+module unlifted_set = unlifted.hashset i64_key engine
+module lifted_set = lifted.hashset i64_key engine
 def seed = engine.rng_from_seed [1]
 
 -- ==
 -- entry: test_find_all
--- compiled random input { 10000000i64 }
+-- compiled random input { 1000000i64 }
 -- output { true }
 -- compiled random input { 0i64 }
 -- output { true }
 entry test_find_all n =
   let xs = iota n 
-  let (_, s) = set.from_array seed xs
-  in all (flip set.member s) xs
+  let (_, s) = unlifted_set.from_array seed xs
+  let (_, s') = lifted_set.from_array seed xs
+  in all (flip unlifted_set.member s) xs &&
+     all (flip lifted_set.member s') xs
   
 -- ==
 -- entry: test_does_not_find
--- compiled random input { 10000000i64 }
+-- compiled random input { 1000000i64 }
 -- output { true }
 -- compiled random input { 0i64 }
 -- output { true }
 entry test_does_not_find n =
   let ys = iota n
-  let (_, s) = set.from_array seed ys
-  in all (flip set.not_member s) (n..<n+1)
+  let (_, s) = unlifted_set.from_array seed ys
+  let (_, s') = lifted_set.from_array seed ys
+  let idxs = (n..<n+1)
+  in all (flip unlifted_set.not_member s) idxs &&
+     all (flip lifted_set.not_member s') idxs
 
 -- ==
 -- entry: test_find_all_dups
@@ -53,8 +59,10 @@ entry test_does_not_find n =
 -- output { true }
 entry test_find_all_dups n =
   let xs = iota n |> map (%10)
-  let (_, s) = set.from_array seed xs
-  in all (flip set.member s) xs
+  let (_, s) = unlifted_set.from_array seed xs
+  let (_, s') = lifted_set.from_array seed xs
+  in all (flip unlifted_set.member s) xs &&
+     all (flip lifted_set.member s') xs
 
 -- ==
 -- entry: test_does_not_find_dups
@@ -62,8 +70,11 @@ entry test_find_all_dups n =
 -- output { true }
 entry test_does_not_find_dups n =
   let ys = iota n |> map (%10)
-  let (_, s) = set.from_array seed ys
-  in all (flip set.not_member s) (10..<n)
+  let (_, s) = unlifted_set.from_array seed ys
+  let (_, s') = lifted_set.from_array seed ys
+  let idxs = (10..<n)
+  in all (flip unlifted_set.not_member s) idxs &&
+     all (flip lifted_set.not_member s') idxs
 
 -- ==
 -- entry: test_dedup
@@ -71,6 +82,9 @@ entry test_does_not_find_dups n =
 -- output { true }
 entry test_dedup n =
   let ys = iota n |> map (%100)
-  let (_, s) = set.from_array seed ys
-  let arr = set.to_array s
-  in length arr == 100 && all (\a -> or (map (==a) (iota 100))) arr
+  let (_, s) = unlifted_set.from_array seed ys
+  let (_, s') = lifted_set.from_array seed ys
+  let arr = unlifted_set.to_array s
+  let arr' = lifted_set.to_array s'
+  in length arr == 100 && all (\a -> or (map (==a) (iota 100))) arr &&
+     length arr == 100 && all (\a -> or (map (==a) (iota 100))) arr'
