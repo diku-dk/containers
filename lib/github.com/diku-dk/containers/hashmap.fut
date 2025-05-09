@@ -8,6 +8,7 @@
 import "key"
 import "hashmap_unlifted"
 import "../cpprandom/random"
+import "opt"
 
 module type hashmap = {
   -- | The key type.
@@ -32,6 +33,13 @@ module type hashmap = {
   --
   -- **Span:** *O(1)*
   val not_member 'v : k -> hashmap v -> bool
+
+  -- | Look up a value.
+  --
+  -- **Work:** *O(1)*
+  --
+  -- **Span:** *O(1)*
+  val lookup 'v : k -> hashmap v -> opt v
 
   -- | Given a random number generator, equality, hash function, and
   -- a key-value array construct a hashmap. Assumes unique keys but
@@ -138,4 +146,7 @@ module hashmap (K: key) (E: rng_engine with int.t = K.i)
 
   def not_member 'v (key: k) (hmap: hashmap v) : bool =
     hashmap.not_member key hmap
+
+  def lookup 'v (k: k) (hmap: hashmap v) : opt v =
+    hashmap.lookup k hmap
 }

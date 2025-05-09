@@ -8,7 +8,6 @@
 -- value `a`@term or `#none`.
 type opt 'a = #none | #some a
 
-
 -- | Extents a binary operation to have `#none` as a identity element.
 --
 -- This can be used when a associative operation has [no neutral

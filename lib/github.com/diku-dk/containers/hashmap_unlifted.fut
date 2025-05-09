@@ -7,6 +7,7 @@
 
 import "../segmented/segmented"
 import "../cpprandom/random"
+import "opt"
 import "key"
 
 module type hashmap = {
@@ -32,6 +33,13 @@ module type hashmap = {
   --
   -- **Span:** *O(1)*
   val not_member [n] [w] [f] [s] 'v : k -> hashmap [n] [w] [f] [s] v -> bool
+
+  -- | Look up a value.
+  --
+  -- **Work:** *O(1)*
+  --
+  -- **Span:** *O(1)*
+  val lookup [n] [w] [f] [s] 'v : k -> hashmap [n] [w] [f] [s] v -> opt v
 
   -- | Given a random number generator, equality, hash function, and
   -- a key-value array construct a hashmap. Assumes unique keys but
@@ -396,17 +404,31 @@ module hashmap (K: key) (E: rng_engine with int.t = K.i)
   def size [n] [w] [f] [s] 'k 'v (hmap: hashmap [n] [w] [f] [s] v) =
     length hmap.keys
 
+  local
+  def lookup_idx [n] [w] [f] [s] 'v
+                 (k: k)
+                 (hmap: hashmap [n] [w] [f] [s] v) : i64 =
+    if length hmap.keys == 0
+    then -1
+    else let j = i64.min (length hmap.keys - 1) (i64.max 0 (offset hmap k))
+         let k' = hmap.keys[j]
+         in if key.eq k' k then j else -1
+
   def member [n] [w] [f] [s] 'v
              (k: k)
              (hmap: hashmap [n] [w] [f] [s] v) : bool =
-    if length hmap.keys == 0
-    then false
-    else let j = i64.min (length hmap.keys - 1) (i64.max 0 (offset hmap k))
-         let k' = hmap.keys[j]
-         in key.eq k' k
+    -1 != lookup_idx k hmap
 
   def not_member [n] [w] [f] [s] 'v
                  (key: k)
                  (hmap: hashmap [n] [w] [f] [s] v) : bool =
     not (key `member` hmap)
+
+  def lookup [n] [w] [f] [s] 'v
+             (k: k)
+             (hmap: hashmap [n] [w] [f] [s] v) : opt v =
+    let j = lookup_idx k hmap
+    in if j == -1
+       then #none
+       else some hmap.values[j]
 }

@@ -12,13 +12,15 @@ import "../sorts/merge_sort"
 module engine = xorshift128plus
 type rng = xorshift128plus.rng
 
-local def generate_seeds r n =
+local
+def generate_seeds r n =
   let (new_rng, seeds) =
-    loop (r', s) = (r, []) for _i < n do
-    let (r'', s') = engine.rand r'
-    in (r'', s ++ [i64.u64 s'])
+    loop (r', s) = (r, [])
+    for _i < n do
+      let (r'', s') = engine.rand r'
+      in (r'', s ++ [i64.u64 s'])
   in (new_rng, sized n seeds)
-  
+
 local
 def estimate_distinct' [n] [m] 't
                        (r: rng)
