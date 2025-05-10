@@ -88,6 +88,16 @@ module type hashmap = {
     -> hashmap [n] [w] [f] [s] v
     -> hashmap [n] [w] [f] [s] t
 
+  -- | Map a function over the hashmap values.
+  --
+  -- **Work:** *O(s ✕ W(g))*
+  --
+  -- **Span:** *O(s(g))*
+  val hashmap_map_with_key [n] [w] [f] [s] 'v 't :
+    (g: k -> v -> t)
+    -> hashmap [n] [w] [f] [s] v
+    -> hashmap [n] [w] [f] [s] t
+
   -- | Convert hashmap to an array of key-value pairs.
   --
   -- **Work:** *O(n)*
@@ -137,14 +147,16 @@ module hashmap (K: key) (E: rng_engine with int.t = K.i)
     }
 
   local
+  #[inline]
   def generate_consts (n: i64) (r: rng) =
+    #[sequential]
     engine.split_rng n r
     |> map engine.rand
     |> unzip
     |> (\(a, b) -> (engine.join_rng a, b))
 
   local
-  def exscan [n] 'a (op: a -> a -> a) (ne: a) (as: [n]a) =
+  def exscan [n] 'a (op: a -> a -> a) (ne: a) (as: [n]a) : (a, [n]a) =
     if length as == 0
     then (ne, as)
     else let res = scan op ne as |> rotate (-1)
@@ -153,6 +165,7 @@ module hashmap (K: key) (E: rng_engine with int.t = K.i)
          in (l, res)
 
   local
+  #[inline]
   def level_two_hash (level_one_consts: [key.m]int)
                      (n: i64)
                      (level_one_offsets: []i64)
@@ -160,6 +173,7 @@ module hashmap (K: key) (E: rng_engine with int.t = K.i)
                      (level_two_consts: [][key.m]int)
                      (level_two_shape: []i64)
                      (k: k) =
+    #[sequential]
     if n == 0
     then 0
     else let x = (key.hash level_one_consts k) % n
@@ -216,9 +230,10 @@ module hashmap (K: key) (E: rng_engine with int.t = K.i)
     let seg_has_no_collision =
       segmented_reduce (&&) true flags has_no_collisions
       |> sized w
-    let (_, new_offsets) =
+    let new_offsets =
       map (\f -> if f then 0 else 1) seg_has_no_collision
-      |> exscan (+) 0
+      |> scan (+) 0
+      |> map2 (\f o -> if f then -1 else o - 1) seg_has_no_collision
     let new_keys =
       filter (\(_, o) -> not seg_has_no_collision[o]) old_keys
       |> map (\(k, o) -> (k, new_offsets[o]))
@@ -243,26 +258,49 @@ module hashmap (K: key) (E: rng_engine with int.t = K.i)
        , done :> [z](i64, i64, [key.m]int)
        )
 
+  local
+  def estimate_shape [n]
+                     (rng: rng)
+                     (counts: [n]i64)
+                     (keys: [n]k)
+                     (is: [n]i64) : (rng, []i64) =
+    let (new_rng, consts) = generate_consts key.m rng
+    let (_, temp_offsets) = exscan (+) 0 counts
+    let (shape, offsets) =
+      zip counts temp_offsets
+      |> filter ((!= 0) <-< (.0))
+      |> unzip
+    let m = length shape
+    let shape = shape :> [m]i64
+    let offsets = offsets :> [m]i64
+    let aux i k = temp_offsets[i] + ((key.hash consts k) % counts[i])
+    let js = map2 aux is keys
+    let flags = scatter (replicate n false) offsets (replicate m true)
+    let new_shape =
+      hist (u8.|) 0 n js (replicate n 1u8)
+      |> map i64.u8
+      |> segmented_reduce (+) 0 flags
+      |> sized m
+      |> map2 (\s s' -> (i64.min s (2 * s' + 1)) ** 2) shape
+    in (new_rng, new_shape)
+
   def from_array [n] 'v
                  (r: rng)
                  (key_values: [n](k, v)) : ?[f][w][s].(rng, hashmap [n] [w] [f] [s] v) =
     let (keys, values) = unzip key_values
     let (r, level_one_consts) = generate_consts key.m r
     let is = map ((% i64.max 1 n) <-< key.hash level_one_consts) keys
-    let level_one_counts_squared =
-      -- This comes from the unique keys assumption, should be changed
-      -- to account for many duplicates by estimating duplicates in
-      -- they keys.
-      replicate n 1 |> hist (+) 0i64 n is
-      |> map ((i64.min n) <-< (** 2))
-    let shape = filter (!= 0) level_one_counts_squared
+    let level_one_counts =
+      replicate n 1
+      |> hist (+) 0i64 n is
+    let (r, shape) = estimate_shape r level_one_counts keys is
     let s = length shape
     let shape = sized s shape
     let level_one_offsets =
-      map (i64.bool <-< (!= 0)) level_one_counts_squared
+      map (i64.bool <-< (!= 0)) level_one_counts
       |> exscan (+) 0
       |> (.1)
-      |> map2 (\f o -> if f != 0 then o else 0) level_one_counts_squared
+      |> map2 (\f o -> if f != 0 then o else 0) level_one_counts
     let (r, init_level_two_consts) =
       engine.split_rng s r
       |> map (generate_consts key.m)
@@ -375,10 +413,10 @@ module hashmap (K: key) (E: rng_engine with int.t = K.i)
     let (r, hmap) = from_array_fill r keys ne
     in (r, hashmap_hist hmap key_values op ne)
 
-  def hashmap_map [n] [w] [f] [s] 'v 't
-                  (g: v -> t)
-                  (hmap: hashmap [n] [w] [f] [s] v) : hashmap [n] [w] [f] [s] t =
-    let vs = map g hmap.values
+  def hashmap_map_with_key [n] [w] [f] [s] 'v 't
+                           (g: k -> v -> t)
+                           (hmap: hashmap [n] [w] [f] [s] v) : hashmap [n] [w] [f] [s] t =
+    let vs = map2 g hmap.keys hmap.values
     in { keys = hmap.keys
        , values = vs
        , offsets = hmap.offsets
@@ -388,6 +426,11 @@ module hashmap (K: key) (E: rng_engine with int.t = K.i)
        , level_two_consts = hmap.level_two_consts
        , level_two_shape = hmap.level_two_shape
        }
+
+  def hashmap_map [n] [w] [f] [s] 'v 't
+                  (g: v -> t)
+                  (hmap: hashmap [n] [w] [f] [s] v) : hashmap [n] [w] [f] [s] t =
+    hashmap_map_with_key (\_ v -> g v) hmap
 
   def update [n] [w] [f] [s] [u] 'v
              (key_values: [u](k, v))
