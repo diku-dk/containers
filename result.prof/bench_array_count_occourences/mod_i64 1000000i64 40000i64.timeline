@@ -1,0 +1,559 @@
+builtin#replicate_i64.replicate_25280
+Duration: 29.696001 μs
+Kernel builtin#replicate_i64.replicate_25280 with
+  grid=(3907,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+builtin#replicate_i32.replicate_25300
+Duration: 3.072 μs
+Kernel builtin#replicate_i32.replicate_25300 with
+  grid=(1,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+rng_from_seed_12917.gpuseq_25274
+Duration: 3.072 μs
+Kernel rng_from_seed_12917.gpuseq_25274 with
+  grid=(1,1,1)
+  block=(1,1,1)
+  shared memory=0
+
+rng_from_seed_12917.gpuseq_25284
+Duration: 3.072 μs
+Kernel rng_from_seed_12917.gpuseq_25284 with
+  grid=(1,1,1)
+  block=(1,1,1)
+  shared memory=0
+
+copy_scalar_from_dev
+Duration: 7.168 μs
+
+copy_scalar_from_dev
+Duration: 8.192 μs
+
+estimate_distinct_12964.segmap_24845
+Duration: 4.096 μs
+Kernel estimate_distinct_12964.segmap_24845 with
+  grid=(4,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+builtin#replicate_i8.replicate_25514
+Duration: 2.912 μs
+Kernel builtin#replicate_i8.replicate_25514 with
+  grid=(1,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+estimate_distinct_12964.segscan_24867
+Duration: 6.976 μs
+Kernel estimate_distinct_12964.segscan_24867 with
+  grid=(4,1,1)
+  block=(256,1,1)
+  shared memory=8192
+
+copy_dev_to_dev
+Duration: 3.072 μs
+
+estimate_distinct_12964.gpuseq_25580
+Duration: 3.072 μs
+Kernel estimate_distinct_12964.gpuseq_25580 with
+  grid=(1,1,1)
+  block=(1,1,1)
+  shared memory=0
+
+estimate_distinct_12964.segmap_24869
+Duration: 4.096 μs
+Kernel estimate_distinct_12964.segmap_24869 with
+  grid=(4,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+builtin#replicate_i8.replicate_25514
+Duration: 3.072 μs
+Kernel builtin#replicate_i8.replicate_25514 with
+  grid=(1,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+estimate_distinct_12964.segscan_24867
+Duration: 7.168 μs
+Kernel estimate_distinct_12964.segscan_24867 with
+  grid=(4,1,1)
+  block=(256,1,1)
+  shared memory=8192
+
+copy_dev_to_dev
+Duration: 2.048 μs
+
+estimate_distinct_12964.gpuseq_25580
+Duration: 2.048 μs
+Kernel estimate_distinct_12964.gpuseq_25580 with
+  grid=(1,1,1)
+  block=(1,1,1)
+  shared memory=0
+
+estimate_distinct_12964.segmap_24869
+Duration: 3.072 μs
+Kernel estimate_distinct_12964.segmap_24869 with
+  grid=(4,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+builtin#replicate_i8.replicate_25514
+Duration: 3.072 μs
+Kernel builtin#replicate_i8.replicate_25514 with
+  grid=(1,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+estimate_distinct_12964.segscan_24867
+Duration: 6.144 μs
+Kernel estimate_distinct_12964.segscan_24867 with
+  grid=(4,1,1)
+  block=(256,1,1)
+  shared memory=8192
+
+copy_dev_to_dev
+Duration: 2.048 μs
+
+estimate_distinct_12964.gpuseq_25580
+Duration: 2.048 μs
+Kernel estimate_distinct_12964.gpuseq_25580 with
+  grid=(1,1,1)
+  block=(1,1,1)
+  shared memory=0
+
+estimate_distinct_12964.segmap_24869
+Duration: 4.096 μs
+Kernel estimate_distinct_12964.segmap_24869 with
+  grid=(4,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+builtin#replicate_i8.replicate_25514
+Duration: 3.072 μs
+Kernel builtin#replicate_i8.replicate_25514 with
+  grid=(1,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+estimate_distinct_12964.segscan_24867
+Duration: 6.144 μs
+Kernel estimate_distinct_12964.segscan_24867 with
+  grid=(4,1,1)
+  block=(256,1,1)
+  shared memory=8192
+
+copy_dev_to_dev
+Duration: 3.072 μs
+
+estimate_distinct_12964.gpuseq_25580
+Duration: 3.072 μs
+Kernel estimate_distinct_12964.gpuseq_25580 with
+  grid=(1,1,1)
+  block=(1,1,1)
+  shared memory=0
+
+estimate_distinct_12964.segmap_24869
+Duration: 3.072 μs
+Kernel estimate_distinct_12964.segmap_24869 with
+  grid=(4,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+builtin#replicate_i8.replicate_25514
+Duration: 3.072 μs
+Kernel builtin#replicate_i8.replicate_25514 with
+  grid=(1,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+estimate_distinct_12964.segscan_24867
+Duration: 6.144 μs
+Kernel estimate_distinct_12964.segscan_24867 with
+  grid=(4,1,1)
+  block=(256,1,1)
+  shared memory=8192
+
+copy_dev_to_dev
+Duration: 3.072 μs
+
+estimate_distinct_12964.gpuseq_25580
+Duration: 3.072 μs
+Kernel estimate_distinct_12964.gpuseq_25580 with
+  grid=(1,1,1)
+  block=(1,1,1)
+  shared memory=0
+
+estimate_distinct_12964.segmap_24869
+Duration: 3.072 μs
+Kernel estimate_distinct_12964.segmap_24869 with
+  grid=(4,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+estimate_distinct_12964.segred_nonseg_24885
+Duration: 5.12 μs
+Kernel estimate_distinct_12964.segred_nonseg_24885 with
+  grid=(4,1,1)
+  block=(256,1,1)
+  shared memory=2056
+
+copy_scalar_from_dev
+Duration: 6.144 μs
+
+builtin#replicate_i32.replicate_25300
+Duration: 3.072 μs
+Kernel builtin#replicate_i32.replicate_25300 with
+  grid=(1,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+rng_from_seed_12917.gpuseq_25274
+Duration: 3.072 μs
+Kernel rng_from_seed_12917.gpuseq_25274 with
+  grid=(1,1,1)
+  block=(1,1,1)
+  shared memory=0
+
+rng_from_seed_12917.gpuseq_25284
+Duration: 2.048 μs
+Kernel rng_from_seed_12917.gpuseq_25284 with
+  grid=(1,1,1)
+  block=(1,1,1)
+  shared memory=0
+
+copy_scalar_from_dev
+Duration: 6.528 μs
+
+copy_scalar_from_dev
+Duration: 7.968 μs
+
+bench_array_count_occourences.segmap_25019
+Duration: 50.175999 μs
+Kernel bench_array_count_occourences.segmap_25019 with
+  grid=(3907,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+builtin#replicate_i64.replicate_25280
+Duration: 37.888 μs
+Kernel builtin#replicate_i64.replicate_25280 with
+  grid=(5860,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_count_occourences.seghist_global_25040
+Duration: 346.112 μs
+Kernel bench_array_count_occourences.seghist_global_25040 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+builtin#replicate_i8.replicate_25514
+Duration: 2.048 μs
+Kernel builtin#replicate_i8.replicate_25514 with
+  grid=(3,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_count_occourences.segscan_25053
+Duration: 352.256012 μs
+Kernel bench_array_count_occourences.segscan_25053 with
+  grid=(168,1,1)
+  block=(256,1,1)
+  shared memory=14336
+
+copy_scalar_from_dev
+Duration: 7.168 μs
+
+builtin#replicate_i8.replicate_25514
+Duration: 2.624 μs
+Kernel builtin#replicate_i8.replicate_25514 with
+  grid=(2,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_count_occourences.segscan_25084
+Duration: 125.952003 μs
+Kernel bench_array_count_occourences.segscan_25084 with
+  grid=(168,1,1)
+  block=(256,1,1)
+  shared memory=24576
+
+copy_scalar_from_dev
+Duration: 7.36 μs
+
+bench_array_count_occourences.segmap_25055
+Duration: 217.888 μs
+Kernel bench_array_count_occourences.segmap_25055 with
+  grid=(168,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+builtin#replicate_i64.replicate_25280
+Duration: 37.888 μs
+Kernel builtin#replicate_i64.replicate_25280 with
+  grid=(5860,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_count_occourences.seghist_global_25071
+Duration: 365.568024 μs
+Kernel bench_array_count_occourences.seghist_global_25071 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+copy_dev_to_dev
+Duration: 4.096 μs
+
+copy_dev_to_dev
+Duration: 5.12 μs
+
+bench_array_count_occourences.segmap_25086
+Duration: 74.752007 μs
+Kernel bench_array_count_occourences.segmap_25086 with
+  grid=(168,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_count_occourences.segmap_25112
+Duration: 6.144 μs
+Kernel bench_array_count_occourences.segmap_25112 with
+  grid=(155,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+copy_dev_to_dev
+Duration: 3.104 μs
+
+copy_dev_to_dev
+Duration: 4.096 μs
+
+copy_dev_to_dev
+Duration: 4.096 μs
+
+bench_array_count_occourences.segmap_25019
+Duration: 3.36 μs
+Kernel bench_array_count_occourences.segmap_25019 with
+  grid=(47,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+builtin#replicate_i64.replicate_25280
+Duration: 3.072 μs
+Kernel builtin#replicate_i64.replicate_25280 with
+  grid=(70,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_count_occourences.seghist_global_25040
+Duration: 4.16 μs
+Kernel bench_array_count_occourences.seghist_global_25040 with
+  grid=(47,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+builtin#replicate_i8.replicate_25514
+Duration: 3.072 μs
+Kernel builtin#replicate_i8.replicate_25514 with
+  grid=(1,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_count_occourences.segscan_25053
+Duration: 10.24 μs
+Kernel bench_array_count_occourences.segscan_25053 with
+  grid=(47,1,1)
+  block=(256,1,1)
+  shared memory=14336
+
+copy_scalar_from_dev
+Duration: 7.328 μs
+
+builtin#replicate_i8.replicate_25514
+Duration: 3.072 μs
+Kernel builtin#replicate_i8.replicate_25514 with
+  grid=(1,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_count_occourences.segscan_25084
+Duration: 9.216001 μs
+Kernel bench_array_count_occourences.segscan_25084 with
+  grid=(70,1,1)
+  block=(256,1,1)
+  shared memory=24576
+
+copy_scalar_from_dev
+Duration: 7.168 μs
+
+bench_array_count_occourences.segmap_25055
+Duration: 4.256 μs
+Kernel bench_array_count_occourences.segmap_25055 with
+  grid=(47,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+builtin#replicate_i64.replicate_25280
+Duration: 3.072 μs
+Kernel builtin#replicate_i64.replicate_25280 with
+  grid=(70,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_count_occourences.seghist_global_25071
+Duration: 4.096 μs
+Kernel bench_array_count_occourences.seghist_global_25071 with
+  grid=(47,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+copy_dev_to_dev
+Duration: 3.072 μs
+
+copy_dev_to_dev
+Duration: 3.072 μs
+
+bench_array_count_occourences.segmap_25086
+Duration: 4.096 μs
+Kernel bench_array_count_occourences.segmap_25086 with
+  grid=(70,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_count_occourences.segmap_25112
+Duration: 3.072 μs
+Kernel bench_array_count_occourences.segmap_25112 with
+  grid=(2,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+copy_dev_to_dev
+Duration: 3.072 μs
+
+copy_dev_to_dev
+Duration: 3.072 μs
+
+copy_dev_to_dev
+Duration: 4.128 μs
+
+copy_dev_to_dev
+Duration: 4.096 μs
+
+copy_dev_to_dev
+Duration: 4.096 μs
+
+bench_array_count_occourences.segmap_25019
+Duration: 3.072 μs
+Kernel bench_array_count_occourences.segmap_25019 with
+  grid=(1,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+builtin#replicate_i64.replicate_25280
+Duration: 3.072 μs
+Kernel builtin#replicate_i64.replicate_25280 with
+  grid=(6,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_count_occourences.seghist_global_25040
+Duration: 3.072 μs
+Kernel bench_array_count_occourences.seghist_global_25040 with
+  grid=(1,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+builtin#replicate_i8.replicate_25514
+Duration: 3.072 μs
+Kernel builtin#replicate_i8.replicate_25514 with
+  grid=(1,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_count_occourences.segscan_25053
+Duration: 5.504 μs
+Kernel bench_array_count_occourences.segscan_25053 with
+  grid=(1,1,1)
+  block=(256,1,1)
+  shared memory=14336
+
+copy_scalar_from_dev
+Duration: 6.144 μs
+
+builtin#replicate_i8.replicate_25514
+Duration: 2.944 μs
+Kernel builtin#replicate_i8.replicate_25514 with
+  grid=(1,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_count_occourences.segscan_25084
+Duration: 6.144 μs
+Kernel bench_array_count_occourences.segscan_25084 with
+  grid=(6,1,1)
+  block=(256,1,1)
+  shared memory=24576
+
+copy_scalar_from_dev
+Duration: 7.168 μs
+
+bench_array_count_occourences.segmap_25055
+Duration: 3.072 μs
+Kernel bench_array_count_occourences.segmap_25055 with
+  grid=(1,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+builtin#replicate_i64.replicate_25280
+Duration: 3.328 μs
+Kernel builtin#replicate_i64.replicate_25280 with
+  grid=(6,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_count_occourences.seghist_global_25071
+Duration: 4.096 μs
+Kernel bench_array_count_occourences.seghist_global_25071 with
+  grid=(1,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+copy_dev_to_dev
+Duration: 3.104 μs
+
+copy_dev_to_dev
+Duration: 3.072 μs
+
+bench_array_count_occourences.segmap_25086
+Duration: 3.296 μs
+Kernel bench_array_count_occourences.segmap_25086 with
+  grid=(6,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_count_occourences.segmap_25112
+Duration: 3.296 μs
+Kernel bench_array_count_occourences.segmap_25112 with
+  grid=(1,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+copy_dev_to_dev
+Duration: 4.928 μs
+
+copy_dev_to_dev
+Duration: 4.096 μs
+
+copy_dev_to_dev
+Duration: 3.072 μs
+
+copy_dev_to_dev
+Duration: 3.456 μs
+
+copy_dev_to_dev
+Duration: 3.072 μs

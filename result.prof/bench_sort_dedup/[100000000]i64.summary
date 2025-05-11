@@ -1,0 +1,17 @@
+Peak memory usage in bytes
+default space: 0
+space 'device': 6008709485
+
+
+                         Cost centre           count             sum             avg             min             max
+--------------------------------------------------------------------------------------------------------------------
+bench_sort_dedup.gpuseq_25570                     32        104.10μs          3.25μs          3.07μs          5.12μs
+bench_sort_dedup.segmap_24721                     32     513148.96μs      16035.90μs      15257.60μs      17582.08μs
+bench_sort_dedup.segmap_24737                      1       9368.80μs       9368.80μs       9368.80μs       9368.80μs
+bench_sort_dedup.segscan_24719                    32     644375.13μs      20136.72μs      19202.05μs      21704.71μs
+bench_sort_dedup.segscan_24735                     1       7976.22μs       7976.22μs       7976.22μs       7976.22μs
+builtin#replicate_i8.replicate_25514              33        156.54μs          4.74μs          3.07μs          7.17μs
+copy_dev_to_dev                                   33     161888.80μs       4905.72μs       4703.23μs       5857.28μs
+copy_scalar_from_dev                               1         20.48μs         20.48μs         20.48μs         20.48μs
+--------------------------------------------------------------------------------------------------------------------
+165 events with a total runtime of 1337039.04μs

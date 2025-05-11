@@ -1,10 +1,32 @@
 import "../sorts/radix_sort"
 import "../segmented/segmented"
+import "../cpprandom/random"
 import "array"
 
+-- The hash function was found [here](http://stackoverflow.com/a/12996028).
+module i64_key = {
+  type i = u64
+  type k = i64
+
+  def m : i64 = 1
+
+  def hash (a: [m]u64) (x: i64) : i64 =
+    let x = i64.u64 a[0] * x
+    let x = (x ^ (x >> 30)) * (i64.u64 0xbf58476d1ce4e5b9)
+    let x = (x ^ (x >> 27)) * (i64.u64 0x94d049bb133111eb)
+    let y = (x ^ (x >> 31))
+    in y
+
+  def eq : i64 -> i64 -> bool = (==)
+}
+
+module engine = xorshift128plus
+module array = array i64_key engine
+def seed = engine.rng_from_seed [1]
+
 local
-def count_occourences_sort [n] (arr: [n]i32) : [](i32, i32) =
-  let sorted = radix_sort_int i32.num_bits i32.get_bit arr
+def count_occourences_sort [n] (arr: [n]i64) : [](i64, i64) =
+  let sorted = radix_sort_int i64.num_bits i64.get_bit arr
   let flags =
     map (\i ->
            i == 0 || sorted[i - 1] != sorted[i])
@@ -18,8 +40,8 @@ def count_occourences_sort [n] (arr: [n]i32) : [](i32, i32) =
   in scatter scratch (map2 index segment_end_offsets segment_ends) as
 
 local
-def dedup_sort [n] (arr: [n]i32) : []i32 =
-  let sorted = radix_sort_int i32.num_bits i32.get_bit arr
+def dedup_sort [n] (arr: [n]i64) : []i64 =
+  let sorted = radix_sort_int i64.num_bits i64.get_bit arr
   let flags =
     map (\i ->
            i == 0 || sorted[i - 1] != sorted[i])
@@ -28,46 +50,52 @@ def dedup_sort [n] (arr: [n]i32) : []i32 =
      |> filter (.0)
      |> map (.1)
 
-local def hash_i32 (a: [1]i64) x = hash_i64 a (i64.i32 x)
-
 local
-def count_occourences [n] (arr: [n]i32) : [](i32, i32) =
-  reduce_by_key hash_i32 (==) 0i32 (+) <| map (\a -> (a, 1)) arr
+def count_occourences [n] (arr: [n]i64) : [](i64, i64) =
+  replicate n 1
+  |> zip arr
+  |> array.reduce_by_key seed (+) 0i64
+  |> (.1)
 
 -- ==
 -- entry: test_reduce_by_key
--- compiled random input { [100][100]i32 }
+-- compiled random input { [10][10000]i64 }
 -- output { true }
--- compiled random input { [100][5]i32 }
+-- compiled random input { [100][5]i64 }
 -- output { true }
-entry test_reduce_by_key [n] [m] (arrs: [n][m]i32) : bool =
+-- compiled random input { [1][0]i64 }
+-- output { true }
+entry test_reduce_by_key [n] [m] (arrs: [n][m]i64) : bool =
   all (\arr ->
-         let arr = map (% 10) arr
+         let arr = map (% 100) arr
          let sort_counts = count_occourences_sort arr
          let size = length sort_counts
          let sort_counts = sized size sort_counts
          let counts =
            count_occourences arr
-           |> radix_sort_int_by_key (.0) i32.num_bits i32.get_bit
+           |> radix_sort_int_by_key (.0) i64.num_bits i64.get_bit
            |> sized size
          in map2 (==) sort_counts counts |> and)
       arrs
 
 -- ==
 -- entry: test_dedup
--- compiled random input { [100][100]i32 }
+-- compiled random input { [10][10000]i64 }
 -- output { true }
--- compiled random input { [100][5]i32 }
+-- compiled random input { [100][5]i64 }
 -- output { true }
-entry test_dedup [n] [m] (arrs: [n][m]i32) : bool =
+-- compiled random input { [1][0]i64 }
+-- output { true }
+entry test_dedup [n] [m] (arrs: [n][m]i64) : bool =
   all (\arr ->
-         let arr = map (% 10) arr
+         let arr = map (% 100) arr
          let sort_dedups = dedup_sort arr
          let size = length sort_dedups
          let sort_dedups = sized size sort_dedups
          let counts =
-           dedup hash_i32 (==) arr
-           |> radix_sort_int i32.num_bits i32.get_bit
+           array.dedup seed arr
+           |> (.1)
+           |> radix_sort_int i64.num_bits i64.get_bit
            |> sized size
          in map2 (==) sort_dedups counts |> and)
       arrs

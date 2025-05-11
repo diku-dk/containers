@@ -1,0 +1,19 @@
+Peak memory usage in bytes
+default space: 0
+space 'device': 601092265
+
+
+                               Cost centre           count             sum             avg             min             max
+--------------------------------------------------------------------------------------------------------------------------
+bench_sort_count_occourences.gpuseq_25570               32        113.18μs          3.54μs          3.07μs          4.10μs
+bench_sort_count_occourences.segmap_24753               32      49398.24μs       1543.69μs       1513.47μs       2166.78μs
+bench_sort_count_occourences.segmap_24777                1        745.47μs        745.47μs        745.47μs        745.47μs
+bench_sort_count_occourences.segscan_24751              32      63110.43μs       1972.20μs       1899.52μs       2277.38μs
+bench_sort_count_occourences.segscan_24767               1        833.89μs        833.89μs        833.89μs        833.89μs
+bench_sort_count_occourences.segscan_24775               1        516.10μs        516.10μs        516.10μs        516.10μs
+builtin#replicate_i64.replicate_25280                    1        240.64μs        240.64μs        240.64μs        240.64μs
+builtin#replicate_i8.replicate_25514                    34        101.18μs          2.98μs          2.05μs          7.17μs
+copy_dev_to_dev                                         32      15577.66μs        486.80μs        473.09μs        770.05μs
+copy_scalar_from_dev                                     1          8.26μs          8.26μs          8.26μs          8.26μs
+--------------------------------------------------------------------------------------------------------------------------
+167 events with a total runtime of 130645.06μs

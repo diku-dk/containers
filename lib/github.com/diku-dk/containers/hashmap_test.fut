@@ -110,14 +110,14 @@ entry test_hist [m] (xs: [m]i64) =
   let ks = map (% n) xs
   let (_, h) =
     unlifted_hmap.from_array_hist seed
-                                  (zip ks (replicate m 1i64))
                                   (+)
                                   0
+                                  (zip ks (replicate m 1i64))
   let (_, h') =
     lifted_hmap.from_array_hist seed
-                                (zip ks (replicate m 1i64))
                                 (+)
                                 0
+                                (zip ks (replicate m 1i64))
   let (is, vs) = unlifted_hmap.to_array h |> unzip
   let (is', vs') = lifted_hmap.to_array h' |> unzip
   let res = scatter (replicate n 0i64) is vs

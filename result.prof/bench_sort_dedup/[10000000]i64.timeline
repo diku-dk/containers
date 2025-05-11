@@ -1,0 +1,1018 @@
+builtin#replicate_i8.replicate_25514
+Duration: 3.488 μs
+Kernel builtin#replicate_i8.replicate_25514 with
+  grid=(51,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_sort_dedup.segscan_24719
+Duration: 1943.552002 μs
+Kernel bench_sort_dedup.segscan_24719 with
+  grid=(168,1,1)
+  block=(256,1,1)
+  shared memory=8192
+
+copy_dev_to_dev
+Duration: 478.208008 μs
+
+bench_sort_dedup.gpuseq_25570
+Duration: 4.096 μs
+Kernel bench_sort_dedup.gpuseq_25570 with
+  grid=(1,1,1)
+  block=(1,1,1)
+  shared memory=0
+
+bench_sort_dedup.segmap_24721
+Duration: 1519.615967 μs
+Kernel bench_sort_dedup.segmap_24721 with
+  grid=(168,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+builtin#replicate_i8.replicate_25514
+Duration: 3.072 μs
+Kernel builtin#replicate_i8.replicate_25514 with
+  grid=(51,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_sort_dedup.segscan_24719
+Duration: 2261.023926 μs
+Kernel bench_sort_dedup.segscan_24719 with
+  grid=(168,1,1)
+  block=(256,1,1)
+  shared memory=8192
+
+copy_dev_to_dev
+Duration: 793.600037 μs
+
+bench_sort_dedup.gpuseq_25570
+Duration: 4.096 μs
+Kernel bench_sort_dedup.gpuseq_25570 with
+  grid=(1,1,1)
+  block=(1,1,1)
+  shared memory=0
+
+bench_sort_dedup.segmap_24721
+Duration: 1517.567993 μs
+Kernel bench_sort_dedup.segmap_24721 with
+  grid=(168,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+builtin#replicate_i8.replicate_25514
+Duration: 3.072 μs
+Kernel builtin#replicate_i8.replicate_25514 with
+  grid=(51,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_sort_dedup.segscan_24719
+Duration: 2144.256104 μs
+Kernel bench_sort_dedup.segscan_24719 with
+  grid=(168,1,1)
+  block=(256,1,1)
+  shared memory=8192
+
+copy_dev_to_dev
+Duration: 478.208008 μs
+
+bench_sort_dedup.gpuseq_25570
+Duration: 3.072 μs
+Kernel bench_sort_dedup.gpuseq_25570 with
+  grid=(1,1,1)
+  block=(1,1,1)
+  shared memory=0
+
+bench_sort_dedup.segmap_24721
+Duration: 1521.664062 μs
+Kernel bench_sort_dedup.segmap_24721 with
+  grid=(168,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+builtin#replicate_i8.replicate_25514
+Duration: 3.072 μs
+Kernel builtin#replicate_i8.replicate_25514 with
+  grid=(51,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_sort_dedup.segscan_24719
+Duration: 1913.856079 μs
+Kernel bench_sort_dedup.segscan_24719 with
+  grid=(168,1,1)
+  block=(256,1,1)
+  shared memory=8192
+
+copy_dev_to_dev
+Duration: 477.18399 μs
+
+bench_sort_dedup.gpuseq_25570
+Duration: 3.072 μs
+Kernel bench_sort_dedup.gpuseq_25570 with
+  grid=(1,1,1)
+  block=(1,1,1)
+  shared memory=0
+
+bench_sort_dedup.segmap_24721
+Duration: 1521.664062 μs
+Kernel bench_sort_dedup.segmap_24721 with
+  grid=(168,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+builtin#replicate_i8.replicate_25514
+Duration: 3.072 μs
+Kernel builtin#replicate_i8.replicate_25514 with
+  grid=(51,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_sort_dedup.segscan_24719
+Duration: 1974.271973 μs
+Kernel bench_sort_dedup.segscan_24719 with
+  grid=(168,1,1)
+  block=(256,1,1)
+  shared memory=8192
+
+copy_dev_to_dev
+Duration: 473.087982 μs
+
+bench_sort_dedup.gpuseq_25570
+Duration: 4.096 μs
+Kernel bench_sort_dedup.gpuseq_25570 with
+  grid=(1,1,1)
+  block=(1,1,1)
+  shared memory=0
+
+bench_sort_dedup.segmap_24721
+Duration: 1514.495972 μs
+Kernel bench_sort_dedup.segmap_24721 with
+  grid=(168,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+builtin#replicate_i8.replicate_25514
+Duration: 3.072 μs
+Kernel builtin#replicate_i8.replicate_25514 with
+  grid=(51,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_sort_dedup.segscan_24719
+Duration: 2424.832031 μs
+Kernel bench_sort_dedup.segscan_24719 with
+  grid=(168,1,1)
+  block=(256,1,1)
+  shared memory=8192
+
+copy_dev_to_dev
+Duration: 528.383972 μs
+
+bench_sort_dedup.gpuseq_25570
+Duration: 4.096 μs
+Kernel bench_sort_dedup.gpuseq_25570 with
+  grid=(1,1,1)
+  block=(1,1,1)
+  shared memory=0
+
+bench_sort_dedup.segmap_24721
+Duration: 2528.255859 μs
+Kernel bench_sort_dedup.segmap_24721 with
+  grid=(168,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+builtin#replicate_i8.replicate_25514
+Duration: 3.072 μs
+Kernel builtin#replicate_i8.replicate_25514 with
+  grid=(51,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_sort_dedup.segscan_24719
+Duration: 2095.104004 μs
+Kernel bench_sort_dedup.segscan_24719 with
+  grid=(168,1,1)
+  block=(256,1,1)
+  shared memory=8192
+
+copy_dev_to_dev
+Duration: 479.232025 μs
+
+bench_sort_dedup.gpuseq_25570
+Duration: 3.072 μs
+Kernel bench_sort_dedup.gpuseq_25570 with
+  grid=(1,1,1)
+  block=(1,1,1)
+  shared memory=0
+
+bench_sort_dedup.segmap_24721
+Duration: 1525.76001 μs
+Kernel bench_sort_dedup.segmap_24721 with
+  grid=(168,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+builtin#replicate_i8.replicate_25514
+Duration: 4.096 μs
+Kernel builtin#replicate_i8.replicate_25514 with
+  grid=(51,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_sort_dedup.segscan_24719
+Duration: 1964.032104 μs
+Kernel bench_sort_dedup.segscan_24719 with
+  grid=(168,1,1)
+  block=(256,1,1)
+  shared memory=8192
+
+copy_dev_to_dev
+Duration: 473.087982 μs
+
+bench_sort_dedup.gpuseq_25570
+Duration: 3.072 μs
+Kernel bench_sort_dedup.gpuseq_25570 with
+  grid=(1,1,1)
+  block=(1,1,1)
+  shared memory=0
+
+bench_sort_dedup.segmap_24721
+Duration: 1786.880005 μs
+Kernel bench_sort_dedup.segmap_24721 with
+  grid=(168,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+builtin#replicate_i8.replicate_25514
+Duration: 3.2 μs
+Kernel builtin#replicate_i8.replicate_25514 with
+  grid=(51,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_sort_dedup.segscan_24719
+Duration: 2597.120117 μs
+Kernel bench_sort_dedup.segscan_24719 with
+  grid=(168,1,1)
+  block=(256,1,1)
+  shared memory=8192
+
+copy_dev_to_dev
+Duration: 476.160004 μs
+
+bench_sort_dedup.gpuseq_25570
+Duration: 3.072 μs
+Kernel bench_sort_dedup.gpuseq_25570 with
+  grid=(1,1,1)
+  block=(1,1,1)
+  shared memory=0
+
+bench_sort_dedup.segmap_24721
+Duration: 1842.175903 μs
+Kernel bench_sort_dedup.segmap_24721 with
+  grid=(168,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+builtin#replicate_i8.replicate_25514
+Duration: 3.072 μs
+Kernel builtin#replicate_i8.replicate_25514 with
+  grid=(51,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_sort_dedup.segscan_24719
+Duration: 2617.696045 μs
+Kernel bench_sort_dedup.segscan_24719 with
+  grid=(168,1,1)
+  block=(256,1,1)
+  shared memory=8192
+
+copy_dev_to_dev
+Duration: 479.232025 μs
+
+bench_sort_dedup.gpuseq_25570
+Duration: 3.072 μs
+Kernel bench_sort_dedup.gpuseq_25570 with
+  grid=(1,1,1)
+  block=(1,1,1)
+  shared memory=0
+
+bench_sort_dedup.segmap_24721
+Duration: 1529.855957 μs
+Kernel bench_sort_dedup.segmap_24721 with
+  grid=(168,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+builtin#replicate_i8.replicate_25514
+Duration: 2.048 μs
+Kernel builtin#replicate_i8.replicate_25514 with
+  grid=(51,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_sort_dedup.segscan_24719
+Duration: 1960.960083 μs
+Kernel bench_sort_dedup.segscan_24719 with
+  grid=(168,1,1)
+  block=(256,1,1)
+  shared memory=8192
+
+copy_dev_to_dev
+Duration: 476.160004 μs
+
+bench_sort_dedup.gpuseq_25570
+Duration: 3.072 μs
+Kernel bench_sort_dedup.gpuseq_25570 with
+  grid=(1,1,1)
+  block=(1,1,1)
+  shared memory=0
+
+bench_sort_dedup.segmap_24721
+Duration: 1516.543945 μs
+Kernel bench_sort_dedup.segmap_24721 with
+  grid=(168,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+builtin#replicate_i8.replicate_25514
+Duration: 3.072 μs
+Kernel builtin#replicate_i8.replicate_25514 with
+  grid=(51,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_sort_dedup.segscan_24719
+Duration: 1935.615967 μs
+Kernel bench_sort_dedup.segscan_24719 with
+  grid=(168,1,1)
+  block=(256,1,1)
+  shared memory=8192
+
+copy_dev_to_dev
+Duration: 695.295959 μs
+
+bench_sort_dedup.gpuseq_25570
+Duration: 4.096 μs
+Kernel bench_sort_dedup.gpuseq_25570 with
+  grid=(1,1,1)
+  block=(1,1,1)
+  shared memory=0
+
+bench_sort_dedup.segmap_24721
+Duration: 1518.592041 μs
+Kernel bench_sort_dedup.segmap_24721 with
+  grid=(168,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+builtin#replicate_i8.replicate_25514
+Duration: 3.072 μs
+Kernel builtin#replicate_i8.replicate_25514 with
+  grid=(51,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_sort_dedup.segscan_24719
+Duration: 1944.57605 μs
+Kernel bench_sort_dedup.segscan_24719 with
+  grid=(168,1,1)
+  block=(256,1,1)
+  shared memory=8192
+
+copy_dev_to_dev
+Duration: 747.52002 μs
+
+bench_sort_dedup.gpuseq_25570
+Duration: 3.072 μs
+Kernel bench_sort_dedup.gpuseq_25570 with
+  grid=(1,1,1)
+  block=(1,1,1)
+  shared memory=0
+
+bench_sort_dedup.segmap_24721
+Duration: 1545.215942 μs
+Kernel bench_sort_dedup.segmap_24721 with
+  grid=(168,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+builtin#replicate_i8.replicate_25514
+Duration: 3.072 μs
+Kernel builtin#replicate_i8.replicate_25514 with
+  grid=(51,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_sort_dedup.segscan_24719
+Duration: 2563.296143 μs
+Kernel bench_sort_dedup.segscan_24719 with
+  grid=(168,1,1)
+  block=(256,1,1)
+  shared memory=8192
+
+copy_dev_to_dev
+Duration: 476.160004 μs
+
+bench_sort_dedup.gpuseq_25570
+Duration: 4.096 μs
+Kernel bench_sort_dedup.gpuseq_25570 with
+  grid=(1,1,1)
+  block=(1,1,1)
+  shared memory=0
+
+bench_sort_dedup.segmap_24721
+Duration: 1522.687988 μs
+Kernel bench_sort_dedup.segmap_24721 with
+  grid=(168,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+builtin#replicate_i8.replicate_25514
+Duration: 3.072 μs
+Kernel builtin#replicate_i8.replicate_25514 with
+  grid=(51,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_sort_dedup.segscan_24719
+Duration: 2245.631836 μs
+Kernel bench_sort_dedup.segscan_24719 with
+  grid=(168,1,1)
+  block=(256,1,1)
+  shared memory=8192
+
+copy_dev_to_dev
+Duration: 479.487976 μs
+
+bench_sort_dedup.gpuseq_25570
+Duration: 4.096 μs
+Kernel bench_sort_dedup.gpuseq_25570 with
+  grid=(1,1,1)
+  block=(1,1,1)
+  shared memory=0
+
+bench_sort_dedup.segmap_24721
+Duration: 2122.751953 μs
+Kernel bench_sort_dedup.segmap_24721 with
+  grid=(168,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+builtin#replicate_i8.replicate_25514
+Duration: 3.072 μs
+Kernel builtin#replicate_i8.replicate_25514 with
+  grid=(51,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_sort_dedup.segscan_24719
+Duration: 2145.279785 μs
+Kernel bench_sort_dedup.segscan_24719 with
+  grid=(168,1,1)
+  block=(256,1,1)
+  shared memory=8192
+
+copy_dev_to_dev
+Duration: 477.18399 μs
+
+bench_sort_dedup.gpuseq_25570
+Duration: 4.096 μs
+Kernel bench_sort_dedup.gpuseq_25570 with
+  grid=(1,1,1)
+  block=(1,1,1)
+  shared memory=0
+
+bench_sort_dedup.segmap_24721
+Duration: 1522.687988 μs
+Kernel bench_sort_dedup.segmap_24721 with
+  grid=(168,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+builtin#replicate_i8.replicate_25514
+Duration: 3.072 μs
+Kernel builtin#replicate_i8.replicate_25514 with
+  grid=(51,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_sort_dedup.segscan_24719
+Duration: 2229.248047 μs
+Kernel bench_sort_dedup.segscan_24719 with
+  grid=(168,1,1)
+  block=(256,1,1)
+  shared memory=8192
+
+copy_dev_to_dev
+Duration: 474.112 μs
+
+bench_sort_dedup.gpuseq_25570
+Duration: 3.136 μs
+Kernel bench_sort_dedup.gpuseq_25570 with
+  grid=(1,1,1)
+  block=(1,1,1)
+  shared memory=0
+
+bench_sort_dedup.segmap_24721
+Duration: 1874.94397 μs
+Kernel bench_sort_dedup.segmap_24721 with
+  grid=(168,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+builtin#replicate_i8.replicate_25514
+Duration: 3.104 μs
+Kernel builtin#replicate_i8.replicate_25514 with
+  grid=(51,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_sort_dedup.segscan_24719
+Duration: 2165.76001 μs
+Kernel bench_sort_dedup.segscan_24719 with
+  grid=(168,1,1)
+  block=(256,1,1)
+  shared memory=8192
+
+copy_dev_to_dev
+Duration: 482.304016 μs
+
+bench_sort_dedup.gpuseq_25570
+Duration: 3.168 μs
+Kernel bench_sort_dedup.gpuseq_25570 with
+  grid=(1,1,1)
+  block=(1,1,1)
+  shared memory=0
+
+bench_sort_dedup.segmap_24721
+Duration: 1521.695923 μs
+Kernel bench_sort_dedup.segmap_24721 with
+  grid=(168,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+builtin#replicate_i8.replicate_25514
+Duration: 3.072 μs
+Kernel builtin#replicate_i8.replicate_25514 with
+  grid=(51,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_sort_dedup.segscan_24719
+Duration: 1898.495972 μs
+Kernel bench_sort_dedup.segscan_24719 with
+  grid=(168,1,1)
+  block=(256,1,1)
+  shared memory=8192
+
+copy_dev_to_dev
+Duration: 480.255981 μs
+
+bench_sort_dedup.gpuseq_25570
+Duration: 3.072 μs
+Kernel bench_sort_dedup.gpuseq_25570 with
+  grid=(1,1,1)
+  block=(1,1,1)
+  shared memory=0
+
+bench_sort_dedup.segmap_24721
+Duration: 1522.687988 μs
+Kernel bench_sort_dedup.segmap_24721 with
+  grid=(168,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+builtin#replicate_i8.replicate_25514
+Duration: 3.072 μs
+Kernel builtin#replicate_i8.replicate_25514 with
+  grid=(51,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_sort_dedup.segscan_24719
+Duration: 1945.599976 μs
+Kernel bench_sort_dedup.segscan_24719 with
+  grid=(168,1,1)
+  block=(256,1,1)
+  shared memory=8192
+
+copy_dev_to_dev
+Duration: 473.087982 μs
+
+bench_sort_dedup.gpuseq_25570
+Duration: 3.072 μs
+Kernel bench_sort_dedup.gpuseq_25570 with
+  grid=(1,1,1)
+  block=(1,1,1)
+  shared memory=0
+
+bench_sort_dedup.segmap_24721
+Duration: 1514.879883 μs
+Kernel bench_sort_dedup.segmap_24721 with
+  grid=(168,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+builtin#replicate_i8.replicate_25514
+Duration: 2.048 μs
+Kernel builtin#replicate_i8.replicate_25514 with
+  grid=(51,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_sort_dedup.segscan_24719
+Duration: 2179.135986 μs
+Kernel bench_sort_dedup.segscan_24719 with
+  grid=(168,1,1)
+  block=(256,1,1)
+  shared memory=8192
+
+copy_dev_to_dev
+Duration: 483.328003 μs
+
+bench_sort_dedup.gpuseq_25570
+Duration: 3.072 μs
+Kernel bench_sort_dedup.gpuseq_25570 with
+  grid=(1,1,1)
+  block=(1,1,1)
+  shared memory=0
+
+bench_sort_dedup.segmap_24721
+Duration: 1536.0 μs
+Kernel bench_sort_dedup.segmap_24721 with
+  grid=(168,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+builtin#replicate_i8.replicate_25514
+Duration: 3.072 μs
+Kernel builtin#replicate_i8.replicate_25514 with
+  grid=(51,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_sort_dedup.segscan_24719
+Duration: 1929.216064 μs
+Kernel bench_sort_dedup.segscan_24719 with
+  grid=(168,1,1)
+  block=(256,1,1)
+  shared memory=8192
+
+copy_dev_to_dev
+Duration: 483.328003 μs
+
+bench_sort_dedup.gpuseq_25570
+Duration: 3.072 μs
+Kernel bench_sort_dedup.gpuseq_25570 with
+  grid=(1,1,1)
+  block=(1,1,1)
+  shared memory=0
+
+bench_sort_dedup.segmap_24721
+Duration: 1525.76001 μs
+Kernel bench_sort_dedup.segmap_24721 with
+  grid=(168,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+builtin#replicate_i8.replicate_25514
+Duration: 3.072 μs
+Kernel builtin#replicate_i8.replicate_25514 with
+  grid=(51,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_sort_dedup.segscan_24719
+Duration: 1950.719971 μs
+Kernel bench_sort_dedup.segscan_24719 with
+  grid=(168,1,1)
+  block=(256,1,1)
+  shared memory=8192
+
+copy_dev_to_dev
+Duration: 477.18399 μs
+
+bench_sort_dedup.gpuseq_25570
+Duration: 3.072 μs
+Kernel bench_sort_dedup.gpuseq_25570 with
+  grid=(1,1,1)
+  block=(1,1,1)
+  shared memory=0
+
+bench_sort_dedup.segmap_24721
+Duration: 1515.52002 μs
+Kernel bench_sort_dedup.segmap_24721 with
+  grid=(168,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+builtin#replicate_i8.replicate_25514
+Duration: 3.072 μs
+Kernel builtin#replicate_i8.replicate_25514 with
+  grid=(51,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_sort_dedup.segscan_24719
+Duration: 1972.223999 μs
+Kernel bench_sort_dedup.segscan_24719 with
+  grid=(168,1,1)
+  block=(256,1,1)
+  shared memory=8192
+
+copy_dev_to_dev
+Duration: 473.087982 μs
+
+bench_sort_dedup.gpuseq_25570
+Duration: 3.072 μs
+Kernel bench_sort_dedup.gpuseq_25570 with
+  grid=(1,1,1)
+  block=(1,1,1)
+  shared memory=0
+
+bench_sort_dedup.segmap_24721
+Duration: 1807.647949 μs
+Kernel bench_sort_dedup.segmap_24721 with
+  grid=(168,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+builtin#replicate_i8.replicate_25514
+Duration: 4.096 μs
+Kernel builtin#replicate_i8.replicate_25514 with
+  grid=(51,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_sort_dedup.segscan_24719
+Duration: 2520.064209 μs
+Kernel bench_sort_dedup.segscan_24719 with
+  grid=(168,1,1)
+  block=(256,1,1)
+  shared memory=8192
+
+copy_dev_to_dev
+Duration: 482.304016 μs
+
+bench_sort_dedup.gpuseq_25570
+Duration: 3.072 μs
+Kernel bench_sort_dedup.gpuseq_25570 with
+  grid=(1,1,1)
+  block=(1,1,1)
+  shared memory=0
+
+bench_sort_dedup.segmap_24721
+Duration: 1977.343994 μs
+Kernel bench_sort_dedup.segmap_24721 with
+  grid=(168,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+builtin#replicate_i8.replicate_25514
+Duration: 3.456 μs
+Kernel builtin#replicate_i8.replicate_25514 with
+  grid=(51,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_sort_dedup.segscan_24719
+Duration: 1926.144043 μs
+Kernel bench_sort_dedup.segscan_24719 with
+  grid=(168,1,1)
+  block=(256,1,1)
+  shared memory=8192
+
+copy_dev_to_dev
+Duration: 482.304016 μs
+
+bench_sort_dedup.gpuseq_25570
+Duration: 3.072 μs
+Kernel bench_sort_dedup.gpuseq_25570 with
+  grid=(1,1,1)
+  block=(1,1,1)
+  shared memory=0
+
+bench_sort_dedup.segmap_24721
+Duration: 1516.895996 μs
+Kernel bench_sort_dedup.segmap_24721 with
+  grid=(168,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+builtin#replicate_i8.replicate_25514
+Duration: 2.048 μs
+Kernel builtin#replicate_i8.replicate_25514 with
+  grid=(51,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_sort_dedup.segscan_24719
+Duration: 1963.008057 μs
+Kernel bench_sort_dedup.segscan_24719 with
+  grid=(168,1,1)
+  block=(256,1,1)
+  shared memory=8192
+
+copy_dev_to_dev
+Duration: 476.160004 μs
+
+bench_sort_dedup.gpuseq_25570
+Duration: 3.072 μs
+Kernel bench_sort_dedup.gpuseq_25570 with
+  grid=(1,1,1)
+  block=(1,1,1)
+  shared memory=0
+
+bench_sort_dedup.segmap_24721
+Duration: 1789.952026 μs
+Kernel bench_sort_dedup.segmap_24721 with
+  grid=(168,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+builtin#replicate_i8.replicate_25514
+Duration: 3.264 μs
+Kernel builtin#replicate_i8.replicate_25514 with
+  grid=(51,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_sort_dedup.segscan_24719
+Duration: 1955.839966 μs
+Kernel bench_sort_dedup.segscan_24719 with
+  grid=(168,1,1)
+  block=(256,1,1)
+  shared memory=8192
+
+copy_dev_to_dev
+Duration: 477.18399 μs
+
+bench_sort_dedup.gpuseq_25570
+Duration: 4.096 μs
+Kernel bench_sort_dedup.gpuseq_25570 with
+  grid=(1,1,1)
+  block=(1,1,1)
+  shared memory=0
+
+bench_sort_dedup.segmap_24721
+Duration: 1517.920044 μs
+Kernel bench_sort_dedup.segmap_24721 with
+  grid=(168,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+builtin#replicate_i8.replicate_25514
+Duration: 2.048 μs
+Kernel builtin#replicate_i8.replicate_25514 with
+  grid=(51,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_sort_dedup.segscan_24719
+Duration: 2160.031982 μs
+Kernel bench_sort_dedup.segscan_24719 with
+  grid=(168,1,1)
+  block=(256,1,1)
+  shared memory=8192
+
+copy_dev_to_dev
+Duration: 487.423981 μs
+
+bench_sort_dedup.gpuseq_25570
+Duration: 3.072 μs
+Kernel bench_sort_dedup.gpuseq_25570 with
+  grid=(1,1,1)
+  block=(1,1,1)
+  shared memory=0
+
+bench_sort_dedup.segmap_24721
+Duration: 1536.0 μs
+Kernel bench_sort_dedup.segmap_24721 with
+  grid=(168,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+builtin#replicate_i8.replicate_25514
+Duration: 3.2 μs
+Kernel builtin#replicate_i8.replicate_25514 with
+  grid=(51,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_sort_dedup.segscan_24719
+Duration: 1966.079956 μs
+Kernel bench_sort_dedup.segscan_24719 with
+  grid=(168,1,1)
+  block=(256,1,1)
+  shared memory=8192
+
+copy_dev_to_dev
+Duration: 477.18399 μs
+
+bench_sort_dedup.gpuseq_25570
+Duration: 4.096 μs
+Kernel bench_sort_dedup.gpuseq_25570 with
+  grid=(1,1,1)
+  block=(1,1,1)
+  shared memory=0
+
+bench_sort_dedup.segmap_24721
+Duration: 1807.552002 μs
+Kernel bench_sort_dedup.segmap_24721 with
+  grid=(168,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+builtin#replicate_i8.replicate_25514
+Duration: 3.072 μs
+Kernel builtin#replicate_i8.replicate_25514 with
+  grid=(51,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_sort_dedup.segscan_24719
+Duration: 2413.568115 μs
+Kernel bench_sort_dedup.segscan_24719 with
+  grid=(168,1,1)
+  block=(256,1,1)
+  shared memory=8192
+
+copy_dev_to_dev
+Duration: 475.136017 μs
+
+bench_sort_dedup.gpuseq_25570
+Duration: 3.072 μs
+Kernel bench_sort_dedup.gpuseq_25570 with
+  grid=(1,1,1)
+  block=(1,1,1)
+  shared memory=0
+
+bench_sort_dedup.segmap_24721
+Duration: 1847.296021 μs
+Kernel bench_sort_dedup.segmap_24721 with
+  grid=(168,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+builtin#replicate_i8.replicate_25514
+Duration: 3.072 μs
+Kernel builtin#replicate_i8.replicate_25514 with
+  grid=(51,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_sort_dedup.segscan_24719
+Duration: 2378.751953 μs
+Kernel bench_sort_dedup.segscan_24719 with
+  grid=(168,1,1)
+  block=(256,1,1)
+  shared memory=8192
+
+copy_dev_to_dev
+Duration: 480.255981 μs
+
+bench_sort_dedup.gpuseq_25570
+Duration: 3.072 μs
+Kernel bench_sort_dedup.gpuseq_25570 with
+  grid=(1,1,1)
+  block=(1,1,1)
+  shared memory=0
+
+bench_sort_dedup.segmap_24721
+Duration: 1517.567993 μs
+Kernel bench_sort_dedup.segmap_24721 with
+  grid=(168,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+builtin#replicate_i8.replicate_25514
+Duration: 3.072 μs
+Kernel builtin#replicate_i8.replicate_25514 with
+  grid=(13,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_sort_dedup.segscan_24735
+Duration: 842.751953 μs
+Kernel bench_sort_dedup.segscan_24735 with
+  grid=(168,1,1)
+  block=(256,1,1)
+  shared memory=24576
+
+copy_scalar_from_dev
+Duration: 16.799999 μs
+
+copy_dev_to_dev
+Duration: 497.664001 μs
+
+bench_sort_dedup.segmap_24737
+Duration: 932.864014 μs
+Kernel bench_sort_dedup.segmap_24737 with
+  grid=(168,1,1)
+  block=(256,1,1)
+  shared memory=0

@@ -1,0 +1,28 @@
+Peak memory usage in bytes
+default space: 0
+space 'device': 680888983
+
+
+                                Cost centre           count             sum             avg             min             max
+---------------------------------------------------------------------------------------------------------------------------
+bench_array_dedup.seghist_global_24931                    2       5047.30μs       2523.65μs          5.12μs       5042.18μs
+bench_array_dedup.segmap_24910                            2        480.10μs        240.05μs          5.12μs        474.98μs
+bench_array_dedup.segmap_24946                            2       1393.66μs        696.83μs        690.18μs        703.49μs
+bench_array_dedup.segmap_24972                            2         10.24μs          5.12μs          3.07μs          7.17μs
+bench_array_dedup.segmap_24988                            2        468.00μs        234.00μs          4.13μs        463.87μs
+bench_array_dedup.segscan_24944                           2       2830.62μs       1415.31μs       1126.40μs       1704.22μs
+bench_array_dedup.segscan_24986                           2       3624.90μs       1812.45μs         15.30μs       3609.60μs
+builtin#replicate_i32.replicate_25300                     2          9.86μs          4.93μs          2.69μs          7.17μs
+builtin#replicate_i64.replicate_25280                     2        701.44μs        350.72μs        344.06μs        357.38μs
+builtin#replicate_i8.replicate_25514                     11         35.46μs          3.22μs          2.05μs          4.96μs
+copy_dev_to_dev                                          11         36.32μs          3.30μs          2.05μs          5.18μs
+copy_scalar_from_dev                                      9        928.90μs        103.21μs          6.14μs        865.28μs
+estimate_distinct_12964.gpuseq_25580                      7         19.68μs          2.81μs          2.05μs          3.07μs
+estimate_distinct_12964.segmap_24845                      1          5.12μs          5.12μs          5.12μs          5.12μs
+estimate_distinct_12964.segmap_24869                      7         27.65μs          3.95μs          3.07μs          4.10μs
+estimate_distinct_12964.segred_nonseg_24885               1          5.12μs          5.12μs          5.12μs          5.12μs
+estimate_distinct_12964.segscan_24867                     7         54.14μs          7.73μs          7.17μs          9.98μs
+rng_from_seed_12917.gpuseq_25274                          2          6.14μs          3.07μs          2.05μs          4.10μs
+rng_from_seed_12917.gpuseq_25284                          2          6.14μs          3.07μs          3.07μs          3.07μs
+---------------------------------------------------------------------------------------------------------------------------
+76 events with a total runtime of 15690.78μs
