@@ -17,21 +17,21 @@ module type hashset = {
   type rng
 
   -- | The hashset type.
-  type hashset [n] [w] [f] [s]
+  type hashset [n] [w] [f]
 
   -- | Check if a key is member of the hashset.
   --
   -- **Work:** *O(1)*
   --
   -- **Span:** *O(1)*
-  val member [n] [w] [f] [s] : k -> hashset [n] [w] [f] [s] -> bool
+  val member [n] [w] [f] : k -> hashset [n] [w] [f] -> bool
 
   -- | Check if a key is not member of the hashset
   --
   -- **Work:** *O(1)*
   --
   -- **Span:** *O(1)*
-  val not_member [n] [w] [f] [s] : k -> hashset [n] [w] [f] [s] -> bool
+  val not_member [n] [w] [f] : k -> hashset [n] [w] [f] -> bool
 
   -- | Given a random number generator, equality, hash function, and
   -- an array keys construct a hashset. Assumes unique keys but works
@@ -41,21 +41,21 @@ module type hashset = {
   -- **Expected Work:** *O(n)*
   --
   -- **Expected Span:** *O(log n)*
-  val from_array [n] : rng -> [n]k -> ?[f][w][s].(rng, hashset [n] [w] [f] [s])
+  val from_array [u] : rng -> [u]k -> ?[n][f][w].(rng, hashset [n] [w] [f])
 
   -- | Convert hashset to an array of keys.
   --
   -- **Work:** *O(1)*
   --
   -- **Span:** *O(1)*
-  val to_array [n] [w] [f] [s] : hashset [n] [w] [f] [s] -> []k
+  val to_array [n] [w] [f] : hashset [n] [w] [f] -> []k
 
   -- | The number of elements in the hashset.
   --
   -- **Work:** *O(1)*
   --
   -- **Span:** *O(1)*
-  val size [n] [w] [f] [s] : hashset [n] [w] [f] [s] -> i64
+  val size [n] [w] [f] : hashset [n] [w] [f] -> i64
 }
 
 module hashset (K: key) (E: rng_engine with int.t = K.i)
@@ -66,28 +66,28 @@ module hashset (K: key) (E: rng_engine with int.t = K.i)
   type rng = hashmap.rng
   type k = hashmap.k
 
-  type hashset [n] [w] [f] [s] =
-    hashmap.hashmap [n] [w] [f] [s] ()
+  type hashset [n] [w] [f] =
+    hashmap.hashmap [n] [w] [f] ()
 
-  def from_array [n]
+  def from_array [u]
                  (r: rng)
-                 (keys: [n]k) : ?[f][w][s].(rng, hashset [n] [w] [f] [s]) =
+                 (keys: [u]k) : ?[n][f][w].(rng, hashset [n] [w] [f]) =
     hashmap.from_array_fill r keys ()
 
-  def to_array [n] [w] [f] [s] (set: hashset [n] [w] [f] [s]) : []k =
+  def to_array [n] [w] [f] (set: hashset [n] [w] [f]) : []k =
     hashmap.to_array set
     |> map (.0)
 
-  def size [n] [w] [f] [s] (set: hashset [n] [w] [f] [s]) =
+  def size [n] [w] [f] (set: hashset [n] [w] [f]) =
     hashmap.size set
 
-  def member [n] [w] [f] [s]
+  def member [n] [w] [f]
              (key: k)
-             (set: hashset [n] [w] [f] [s]) : bool =
+             (set: hashset [n] [w] [f]) : bool =
     hashmap.member key set
 
-  def not_member [n] [w] [f] [s]
+  def not_member [n] [w] [f]
                  (key: k)
-                 (set: hashset [n] [w] [f] [s]) : bool =
+                 (set: hashset [n] [w] [f]) : bool =
     hashmap.not_member key set
 }

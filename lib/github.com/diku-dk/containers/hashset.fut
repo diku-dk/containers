@@ -66,7 +66,7 @@ module hashset (K: key) (E: rng_engine with int.t = K.i)
   type rng = hashset.rng
   type k = hashset.k
 
-  type~ hashset = ?[n][w][f][s].hashset.hashset [n] [w] [f] [s]
+  type~ hashset = ?[n][w][f].hashset.hashset [n] [w] [f]
 
   def from_array [n]
                  (r: rng)

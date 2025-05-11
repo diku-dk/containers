@@ -1,0 +1,6071 @@
+builtin#replicate_i32.replicate_25300
+Duration: 8.192 μs
+Kernel builtin#replicate_i32.replicate_25300 with
+  grid=(1,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+rng_from_seed_12917.gpuseq_25274
+Duration: 3.072 μs
+Kernel rng_from_seed_12917.gpuseq_25274 with
+  grid=(1,1,1)
+  block=(1,1,1)
+  shared memory=0
+
+rng_from_seed_12917.gpuseq_25284
+Duration: 4.096 μs
+Kernel rng_from_seed_12917.gpuseq_25284 with
+  grid=(1,1,1)
+  block=(1,1,1)
+  shared memory=0
+
+copy_scalar_from_dev
+Duration: 12.032001 μs
+
+copy_scalar_from_dev
+Duration: 7.2 μs
+
+estimate_distinct_12964.segmap_24845
+Duration: 9.472 μs
+Kernel estimate_distinct_12964.segmap_24845 with
+  grid=(382,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+builtin#replicate_i8.replicate_25514
+Duration: 3.072 μs
+Kernel builtin#replicate_i8.replicate_25514 with
+  grid=(1,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+estimate_distinct_12964.segscan_24867
+Duration: 25.599998 μs
+Kernel estimate_distinct_12964.segscan_24867 with
+  grid=(168,1,1)
+  block=(256,1,1)
+  shared memory=8192
+
+copy_dev_to_dev
+Duration: 6.144 μs
+
+estimate_distinct_12964.gpuseq_25580
+Duration: 3.136 μs
+Kernel estimate_distinct_12964.gpuseq_25580 with
+  grid=(1,1,1)
+  block=(1,1,1)
+  shared memory=0
+
+estimate_distinct_12964.segmap_24869
+Duration: 20.48 μs
+Kernel estimate_distinct_12964.segmap_24869 with
+  grid=(168,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+builtin#replicate_i8.replicate_25514
+Duration: 3.072 μs
+Kernel builtin#replicate_i8.replicate_25514 with
+  grid=(1,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+estimate_distinct_12964.segscan_24867
+Duration: 26.624001 μs
+Kernel estimate_distinct_12964.segscan_24867 with
+  grid=(168,1,1)
+  block=(256,1,1)
+  shared memory=8192
+
+copy_dev_to_dev
+Duration: 8.256 μs
+
+estimate_distinct_12964.gpuseq_25580
+Duration: 3.072 μs
+Kernel estimate_distinct_12964.gpuseq_25580 with
+  grid=(1,1,1)
+  block=(1,1,1)
+  shared memory=0
+
+estimate_distinct_12964.segmap_24869
+Duration: 19.455999 μs
+Kernel estimate_distinct_12964.segmap_24869 with
+  grid=(168,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+builtin#replicate_i8.replicate_25514
+Duration: 2.048 μs
+Kernel builtin#replicate_i8.replicate_25514 with
+  grid=(1,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+estimate_distinct_12964.segscan_24867
+Duration: 26.624001 μs
+Kernel estimate_distinct_12964.segscan_24867 with
+  grid=(168,1,1)
+  block=(256,1,1)
+  shared memory=8192
+
+copy_dev_to_dev
+Duration: 18.495998 μs
+
+estimate_distinct_12964.gpuseq_25580
+Duration: 4.096 μs
+Kernel estimate_distinct_12964.gpuseq_25580 with
+  grid=(1,1,1)
+  block=(1,1,1)
+  shared memory=0
+
+estimate_distinct_12964.segmap_24869
+Duration: 18.688002 μs
+Kernel estimate_distinct_12964.segmap_24869 with
+  grid=(168,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+builtin#replicate_i8.replicate_25514
+Duration: 3.072 μs
+Kernel builtin#replicate_i8.replicate_25514 with
+  grid=(1,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+estimate_distinct_12964.segscan_24867
+Duration: 25.599998 μs
+Kernel estimate_distinct_12964.segscan_24867 with
+  grid=(168,1,1)
+  block=(256,1,1)
+  shared memory=8192
+
+copy_dev_to_dev
+Duration: 8.192 μs
+
+estimate_distinct_12964.gpuseq_25580
+Duration: 3.072 μs
+Kernel estimate_distinct_12964.gpuseq_25580 with
+  grid=(1,1,1)
+  block=(1,1,1)
+  shared memory=0
+
+estimate_distinct_12964.segmap_24869
+Duration: 19.455999 μs
+Kernel estimate_distinct_12964.segmap_24869 with
+  grid=(168,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+builtin#replicate_i8.replicate_25514
+Duration: 2.048 μs
+Kernel builtin#replicate_i8.replicate_25514 with
+  grid=(1,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+estimate_distinct_12964.segscan_24867
+Duration: 29.696001 μs
+Kernel estimate_distinct_12964.segscan_24867 with
+  grid=(168,1,1)
+  block=(256,1,1)
+  shared memory=8192
+
+copy_dev_to_dev
+Duration: 8.192 μs
+
+estimate_distinct_12964.gpuseq_25580
+Duration: 3.072 μs
+Kernel estimate_distinct_12964.gpuseq_25580 with
+  grid=(1,1,1)
+  block=(1,1,1)
+  shared memory=0
+
+estimate_distinct_12964.segmap_24869
+Duration: 25.599998 μs
+Kernel estimate_distinct_12964.segmap_24869 with
+  grid=(168,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+builtin#replicate_i8.replicate_25514
+Duration: 3.072 μs
+Kernel builtin#replicate_i8.replicate_25514 with
+  grid=(1,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+estimate_distinct_12964.segscan_24867
+Duration: 26.624001 μs
+Kernel estimate_distinct_12964.segscan_24867 with
+  grid=(168,1,1)
+  block=(256,1,1)
+  shared memory=8192
+
+copy_dev_to_dev
+Duration: 8.192 μs
+
+estimate_distinct_12964.gpuseq_25580
+Duration: 3.072 μs
+Kernel estimate_distinct_12964.gpuseq_25580 with
+  grid=(1,1,1)
+  block=(1,1,1)
+  shared memory=0
+
+estimate_distinct_12964.segmap_24869
+Duration: 19.455999 μs
+Kernel estimate_distinct_12964.segmap_24869 with
+  grid=(168,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+builtin#replicate_i8.replicate_25514
+Duration: 3.072 μs
+Kernel builtin#replicate_i8.replicate_25514 with
+  grid=(1,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+estimate_distinct_12964.segscan_24867
+Duration: 26.624001 μs
+Kernel estimate_distinct_12964.segscan_24867 with
+  grid=(168,1,1)
+  block=(256,1,1)
+  shared memory=8192
+
+copy_dev_to_dev
+Duration: 7.168 μs
+
+estimate_distinct_12964.gpuseq_25580
+Duration: 4.096 μs
+Kernel estimate_distinct_12964.gpuseq_25580 with
+  grid=(1,1,1)
+  block=(1,1,1)
+  shared memory=0
+
+estimate_distinct_12964.segmap_24869
+Duration: 18.432001 μs
+Kernel estimate_distinct_12964.segmap_24869 with
+  grid=(168,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+builtin#replicate_i8.replicate_25514
+Duration: 3.072 μs
+Kernel builtin#replicate_i8.replicate_25514 with
+  grid=(1,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+estimate_distinct_12964.segscan_24867
+Duration: 26.624001 μs
+Kernel estimate_distinct_12964.segscan_24867 with
+  grid=(168,1,1)
+  block=(256,1,1)
+  shared memory=8192
+
+copy_dev_to_dev
+Duration: 8.192 μs
+
+estimate_distinct_12964.gpuseq_25580
+Duration: 3.072 μs
+Kernel estimate_distinct_12964.gpuseq_25580 with
+  grid=(1,1,1)
+  block=(1,1,1)
+  shared memory=0
+
+estimate_distinct_12964.segmap_24869
+Duration: 18.880001 μs
+Kernel estimate_distinct_12964.segmap_24869 with
+  grid=(168,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+builtin#replicate_i8.replicate_25514
+Duration: 2.048 μs
+Kernel builtin#replicate_i8.replicate_25514 with
+  grid=(1,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+estimate_distinct_12964.segscan_24867
+Duration: 26.624001 μs
+Kernel estimate_distinct_12964.segscan_24867 with
+  grid=(168,1,1)
+  block=(256,1,1)
+  shared memory=8192
+
+copy_dev_to_dev
+Duration: 7.168 μs
+
+estimate_distinct_12964.gpuseq_25580
+Duration: 3.072 μs
+Kernel estimate_distinct_12964.gpuseq_25580 with
+  grid=(1,1,1)
+  block=(1,1,1)
+  shared memory=0
+
+estimate_distinct_12964.segmap_24869
+Duration: 18.432001 μs
+Kernel estimate_distinct_12964.segmap_24869 with
+  grid=(168,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+estimate_distinct_12964.segred_nonseg_24885
+Duration: 7.168 μs
+Kernel estimate_distinct_12964.segred_nonseg_24885 with
+  grid=(168,1,1)
+  block=(256,1,1)
+  shared memory=2056
+
+copy_scalar_from_dev
+Duration: 6.528 μs
+
+builtin#replicate_i32.replicate_25300
+Duration: 2.976 μs
+Kernel builtin#replicate_i32.replicate_25300 with
+  grid=(1,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+rng_from_seed_12917.gpuseq_25274
+Duration: 3.072 μs
+Kernel rng_from_seed_12917.gpuseq_25274 with
+  grid=(1,1,1)
+  block=(1,1,1)
+  shared memory=0
+
+rng_from_seed_12917.gpuseq_25284
+Duration: 2.048 μs
+Kernel rng_from_seed_12917.gpuseq_25284 with
+  grid=(1,1,1)
+  block=(1,1,1)
+  shared memory=0
+
+copy_scalar_from_dev
+Duration: 7.168 μs
+
+copy_scalar_from_dev
+Duration: 6.144 μs
+
+bench_array_dedup.segmap_24910
+Duration: 5072.640137 μs
+Kernel bench_array_dedup.segmap_24910 with
+  grid=(390625,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+builtin#replicate_i64.replicate_25280
+Duration: 2586.624023 μs
+Kernel builtin#replicate_i64.replicate_25280 with
+  grid=(365881,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2295.808105 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2294.080078 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2584.575928 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2730.271973 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 3014.816162 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2293.76001 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2300.928223 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2566.144043 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2296.832031 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2556.927979 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2310.144043 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2599.936035 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2922.815918 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2557.951904 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2297.856201 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2301.951904 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2290.783936 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2570.23999 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2604.031982 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2747.391846 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 3032.063965 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2295.008057 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2288.640137 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2571.263916 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2318.687988 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2297.856201 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2302.97583 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2298.880127 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2292.736084 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2307.072021 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2294.78418 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2317.312012 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2299.904053 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2296.191895 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2298.880127 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2583.615967 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2735.39209 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 3041.343994 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2294.78418 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2295.167969 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2571.583984 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2299.904053 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2302.97583 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2288.640137 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2303.231934 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2306.047852 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2302.97583 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2310.23999 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2304.0 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2291.936035 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2294.78418 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2585.599854 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2737.1521 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2766.208008 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2297.856201 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2291.712158 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2310.144043 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2564.095947 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2300.928223 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2580.47998 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2293.76001 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2292.736084 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2312.191895 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2302.97583 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2294.78418 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2313.216064 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2299.904053 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2294.78418 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2591.903809 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 3175.647949 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2304.0 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2290.687988 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2304.0 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2574.496094 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2300.928223 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2298.880127 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2297.856201 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2292.736084 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2291.712158 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2310.144043 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2311.167969 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2299.904053 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2299.904053 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2295.808105 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2299.904053 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2580.864014 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2736.128174 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2782.208008 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2298.304199 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2550.8479 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2311.167969 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2300.928223 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2295.808105 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2571.327881 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2291.712158 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2309.119873 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2300.928223 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2298.880127 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2302.97583 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2288.640137 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2306.047852 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2585.791992 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2726.912109 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2761.728027 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2291.712158 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2288.640137 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2301.951904 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2834.431885 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2300.928223 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2309.119873 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2289.664062 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2291.040039 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2312.191895 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2293.76001 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2308.095947 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2308.095947 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2297.856201 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2290.687988 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2591.743896 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2726.912109 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2759.936035 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2308.095947 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2292.736084 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2578.432129 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2296.832031 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2300.928223 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2300.928223 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2290.687988 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2307.072021 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2313.216064 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2299.904053 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2302.144043 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2301.951904 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2294.78418 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2305.023926 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2305.312012 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 3007.679932 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2760.704102 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2291.712158 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2290.687988 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2571.263916 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2294.78418 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2576.384033 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2300.959961 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2296.832031 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2299.904053 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2304.0 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2298.880127 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2298.880127 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2309.119873 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2290.687988 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2312.191895 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2297.856201 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2324.47998 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2304.0 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2287.615967 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2305.023926 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2586.624023 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2726.912109 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2768.255859 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2291.712158 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2292.0 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2302.97583 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2577.407959 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2304.031982 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2308.095947 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2293.76001 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2291.712158 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2311.167969 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2292.736084 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2317.312012 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2304.0 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2297.856201 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2294.78418 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2585.599854 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2716.671875 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2761.728027 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2308.095947 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2292.736084 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2574.335938 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2296.832031 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2299.904053 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2297.856201 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2286.592041 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2307.072021 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2308.095947 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2302.97583 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2300.928223 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2294.048096 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2288.640137 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2312.191895 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2608.128174 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 3183.648193 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2304.0 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2294.78418 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2293.76001 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2568.191895 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2292.736084 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2577.407959 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2298.880127 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2298.880127 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2298.144043 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2305.023926 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2296.832031 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2299.904053 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2312.191895 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2292.736084 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2605.248047 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2727.936035 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2751.904053 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2298.880127 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2295.808105 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2567.167969 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2305.023926 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2304.0 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2301.951904 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2294.78418 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2286.592041 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2305.023926 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2311.167969 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2308.095947 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2308.095947 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2290.687988 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2290.687988 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2587.775879 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2729.280029 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2764.800049 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2297.087891 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2295.808105 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2300.928223 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2560.0 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2295.808105 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2577.439941 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2296.159912 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2292.736084 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2312.191895 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2297.856201 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2297.856201 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2297.856201 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2290.687988 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2310.144043 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2587.968018 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2722.815918 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2759.840088 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2292.736084 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2288.640137 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2573.312012 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2572.288086 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2304.0 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2297.856201 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2290.687988 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2305.280029 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2295.808105 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2302.97583 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2313.216064 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2294.78418 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2296.0 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2300.928223 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 3001.343994 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2750.49585 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2313.216064 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2292.736084 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2296.832031 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2569.567871 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2296.832031 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2307.456055 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2289.664062 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2302.97583 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2305.023926 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2302.97583 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2302.97583 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2297.856201 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2295.808105 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2291.712158 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2312.191895 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2588.704102 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2752.703857 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2748.416016 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2289.664062 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2560.0 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2293.76001 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2572.511963 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2310.144043 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2292.736084 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2291.712158 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2305.023926 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2300.928223 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2293.791992 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2313.216064 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2292.736084 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2293.76001 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2310.144043 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2297.856201 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2299.904053 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2291.712158 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2302.271973 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2301.951904 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2603.008057 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2723.840088 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2767.87207 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2291.712158 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2288.640137 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2581.50415 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2304.0 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2302.97583 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2294.78418 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2289.664062 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2308.095947 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2292.736084 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2296.895996 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2316.288086 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2298.880127 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2291.712158 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2299.904053 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2601.984131 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 3172.352051 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2320.384033 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2293.76001 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2300.928223 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2570.624023 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2299.168213 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2304.0 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2287.615967 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2304.0 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2300.928223 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2304.0 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2301.951904 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2299.904053 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2294.78418 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2290.687988 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2309.119873 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2583.744141 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2740.223877 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2750.528076 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2290.687988 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2567.167969 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2290.687988 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2573.695801 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2306.047852 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2300.256104 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2290.687988 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2312.191895 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2302.97583 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2295.808105 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2314.271973 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2291.712158 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2294.78418 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2584.575928 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2699.26416 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2759.840088 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2289.664062 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2307.072021 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2482.176025 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2306.047852 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2297.856201 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2295.808105 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2290.687988 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2288.640137 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2318.335938 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2300.928223 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2304.0 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2300.928223 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2290.687988 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2582.815918 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2718.719971 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2767.87207 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2305.023926 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2294.78418 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2296.832031 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2561.023926 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2300.928223 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2296.832031 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2573.312012 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2293.76001 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2308.095947 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2301.951904 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2295.808105 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2305.407959 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2287.615967 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2306.047852 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2305.023926 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2997.567871 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2760.704102 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2296.224121 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2291.712158 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2306.047852 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2582.528076 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2301.951904 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2307.072021 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2295.808105 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2292.736084 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2311.167969 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2299.904053 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2311.167969 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2307.072021 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2292.736084 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2289.664062 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2313.216064 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2597.887939 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2734.463867 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2760.832031 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2297.856201 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2571.263916 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2295.808105 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2297.856201 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2300.928223 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2286.592041 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2572.288086 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2313.216064 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2309.119873 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2301.951904 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2293.76001 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2292.800049 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2301.951904 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2600.959961 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2732.095947 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2751.488037 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2292.736084 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2292.768066 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2565.151855 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2559.168213 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2316.288086 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2298.880127 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2296.832031 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2295.968018 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2304.0 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2297.856201 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2298.912109 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2309.119873 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2291.712158 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2311.167969 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2298.23999 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2298.144043 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2305.023926 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2289.664062 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2311.167969 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2313.216064 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2587.807861 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 3179.519775 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2293.76001 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2286.592041 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2554.879883 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2575.360107 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2300.928223 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2304.0 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2289.664062 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2290.687988 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2309.119873 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2293.055908 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2318.335938 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2302.97583 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2293.76001 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2287.615967 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2580.832031 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2737.1521 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2754.560059 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2305.183838 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2293.76001 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2574.335938 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2296.832031 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2300.928223 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2294.78418 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2309.119873 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2295.808105 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2309.119873 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2301.951904 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2299.904053 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2296.096191 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2291.712158 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2302.97583 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2586.624023 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2741.471924 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2764.800049 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2290.687988 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2295.808105 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2564.095947 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2564.160156 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2309.248047 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2299.904053 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2290.687988 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2298.880127 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2303.008057 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2292.736084 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2299.904053 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2309.184082 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2300.928223 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2587.647949 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2719.743896 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2764.095947 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2293.76001 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2305.023926 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2298.912109 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2572.384033 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2301.055908 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2299.904053 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2292.736084 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2282.496094 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2309.119873 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2309.119873 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2298.080078 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2305.023926 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2288.640137 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2289.664062 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2309.119873 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2997.248047 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2764.800049 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2300.928223 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2295.808105 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2574.559814 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2300.928223 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2293.76001 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2311.26416 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2558.208008 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2299.904053 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2309.119873 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2296.832031 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2306.047852 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2293.76001 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2308.095947 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2295.808105 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2583.552002 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2734.080078 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2747.391846 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2292.736084 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2285.568115 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2584.575928 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2307.072021 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2308.095947 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2296.832031 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2293.76001 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2306.047852 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2293.76001 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2304.0 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2311.167969 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2296.832031 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2292.736084 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2297.856201 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2585.983887 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2721.791992 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2761.728027 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2287.615967 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2502.656006 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2310.144043 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2297.856201 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2301.951904 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2288.927979 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2572.288086 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2302.97583 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2301.951904 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2299.007812 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2302.271973 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2294.78418 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2289.664062 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2607.199951 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2732.031982 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2768.895996 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2288.640137 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2296.832031 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2305.280029 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2558.97583 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2576.512207 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2304.0 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2294.78418 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2288.640137 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2312.191895 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2299.904053 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2297.856201 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2320.384033 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2292.736084 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2296.832031 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2304.0 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2297.856201 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2300.928223 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2291.712158 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2306.047852 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2296.832031 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2585.63208 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2766.848145 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2682.879883 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2778.111816 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2579.456055 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2313.216064 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2304.0 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2309.119873 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2294.78418 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2292.736084 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2304.0 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2294.78418 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2316.447998 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2312.191895 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2296.832031 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2285.568115 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2313.216064 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2572.288086 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2741.247803 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2761.728027 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2292.736084 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2306.335938 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2563.072021 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2299.904053 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2297.856201 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2285.664062 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2571.263916 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2314.36792 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2302.97583 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2296.832031 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2297.856201 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2293.76001 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2580.47998 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2734.080078 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2776.063965 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2300.928223 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2290.687988 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2290.687988 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2555.903809 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2296.832031 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2582.528076 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2304.0 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2290.687988 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2299.904053 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2306.047852 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2295.135986 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2295.808105 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2315.263916 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2291.712158 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2305.023926 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 3006.464111 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2760.704102 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2294.78418 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2310.528076 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2295.808105 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2576.543945 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2295.808105 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2303.104004 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2299.904053 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2287.615967 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2307.167969 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2317.312012 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2301.951904 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2305.439941 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2290.687988 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2291.87207 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2306.047852 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2575.39209 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2751.904053 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2750.463867 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2290.687988 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2555.007812 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2301.343994 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2293.76001 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2308.095947 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2571.487793 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2292.736084 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2307.072021 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2299.904053 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2301.951904 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2293.76001 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2306.047852 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2294.78418 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2590.719971 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2729.984131 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2745.439941 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2291.712158 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2285.568115 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2580.47998 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2304.031982 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2299.904053 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2302.303955 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2292.736084 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2292.992188 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2305.023926 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2299.904053 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2314.23999 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2299.904053 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2294.78418 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2295.808105 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2587.647949 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2720.768066 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2735.104004 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2291.712158 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2299.904053 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2569.535889 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2293.76001 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2297.856201 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2295.072021 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2570.23999 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2297.856201 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2309.119873 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2300.928223 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2300.928223 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2293.76001 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2283.52002 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2330.624023 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 3008.511963 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2764.800049 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2292.736084 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2287.615967 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2305.023926 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2552.831787 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2572.575928 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2311.39209 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2298.880127 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2290.687988 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2306.047852 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2298.880127 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2292.736084 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2313.216064 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2293.76001 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2293.76001 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2312.191895 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2299.904053 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2303.072021 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2291.712158 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2307.072021 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2296.832031 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2593.791992 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2734.080078 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2750.463867 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2292.736084 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2286.592041 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2320.384033 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2569.63208 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2300.928223 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2296.832031 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2289.664062 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2299.904053 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2306.047852 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2307.072021 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2310.144043 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2302.97583 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2286.592041 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2292.736084 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2581.887939 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2715.647949 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2776.063965 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2292.768066 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2297.856201 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2572.288086 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2298.880127 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2296.832031 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2292.736084 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2571.263916 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2299.904053 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2307.072021 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2294.78418 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2302.97583 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2293.76001 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2284.543945 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2314.336182 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 3001.343994 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2761.728027 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2293.823975 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2289.664062 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2307.072021 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2554.879883 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2576.47998 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2304.0 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2294.78418 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2289.664062 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2309.119873 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2296.832031 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2290.687988 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2317.312012 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2296.832031 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2292.736084 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2582.528076 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2734.080078 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2746.36792 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2292.736084 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2309.119873 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2574.335938 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2298.880127 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2300.928223 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2299.904053 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2288.640137 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2285.568115 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2325.50415 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2297.856201 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2307.231934 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2298.880127 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2293.76001 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2306.047852 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2576.384033 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2748.416016 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2755.583984 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2293.76001 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2285.568115 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2570.560059 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2297.856201 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2298.880127 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2581.50415 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2291.712158 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2302.97583 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2302.97583 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 2295.808105 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(336,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+builtin#replicate_i8.replicate_25514
+Duration: 3.072 μs
+Kernel builtin#replicate_i8.replicate_25514 with
+  grid=(120,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.segscan_24944
+Duration: 7090.17627 μs
+Kernel bench_array_dedup.segscan_24944 with
+  grid=(168,1,1)
+  block=(256,1,1)
+  shared memory=24576
+
+copy_scalar_from_dev
+Duration: 19.455999 μs
+
+builtin#replicate_i8.replicate_25514
+Duration: 11.488 μs
+Kernel builtin#replicate_i8.replicate_25514 with
+  grid=(128,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.segscan_24986
+Duration: 38352.898438 μs
+Kernel bench_array_dedup.segscan_24986 with
+  grid=(168,1,1)
+  block=(256,1,1)
+  shared memory=24576
+
+copy_scalar_from_dev
+Duration: 7.488 μs
+
+copy_dev_to_dev
+Duration: 8.896 μs
+
+bench_array_dedup.segmap_24946
+Duration: 4579.328125 μs
+Kernel bench_array_dedup.segmap_24946 with
+  grid=(168,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.segmap_24972
+Duration: 6.144 μs
+Kernel bench_array_dedup.segmap_24972 with
+  grid=(157,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+copy_dev_to_dev
+Duration: 3.072 μs
+
+bench_array_dedup.segmap_24988
+Duration: 5466.112305 μs
+Kernel bench_array_dedup.segmap_24988 with
+  grid=(168,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.segmap_24910
+Duration: 5.12 μs
+Kernel bench_array_dedup.segmap_24910 with
+  grid=(98,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+builtin#replicate_i64.replicate_25280
+Duration: 2235.39209 μs
+Kernel builtin#replicate_i64.replicate_25280 with
+  grid=(365646,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.seghist_global_24931
+Duration: 8.192 μs
+Kernel bench_array_dedup.seghist_global_24931 with
+  grid=(98,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+builtin#replicate_i8.replicate_25514
+Duration: 4.096 μs
+Kernel builtin#replicate_i8.replicate_25514 with
+  grid=(120,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.segscan_24944
+Duration: 7285.759766 μs
+Kernel bench_array_dedup.segscan_24944 with
+  grid=(168,1,1)
+  block=(256,1,1)
+  shared memory=24576
+
+copy_scalar_from_dev
+Duration: 8.192 μs
+
+builtin#replicate_i8.replicate_25514
+Duration: 3.072 μs
+Kernel builtin#replicate_i8.replicate_25514 with
+  grid=(1,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.segscan_24986
+Duration: 16.384001 μs
+Kernel bench_array_dedup.segscan_24986 with
+  grid=(98,1,1)
+  block=(256,1,1)
+  shared memory=24576
+
+copy_scalar_from_dev
+Duration: 6.368 μs
+
+copy_dev_to_dev
+Duration: 4.096 μs
+
+bench_array_dedup.segmap_24946
+Duration: 4288.512207 μs
+Kernel bench_array_dedup.segmap_24946 with
+  grid=(168,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.segmap_24972
+Duration: 3.072 μs
+Kernel bench_array_dedup.segmap_24972 with
+  grid=(1,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+bench_array_dedup.segmap_24988
+Duration: 4.096 μs
+Kernel bench_array_dedup.segmap_24988 with
+  grid=(98,1,1)
+  block=(256,1,1)
+  shared memory=0
+
+copy_dev_to_dev
+Duration: 4.096 μs

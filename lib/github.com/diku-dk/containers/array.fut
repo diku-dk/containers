@@ -57,21 +57,23 @@ module array (K: key) (E: rng_engine with int.t = K.i)
                         (rng: rng)
                         (factor: i64)
                         (keys: [n]k) : (rng, i64) =
-    let sample_size = n / factor
-    let (rng, consts) = generate_consts key.m rng
-    let (rng, i) = engine.rand rng
-    let sample = (rotate (int.to_i64 i % n) keys)[:sample_size]
-    let is =
-      map ((% sample_size) <-< key.hash consts) sample
-      |> radix_sort (i64.num_bits - i64.clz sample_size) i64.get_bit
-    let est =
-      tabulate (n / factor) (\i -> i64.bool (i == 0 || is[i - 1] != is[i]))
-      |> i64.sum
-      |> (* factor)
-      |> (2 *)
-      |> (1 +)
-    let size = i64.max 1024 est
-    in (rng, i64.min n size)
+    if n == 0
+    then (rng, 0)
+    else let sample_size = i64.max 1 (n / factor)
+         let (rng, consts) = generate_consts key.m rng
+         let (rng, i) = engine.rand rng
+         let sample = (rotate (int.to_i64 i % n) keys)[:sample_size]
+         let is =
+           map ((% sample_size) <-< key.hash consts) sample
+           |> radix_sort (i64.num_bits - i64.clz sample_size) i64.get_bit
+         let est =
+           tabulate (n / factor) (\i -> i64.bool (i == 0 || is[i - 1] != is[i]))
+           |> i64.sum
+           |> (* factor)
+           |> (2 *)
+           |> (1 +)
+         let size = i64.max 1024 est
+         in (rng, i64.min n size)
 
   def reduce_by_key [n] 'v
                     (r: rng)
@@ -90,7 +92,7 @@ module array (K: key) (E: rng_engine with int.t = K.i)
         let hashes = map h keys
         let collision_idxs =
           -- Find the smallest indices in regards to each hash to resolve collisions.
-          hist i64.min i64.highest alloc_size hashes (indices hashes)
+          hist i64.min i64.highest alloc_size hashes (indices keys)
         let (new_reduced, new_not_reduced) =
           -- Elements with the same hash as the element at the smallest index will be reduced.
           partition (\(h', elem) ->
@@ -120,10 +122,10 @@ module array (K: key) (E: rng_engine with int.t = K.i)
         let h = (% alloc_size) <-< key.hash consts
         let hashes = map h elems
         let collision_idxs =
-          hist i64.min i64.highest alloc_size hashes (indices hashes)
+          hist i64.min i64.highest alloc_size hashes (indices elems)
         let new_uniques =
           filter (!= i64.highest) collision_idxs
-          |> map (\i -> arr[i])
+          |> map (\i -> elems[i])
         let new_size = i64.max 1024 (size - length new_uniques)
         let new_elems =
           elems
