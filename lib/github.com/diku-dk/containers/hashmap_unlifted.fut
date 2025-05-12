@@ -1,9 +1,9 @@
--- | Static Unlifted Hashmap module
+-- | Static hashmaps with an unlifted type.
 --
--- | This is an implementation of a static hash table using two level
--- hasing https://en.wikipedia.org/wiki/Double_hashing. The modules
--- time complexities assumes only unique keys but the modules does
--- work with duplicate keys.
+-- This is an implementation of a static hash table using [two level
+-- hashing](https://en.wikipedia.org/wiki/Double_hashing). The modules time
+-- complexities assumes only unique keys but the modules does work with
+-- duplicate keys.
 
 import "../segmented/segmented"
 import "../cpprandom/random"
