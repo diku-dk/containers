@@ -1,3 +1,5 @@
+-- | ignore
+
 import "../cpprandom/random"
 module unlifted = import "hashmap_unlifted"
 module lifted = import "hashmap"

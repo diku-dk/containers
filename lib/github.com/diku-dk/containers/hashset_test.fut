@@ -1,3 +1,5 @@
+-- | ignore
+
 import "../cpprandom/random"
 module unlifted = import "hashset_unlifted"
 module lifted = import "hashset"
