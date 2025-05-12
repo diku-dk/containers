@@ -1,3 +1,5 @@
+-- | ignore
+
 import "bitset"
 
 module bitset_u8 = mk_bitset u8

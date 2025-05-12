@@ -1,3 +1,5 @@
+-- | ignore
+
 import "../cpprandom/random"
 import "../sorts/radix_sort"
 import "../segmented/segmented"
