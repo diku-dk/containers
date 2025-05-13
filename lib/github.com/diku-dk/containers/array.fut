@@ -6,6 +6,7 @@
 
 import "../cpprandom/random"
 import "../sorts/radix_sort"
+import "../segmented/segmented"
 import "key"
 
 module type array = {
@@ -89,7 +90,7 @@ module mk_array (K: key) (E: rng_engine with int.t = K.i)
            loop (uniques, elems, size, old_size, old_rng) = (dest, copy arr, est, 0, r)
            while length elems != 0 do
              let (new_rng, consts) = generate_consts key.m old_rng
-             let bounded_size = i64.min size 10000000
+             let bounded_size = i64.min size 15000000
              let alloc_size = bounded_size + bounded_size / 2
              let bounded_length = i64.min bounded_size (length elems)
              let h = (% alloc_size) <-< key.hash ctx consts
@@ -137,7 +138,7 @@ module mk_array (K: key) (E: rng_engine with int.t = K.i)
            while length not_reduced != 0 do
              let (new_rng, consts) = generate_consts key.m old_rng
              let keys = map (.0) not_reduced
-             let bounded_size = i64.min size 5000000
+             let bounded_size = i64.min size 15000000
              let alloc_size = bounded_size + bounded_size / 2
              let bounded_length = i64.min bounded_size (length not_reduced)
              let h = (% alloc_size) <-< key.hash ctx consts
@@ -227,6 +228,132 @@ module mk_array (K: key) (E: rng_engine with int.t = K.i)
                 , new_rng
                 )
          in (final_rng, take final_size reduction, not_done)
+
+  local
+  def exscan [n] 'a (op: a -> a -> a) (ne: a) (as: [n]a) : (a, [n]a) =
+    if length as == 0
+    then (ne, as)
+    else let res = scan op ne as |> rotate (-1)
+         let l = copy res[0]
+         let res[0] = ne
+         in (l, res)
+
+  local
+  def loop_body [n] [w]
+                (ctx: ctx)
+                (old_rng: rng)
+                (old_keys: [n](k, i64))
+                (old_shape: [w]i64) : ( rng
+                                      , [](k, i64)
+                                      , []i64
+                                      , []k
+                                      ) =
+    let (flat_size, old_shape_offsets) = old_shape |> exscan (+) 0
+    let (new_rng, consts) = generate_consts key.m old_rng
+    let is =
+      map (\(k, o) ->
+             old_shape_offsets[o] + (key.hash ctx consts k % old_shape[o]))
+          old_keys
+    let unique_indices = hist i64.min i64.highest flat_size is (iota n)
+    let flag_idxs =
+      map2 (\i j -> if i == 0 then -1 else j) old_shape old_shape_offsets
+    let flags =
+      scatter (replicate flat_size false) flag_idxs (replicate w true)
+    let seg_has_no_collision =
+      map (== i64.highest) unique_indices
+      |> segmented_reduce (&&) true flags
+      |> sized w
+    let new_offsets =
+      map (\f -> if f then 0 else 1) seg_has_no_collision
+      |> scan (+) 0
+      |> map2 (\f o -> if f then -1 else o - 1) seg_has_no_collision
+    let uniques =
+      filter (!= i64.highest) unique_indices
+      |> map (\i -> old_keys[i].0)
+    let keq = key.eq ctx
+    let new_keys =
+      zip is old_keys
+      |> filter (\(h, (k, _)) ->
+                   unique_indices[h] == i64.highest
+                   || not (old_keys[unique_indices[h]].0 `keq` k))
+      |> map (.1)
+      |> map (\(k, o) -> (k, new_offsets[o]))
+    let new_shape =
+      zip seg_has_no_collision old_shape
+      |> filter (\(f, _) -> not f)
+      |> map ((+ 1) <-< (.1))
+    in ( new_rng
+       , new_keys
+       , new_shape
+       , uniques
+       )
+
+  local
+  def estimate_shape [n]
+                     (ctx: ctx)
+                     (rng: rng)
+                     (counts: [n]i64)
+                     (keys: [n]k)
+                     (is: [n]i64) : (rng, []i64) =
+    let (new_rng, consts) = generate_consts key.m rng
+    let (_, temp_offsets) = exscan (+) 0 counts
+    let (shape, offsets) =
+      zip counts temp_offsets
+      |> filter ((!= 0) <-< (.0))
+      |> unzip
+    let m = length shape
+    let shape = shape :> [m]i64
+    let offsets = offsets :> [m]i64
+    let aux i k = temp_offsets[i] + ((key.hash ctx consts k) % counts[i])
+    let js = map2 aux is keys
+    let flags = scatter (replicate n false) offsets (replicate m true)
+    let new_shape =
+      hist (u8.|) 0 n js (replicate n 1u8)
+      |> map i64.u8
+      |> segmented_reduce (+) 0 flags
+      |> sized m
+      |> map2 (\s s' -> (i64.min s (2 * s' + 1)) ** 2) shape
+    in (new_rng, new_shape)
+
+  def dedup_two_level [n]
+                      (ctx: ctx)
+                      (r: rng)
+                      (keys: [n]k) : ?[m].(rng, [m]k) =
+    if n == 0
+    then (r, [])
+    else let (r, consts) = generate_consts key.m r
+         let is = map ((% i64.max 1 n) <-< key.hash ctx consts) keys
+         let counts =
+           replicate n 1
+           |> hist (+) 0i64 n is
+         -- let (r, shape) = estimate_shape ctx r counts keys is
+         let shape = filter (!= 0) counts |> map (** 2)
+         let s = length shape
+         let shape = sized s shape
+         let offsets =
+           map (i64.bool <-< (!= 0)) counts
+           |> exscan (+) 0
+           |> (.1)
+         let init_keys = map2 (\k i -> (k, offsets[i])) keys is
+         let dest = replicate n keys[0]
+         let (final_r, _, _, uniques, size) =
+           loop (old_rng, old_keys, old_shape, old_uniques, old_size) =
+                  (r, init_keys, copy shape, dest, 0)
+           while length old_keys != 0 do
+             let ( new_rng
+                 , new_keys
+                 , new_shape
+                 , new_uniques
+                 ) =
+               loop_body ctx old_rng old_keys old_shape
+             let is = map (+ old_size) (indices new_uniques)
+             in ( new_rng
+                , new_keys
+                , new_shape
+                , scatter old_uniques is new_uniques
+                , old_size + length new_uniques
+                )
+         in (final_r, take size uniques)
 
   local
   def blocked_reduce_by_key [n] 'v
