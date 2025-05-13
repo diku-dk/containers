@@ -1,11 +1,9 @@
--- | ignore
-
-import "../cpprandom/random"
-import "../sorts/radix_sort"
-import "../segmented/segmented"
-import "hashset"
-import "array"
-import "hashmap"
+import "lib/github.com/diku-dk/cpprandom/random"
+import "lib/github.com/diku-dk/sorts/radix_sort"
+import "lib/github.com/diku-dk/segmented/segmented"
+import "lib/github.com/diku-dk/containers/hashset"
+import "lib/github.com/diku-dk/containers/array"
+import "lib/github.com/diku-dk/containers/hashmap"
 
 module i64_key = {
   type i = u64
@@ -26,8 +24,8 @@ module i64_key = {
 
 module engine = xorshift128plus
 module array = array i64_key engine
-module hashset = hashset i64_key engine
-module hashmap = hashmap i64_key engine
+module hashset = mk_hashset i64_key engine
+module hashmap = mk_hashmap i64_key engine
 
 def seed = engine.rng_from_seed [1]
 
