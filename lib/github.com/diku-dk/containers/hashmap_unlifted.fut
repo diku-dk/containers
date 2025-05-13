@@ -51,7 +51,7 @@ module type hashmap = {
   -- behavior or excessive memory allocations. Keys with the smallest
   -- hash will be priotized.
   --
-  -- **Expected Work:** *O(n)*
+  -- **Expected Work:** *O(n + u)*
   --
   -- **Expected Span:** *O(log n)*
   val from_array [u] 'v : ctx -> rng -> [u](k, v) -> ?[n][f][w].(rng, hashmap ctx [n] [w] [f] v)
@@ -66,7 +66,7 @@ module type hashmap = {
   -- | Create hashmap where duplicates are reduced with an commutative
   -- and associative operation.
   --
-  -- **Expected Work:** *O(s + n ✕ W(op))*
+  -- **Expected Work:** *O(n + u ✕ W(op))*
   --
   -- **Expected Span:** *O(log n)* (Assuming best case for hist)
   val from_array_hist [u] 'v :
@@ -84,7 +84,7 @@ module type hashmap = {
 
   -- | Map a function over the hashmap values.
   --
-  -- **Work:** *O(s ✕ W(g))*
+  -- **Work:** *O(n ✕ W(g))*
   --
   -- **Span:** *O(s(g))*
   val hashmap_map [n] [w] [f] 'v 't :
@@ -94,9 +94,9 @@ module type hashmap = {
 
   -- | Map a function over the hashmap values.
   --
-  -- **Work:** *O(s ✕ W(g))*
+  -- **Work:** *O(n ✕ W(g))*
   --
-  -- **Span:** *O(s(g))*
+  -- **Span:** *O(S(g))*
   val hashmap_map_with_key [n] [w] [f] 'v 't :
     (g: k -> v -> t)
     -> hashmap ctx [n] [w] [f] v
@@ -112,7 +112,7 @@ module type hashmap = {
   -- | Updates the value of the hash map using the key with the
   -- smallest index.
   --
-  -- **Work:** *O(s + u)*
+  -- **Work:** *O(n + u)*
   --
   -- **Span:** *O(u)* in the worst case but O(1) in the best case.
   val update [n] [w] [f] [u] 'v :
@@ -290,17 +290,11 @@ module hashmap (K: key) (E: rng_engine with int.t = K.i)
       |> unzip
       |> (\(rngs, b) -> (engine.join_rng rngs, b))
     let init_keys = map2 (\k i -> (k, level_one_offsets[i])) keys is
-    let (final_r, _, _, done) =
-      loop ( old_rng
-           , old_keys
-           , old_not_done
-           , old_done
-           ) =
-             ( r
-             , init_keys
-             , zip3 (iota s) shape init_level_two_consts
-             , []
-             )
+    let (r, filler_consts) = generate_consts key.m r
+    let dest = replicate n (0, 0, filler_consts)
+    let (final_r, _, _, done, size) =
+      loop (old_rng, old_keys, old_not_done, old_done, old_size) =
+             (r, init_keys, zip3 (iota s) shape init_level_two_consts, dest, 0)
       while length old_not_done != 0 do
         let ( new_rng
             , new_keys
@@ -308,11 +302,14 @@ module hashmap (K: key) (E: rng_engine with int.t = K.i)
             , new_done
             ) =
           loop_body ctx old_rng old_keys old_not_done
+        let is = map (+ old_size) (indices new_done)
         in ( new_rng
            , new_keys
            , new_not_done
-           , old_done ++ new_done
+           , scatter old_done is new_done
+           , old_size + length new_done
            )
+    let done = take size done
     let ( order
         , unordered_level_two_shape
         , unordered_level_two_consts
