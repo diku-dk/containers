@@ -440,7 +440,7 @@ module mk_hashmap_unlifted (K: key) (E: rng_engine with int.t = K.i)
   def to_array [n] [w] [f] 'v (hmap: hashmap ctx [n] [w] [f] v) : [](k, v) =
     zip hmap.keys hmap.values
 
-  def size [n] [w] [f] 'k 'v (hmap: hashmap ctx [n] [w] [f] v) =
+  def size [n] [w] [f] 'v (hmap: hashmap ctx [n] [w] [f] v) =
     length hmap.keys
 
   local
@@ -513,7 +513,7 @@ module type hashmap = {
     -> hashmap v
     -> hashmap v
 
-  val size 'k 'v : hashmap v -> i64
+  val size 'v : hashmap v -> i64
 }
 
 module mk_hashmap (K: key) (E: rng_engine with int.t = K.i)
@@ -562,7 +562,7 @@ module mk_hashmap (K: key) (E: rng_engine with int.t = K.i)
   def to_array 'v (hmap: hashmap v) : [](k, v) =
     hashmap.to_array hmap
 
-  def size 'k 'v (hmap: hashmap v) =
+  def size 'v (hmap: hashmap v) =
     hashmap.size hmap
 
   def member 'v (k: k) (hmap: hashmap v) : bool =
