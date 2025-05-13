@@ -12,6 +12,9 @@ module type array = {
   -- | The key type.
   type k
 
+  -- | The context type.
+  type ctx
+
   -- | The random number generator.
   type rng
 
@@ -24,23 +27,25 @@ module type array = {
   -- neutral element `ne`@term must be given. To perform this
   -- reduction a definition of key equality must be given `eq`@term,
   -- this is done as to figure out which elements will be reduced.
-  val reduce_by_key [n] 'v : rng -> (v -> v -> v) -> v -> [n](k, v) -> ?[m].(rng, [m](k, v))
+  val reduce_by_key [n] 'v : ctx -> rng -> (v -> v -> v) -> v -> [n](k, v) -> ?[m].(rng, [m](k, v))
 
   -- | Removes duplicate elements from an array as defined by an
   -- equality `eq`@term. This implementation works much like
   -- `reduce_by_key`@term but saves some steps which makes it faster.
-  val dedup [n] : rng -> [n]k -> ?[m].(rng, [m]k)
+  val dedup [n] : ctx -> rng -> [n]k -> ?[m].(rng, [m]k)
 }
 
 module array (K: key) (E: rng_engine with int.t = K.i)
   : array
     with rng = E.rng
-    with k = K.k = {
+    with k = K.k
+    with ctx = K.ctx = {
   module key = K
   module engine = E
   type rng = engine.rng
   type int = key.i
   type k = key.k
+  type~ ctx = K.ctx
   module int = engine.int
 
   local
@@ -54,6 +59,7 @@ module array (K: key) (E: rng_engine with int.t = K.i)
 
   local
   def estimate_distinct [n]
+                        (ctx: ctx)
                         (rng: rng)
                         (factor: i64)
                         (keys: [n]k) : (rng, i64) =
@@ -64,7 +70,7 @@ module array (K: key) (E: rng_engine with int.t = K.i)
          let (rng, i) = engine.rand rng
          let sample = (rotate (int.to_i64 i % n) keys)[:sample_size]
          let is =
-           map ((% sample_size) <-< key.hash consts) sample
+           map ((% sample_size) <-< key.hash ctx consts) sample
            |> radix_sort (i64.num_bits - i64.clz sample_size) i64.get_bit
          let est =
            tabulate (n / factor) (\i -> i64.bool (i == 0 || is[i - 1] != is[i]))
@@ -76,11 +82,13 @@ module array (K: key) (E: rng_engine with int.t = K.i)
          in (rng, i64.min n size)
 
   def reduce_by_key [n] 'v
+                    (ctx: ctx)
                     (r: rng)
                     (op: v -> v -> v)
                     (ne: v)
                     (arr: [n](k, v)) : (rng, [](k, v)) =
-    let (r, est) = map (.0) arr |> estimate_distinct r 128
+    let keq = key.eq ctx
+    let (r, est) = map (.0) arr |> estimate_distinct ctx r 128
     let (reduction, _, _, final_rng) =
       -- Expected number of iterations is O(log n).
       loop (reduced, not_reduced, size, old_rng) = ([], arr, est, r)
@@ -88,7 +96,7 @@ module array (K: key) (E: rng_engine with int.t = K.i)
         let (new_rng, consts) = generate_consts key.m old_rng
         let keys = map (.0) not_reduced
         let alloc_size = size + size / 2
-        let h = (% alloc_size) <-< key.hash consts
+        let h = (% alloc_size) <-< key.hash ctx consts
         let hashes = map h keys
         let collision_idxs =
           -- Find the smallest indices in regards to each hash to resolve collisions.
@@ -97,7 +105,7 @@ module array (K: key) (E: rng_engine with int.t = K.i)
           -- Elements with the same hash as the element at the smallest index will be reduced.
           partition (\(h', elem) ->
                        not_reduced[collision_idxs[h']].0
-                       `key.eq` elem.0)
+                       `keq` elem.0)
                     (zip hashes not_reduced)
         let new_size = i64.max 1024 (size - length new_reduced)
         let (hashes, elems) = unzip new_reduced
@@ -112,14 +120,15 @@ module array (K: key) (E: rng_engine with int.t = K.i)
         in (reduced ++ new_reduced, new_not_reduced, new_size, new_rng)
     in (final_rng, reduction)
 
-  def dedup [n] (r: rng) (arr: [n]k) : ?[m].(rng, [m]k) =
-    let (r, est) = estimate_distinct r 128 arr
+  def dedup [n] (ctx: ctx) (r: rng) (arr: [n]k) : ?[m].(rng, [m]k) =
+    let keq = key.eq ctx
+    let (r, est) = estimate_distinct ctx r 128 arr
     let (uniques, _, _, final_rng) =
       loop (uniques, elems, size, old_rng) = ([], arr, est, r)
       while length elems != 0 do
         let (new_rng, consts) = generate_consts key.m old_rng
         let alloc_size = size + size / 2
-        let h = (% alloc_size) <-< key.hash consts
+        let h = (% alloc_size) <-< key.hash ctx consts
         let hashes = map h elems
         let collision_idxs =
           hist i64.min i64.highest alloc_size hashes (indices elems)
@@ -131,7 +140,7 @@ module array (K: key) (E: rng_engine with int.t = K.i)
           elems
           |> zip hashes
           |> filter (\(h', v) ->
-                       not (elems[collision_idxs[h']] `key.eq` v))
+                       not (elems[collision_idxs[h']] `keq` v))
           |> map (.1)
         in (uniques ++ new_uniques, new_elems, new_size, new_rng)
     in (final_rng, uniques)
