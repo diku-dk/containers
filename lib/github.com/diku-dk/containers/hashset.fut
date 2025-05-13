@@ -96,31 +96,22 @@ module mk_hashset_unlifted (K: key) (E: rng_engine with int.t = K.i)
 }
 
 module type hashset = {
-  -- | The key type.
   type k
 
-  -- | The context type.
   type ctx
 
-  -- | The random number generator.
   type rng
 
-  -- | The hashset type.
   type~ hashset
 
-  -- | Check if a key is member of the hashset.
   val member : k -> hashset -> bool
 
-  -- | Check if a key is not member of the hashset
   val not_member : k -> hashset -> bool
 
-  -- | Given an array keys construct a hashset.
   val from_array [n] : ctx -> rng -> [n]k -> (rng, hashset)
 
-  -- | Convert hashset to an array of keys.
   val to_array : hashset -> []k
 
-  -- | The number of elements in the hashset.
   val size : hashset -> i64
 }
 

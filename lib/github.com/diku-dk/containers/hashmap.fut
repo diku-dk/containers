@@ -147,7 +147,7 @@ module mk_hashmap_unlifted (K: key) (E: rng_engine with int.t = K.i)
   type k = key.k
   type~ ctx = key.ctx
   module int = engine.int
-  module array = array K E
+  module array = mk_array K E
 
   type hashmap 'ctx [n] [w] [f] 'v =
     { ctx: ctx

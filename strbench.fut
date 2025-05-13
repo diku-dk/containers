@@ -4,6 +4,7 @@ import "lib/github.com/diku-dk/containers/hashmap"
 import "lib/github.com/diku-dk/containers/hashset"
 import "lib/github.com/diku-dk/cpprandom/random"
 import "lib/github.com/diku-dk/sorts/radix_sort"
+import "lib/github.com/diku-dk/containers/array"
 
 module type slice = {
   type elem
@@ -30,7 +31,7 @@ def arreq [n] [m] 't (eq: t -> t -> bool) (x: [n]t) (y: [m]t) =
 module mk_slice_key
   (S: slice)
   (E: {
-    val == : S.elem -> S.elem -> bool
+    val (==) : S.elem -> S.elem -> bool
     val word : S.elem -> i64
   })
   : key
@@ -64,7 +65,8 @@ module slice_key = mk_slice_key u8slice {
   def word = i64.u8
 }
 
-module hashset = hashset slice_key engine
+module array = mk_array slice_key engine
+module hashset = mk_hashset slice_key engine
 
 def seed = engine.rng_from_seed [1]
 
@@ -92,6 +94,12 @@ entry bench_hashset_dedup [l] [k] (ctx: [l]u8) (words: [k](i64, i64)) =
   |> map u8slice.unmk
   |> map (.0)
 
+entry bench_array_dedup [l] [k] (ctx: [l]u8) (words: [k](i64, i64)) =
+  array.dedup ctx seed (map (uncurry u8slice.mk) words)
+  |> (.1)
+  |> map u8slice.unmk
+  |> map (.0)
+
 entry bench_sort_dedup [l] [k] (ctx: [l]u8) (words: [k](i64, i64)) =
   let longest_word = i32.maximum (map (i32.i64 <-< (.1)) words)
   let get_bit j (i, n) =
@@ -109,5 +117,5 @@ entry bench_sort_dedup [l] [k] (ctx: [l]u8) (words: [k](i64, i64)) =
   in zip flags sorted |> filter (.0) |> map (.1.0)
 
 -- ==
--- entry: bench_hashset_dedup bench_sort_dedup
+-- entry: bench_hashset_dedup bench_sort_dedup bench_array_dedup
 -- script input { mkinput ($loadbytes "words.txt") }

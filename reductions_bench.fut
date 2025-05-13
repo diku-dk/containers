@@ -23,7 +23,7 @@ module i64_key = {
 }
 
 module engine = xorshift128plus
-module array = array i64_key engine
+module array = mk_array i64_key engine
 module hashset = mk_hashset i64_key engine
 module hashmap = mk_hashmap i64_key engine
 
