@@ -14,6 +14,9 @@ module type hashmap = {
   -- | The key type.
   type k
 
+  -- | The context type.
+  type ctx
+
   -- | The random number generator.
   type rng
 
@@ -50,14 +53,16 @@ module type hashmap = {
   -- **Expected Work:** *O(n)*
   --
   -- **Expected Span:** *O(log n)*
-  val from_array [n] 'v : rng -> [n](k, v) -> (rng, hashmap v)
+  val from_array [n] 'v :
+    ctx -> rng -> [n](k, v) -> (rng, hashmap v)
 
   -- | Create hashmap with default value.
   --
   -- **Expected Work:** *O(n)*
   --
   -- **Expected Span:** *O(log n)*
-  val from_array_fill [n] 'v : rng -> [n]k -> v -> (rng, hashmap v)
+  val from_array_fill [n] 'v :
+    ctx -> rng -> [n]k -> v -> (rng, hashmap v)
 
   -- | Create hashmap where duplicates are reduced with an commutative
   -- and associative operation.
@@ -66,12 +71,13 @@ module type hashmap = {
   --
   -- **Expected Span:** *O(log n)* (Assuming best case for hist)
   val from_array_hist [n] 'v :
-    rng -> (v -> v -> v) -> v -> [n](k, v) -> (rng, hashmap v)
+    ctx -> rng -> (v -> v -> v) -> v -> [n](k, v) -> (rng, hashmap v)
 
   -- | Compute a histogram using the given key value pairs.
   --
   -- Same asymptotics as the hist SOAC.
-  val hashmap_hist [n] 'v : (v -> v -> v) -> v -> hashmap v -> [n](k, v) -> hashmap v
+  val hashmap_hist [n] 'v :
+    (v -> v -> v) -> v -> hashmap v -> [n](k, v) -> hashmap v
 
   -- | Map a function over the hashmap values.
   --
@@ -109,19 +115,21 @@ module type hashmap = {
 module hashmap (K: key) (E: rng_engine with int.t = K.i)
   : hashmap
     with rng = E.rng
-    with k = K.k = {
+    with k = K.k
+    with ctx = K.ctx = {
   module hashmap = hashmap K E
   type rng = hashmap.rng
   type k = hashmap.k
+  type ctx = hashmap.ctx
 
   type~ hashmap 'v =
-    ?[n][w][f].hashmap.hashmap [n] [w] [f] v
+    ?[n][w][f].hashmap.hashmap ctx [n] [w] [f] v
 
-  def from_array [n] 'v (r: rng) (key_values: [n](k, v)) : (rng, hashmap v) =
-    hashmap.from_array r key_values
+  def from_array [n] 'v (ctx: ctx) (r: rng) (key_values: [n](k, v)) : (rng, hashmap v) =
+    hashmap.from_array ctx r key_values
 
-  def from_array_fill [n] 'v (r: rng) (keys: [n]k) (ne: v) : (rng, hashmap v) =
-    hashmap.from_array_fill r keys ne
+  def from_array_fill [n] 'v (ctx: ctx) (r: rng) (keys: [n]k) (ne: v) : (rng, hashmap v) =
+    hashmap.from_array_fill ctx r keys ne
 
   def hashmap_hist [n] 'v
                    (op: v -> v -> v)
@@ -131,11 +139,12 @@ module hashmap (K: key) (E: rng_engine with int.t = K.i)
     hashmap.hashmap_hist op ne hmap key_values
 
   def from_array_hist [n] 'v
+                      (ctx: ctx)
                       (r: rng)
                       (op: v -> v -> v)
                       (ne: v)
                       (key_values: [n](k, v)) : (rng, hashmap v) =
-    hashmap.from_array_hist r op ne key_values
+    hashmap.from_array_hist ctx r op ne key_values
 
   def hashmap_map 'v 't (g: v -> t) (hmap: hashmap v) : hashmap t =
     hashmap.hashmap_map g hmap
