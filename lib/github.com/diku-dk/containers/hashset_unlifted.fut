@@ -13,6 +13,9 @@ module type hashset = {
   -- | The key type.
   type k
 
+  -- | The context type.
+  type ctx
+
   -- | The random number generator.
   type rng
 
@@ -41,7 +44,7 @@ module type hashset = {
   -- **Expected Work:** *O(n)*
   --
   -- **Expected Span:** *O(log n)*
-  val from_array [u] : rng -> [u]k -> ?[n][f][w].(rng, hashset [n] [w] [f])
+  val from_array [u] : ctx -> rng -> [u]k -> ?[n][f][w].(rng, hashset [n] [w] [f])
 
   -- | Convert hashset to an array of keys.
   --
@@ -61,18 +64,21 @@ module type hashset = {
 module hashset (K: key) (E: rng_engine with int.t = K.i)
   : hashset
     with rng = E.rng
-    with k = K.k = {
+    with k = K.k
+    with ctx = K.ctx = {
   module hashmap = hashmap K E
   type rng = hashmap.rng
   type k = hashmap.k
+  type ctx = hashmap.ctx
 
   type hashset [n] [w] [f] =
-    hashmap.hashmap [n] [w] [f] ()
+    hashmap.hashmap ctx [n] [w] [f] ()
 
   def from_array [u]
+                 (ctx: ctx)
                  (r: rng)
                  (keys: [u]k) : ?[n][f][w].(rng, hashset [n] [w] [f]) =
-    hashmap.from_array_fill r keys ()
+    hashmap.from_array_fill ctx r keys ()
 
   def to_array [n] [w] [f] (set: hashset [n] [w] [f]) : []k =
     hashmap.to_array set

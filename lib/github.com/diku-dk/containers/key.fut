@@ -4,6 +4,9 @@
 -- used in datastructures which use hash functions.
 
 module type key = {
+  -- | Context type.
+  type~ ctx
+
   -- | Constants type.
   type i
 
@@ -14,8 +17,8 @@ module type key = {
   val m : i64
 
   -- | Equality definition for the key.
-  val eq : k -> k -> bool
+  val eq : ctx -> k -> k -> bool
 
   -- | A given hash function use.
-  val hash : [m]i -> k -> i64
+  val hash : ctx -> [m]i -> k -> i64
 }

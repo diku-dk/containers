@@ -9,17 +9,18 @@ import "array"
 module i64_key = {
   type i = u64
   type k = i64
+  type ctx = ()
 
   def m : i64 = 1
 
-  def hash (a: [m]u64) (x: i64) : i64 =
+  def hash _ (a: [m]u64) (x: i64) : i64 =
     let x = i64.u64 a[0] * x
     let x = (x ^ (x >> 30)) * (i64.u64 0xbf58476d1ce4e5b9)
     let x = (x ^ (x >> 27)) * (i64.u64 0x94d049bb133111eb)
     let y = (x ^ (x >> 31))
     in y
 
-  def eq : i64 -> i64 -> bool = (==)
+  def eq _ : i64 -> i64 -> bool = (==)
 }
 
 module engine = xorshift128plus
@@ -56,7 +57,7 @@ local
 def count_occourences [n] (arr: [n]i64) : [](i64, i64) =
   replicate n 1
   |> zip arr
-  |> array.reduce_by_key seed (+) 0i64
+  |> array.reduce_by_key () seed (+) 0i64
   |> (.1)
 
 -- ==
@@ -95,7 +96,7 @@ entry test_dedup [n] [m] (arrs: [n][m]i64) : bool =
          let size = length sort_dedups
          let sort_dedups = sized size sort_dedups
          let counts =
-           array.dedup seed arr
+           array.dedup () seed arr
            |> (.1)
            |> radix_sort_int i64.num_bits i64.get_bit
            |> sized size

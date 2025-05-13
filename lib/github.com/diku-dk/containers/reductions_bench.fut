@@ -10,17 +10,18 @@ import "hashmap"
 module i64_key = {
   type i = u64
   type k = i64
+  type ctx = ()
 
   def m : i64 = 1
 
-  def hash (a: [m]u64) (x: i64) : i64 =
+  def hash _ (a: [m]u64) (x: i64) : i64 =
     let x = i64.u64 a[0] * x
     let x = (x ^ (x >> 30)) * (i64.u64 0xbf58476d1ce4e5b9)
     let x = (x ^ (x >> 27)) * (i64.u64 0x94d049bb133111eb)
     let y = (x ^ (x >> 31))
     in y
 
-  def eq : i64 -> i64 -> bool = (==)
+  def eq _ : i64 -> i64 -> bool = (==)
 }
 
 module engine = xorshift128plus
@@ -37,7 +38,7 @@ entry replicate_i64 (n: i64) (m: i64) : [n]i64 =
 local
 entry mod_i64 (n: i64) (m: i64) : [n]i64 =
   iota n
-  |> map ((% m) <-< i64_key.hash ([1] :> [i64_key.m]u64))
+  |> map ((% m) <-< i64_key.hash () ([1] :> [i64_key.m]u64))
 
 local
 def sort_dedup [n] (arr: [n]i64) : []i64 =
@@ -81,25 +82,25 @@ def sort_count_occourences [n] (arr: [n]i64) : [](i64, i64) =
 -- script input { replicate_i64 100000000i64 1i64 }
 local
 entry bench_array_dedup [n] (arr: [n]i64) =
-  array.dedup seed arr |> (.1)
+  array.dedup () seed arr |> (.1)
 
 local
 entry bench_array_count_occourences [n] (arr: [n]i64) =
   zip arr (replicate n 1)
-  |> array.reduce_by_key seed (+) 0i64
+  |> array.reduce_by_key () seed (+) 0i64
   |> (.1)
   |> unzip
 
 local
 entry bench_hashset_dedup [n] (arr: [n]i64) =
-  hashset.from_array seed arr
+  hashset.from_array () seed arr
   |> (.1)
   |> hashset.to_array
 
 local
 entry bench_hashmap_count_occourences [n] (arr: [n]i64) =
   zip arr (replicate n 1)
-  |> hashmap.from_array_hist seed (+) 0
+  |> hashmap.from_array_hist () seed (+) 0
   |> (.1)
   |> hashmap.to_array
   |> map (.0)
