@@ -24,9 +24,7 @@ module type array = {
   -- `n`@term key `k`@term and value `v`@term pairs are given as an
   -- array. And every value with the same key will be reduced with an
   -- associative and commutative operator `op`@term, futhermore an
-  -- neutral element `ne`@term must be given. To perform this
-  -- reduction a definition of key equality must be given `eq`@term,
-  -- this is done as to figure out which elements will be reduced.
+  -- neutral element `ne`@term must be given.
   val reduce_by_key [n] 'v : ctx -> rng -> (v -> v -> v) -> v -> [n](k, v) -> ?[m].(rng, [m](k, v))
 
   -- | Removes duplicate elements from an array as defined by an
@@ -35,7 +33,7 @@ module type array = {
   val dedup [n] : ctx -> rng -> [n]k -> ?[m].(rng, [m]k)
 }
 
-module array (K: key) (E: rng_engine with int.t = K.i)
+module mk_array (K: key) (E: rng_engine with int.t = K.i)
   : array
     with rng = E.rng
     with k = K.k
