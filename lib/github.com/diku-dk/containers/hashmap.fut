@@ -267,12 +267,11 @@ module mk_hashmap_unlifted (K: key) (E: rng_engine with int.t = K.i)
        , done :> [z](i64, i64, [key.m]int)
        )
 
-  def from_array_replicate [u] 'v
-                           (ctx: ctx)
-                           (r: rng)
-                           (keys: [u]k)
-                           (ne: v) : ?[n][f][w].(rng, hashmap ctx [n] [w] [f] v) =
-    let (r, keys) = array.dedup ctx r keys
+  def unsafe_from_array_replicate [u] 'v
+                                  (ctx: ctx)
+                                  (r: rng)
+                                  (keys: [u]k)
+                                  (ne: v) : ?[n][f][w].(rng, hashmap ctx [n] [w] [f] v) =
     let n = length keys
     let keys = keys :> [n]k
     let (r, level_one_consts) = generate_consts key.m r
@@ -359,6 +358,14 @@ module mk_hashmap_unlifted (K: key) (E: rng_engine with int.t = K.i)
          , level_two_shape = level_two_shape
          }
        )
+
+  def from_array_replicate [u] 'v
+                           (ctx: ctx)
+                           (r: rng)
+                           (keys: [u]k)
+                           (ne: v) : ?[n][f][w].(rng, hashmap ctx [n] [w] [f] v) =
+    let (r, keys) = array.dedup ctx r keys
+    in unsafe_from_array_replicate ctx r keys ne
 
   local
   def offset [n] [w] [f] 'v
@@ -470,6 +477,19 @@ module mk_hashmap_unlifted (K: key) (E: rng_engine with int.t = K.i)
     in if j == -1
        then #none
        else some hmap.values[j]
+
+  def union [n] [w] [f] [n'] [w'] [f'] 'v
+            (ctx: ctx)
+            (r: rng)
+            (hmap: hashmap ctx [n] [w] [f] v)
+            (hmap': hashmap ctx [n'] [w'] [f'] v) =
+    if n == 0
+    then (r, hmap')
+    else if n' == 0
+    then (r, hmap)
+    else let key_values = to_array hmap
+         let key_values' = to_array hmap'
+         in from_array ctx r (key_values ++ key_values')
 }
 
 module type hashmap = {
