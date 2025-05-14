@@ -80,7 +80,7 @@ module mk_array (K: key) (E: rng_engine with int.t = K.i)
          let size = i64.max 1024 est
          in (rng, i64.min n size)
 
-  def dedup [n] (ctx: ctx) (r: rng) (arr: [n]k) : ?[m].(rng, [m]k) =
+  def dedup_old [n] (ctx: ctx) (r: rng) (arr: [n]k) : ?[m].(rng, [m]k) =
     if n == 0
     then (r, [])
     else let keq = key.eq ctx
@@ -281,57 +281,29 @@ module mk_array (K: key) (E: rng_engine with int.t = K.i)
     let new_shape =
       zip seg_has_no_collision old_shape
       |> filter (\(f, _) -> not f)
-      |> map ((+ 1) <-< (.1))
+      |> map ((* 2) <-< (.1))
     in ( new_rng
        , new_keys
        , new_shape
        , uniques
        )
 
-  local
-  def estimate_shape [n]
-                     (ctx: ctx)
-                     (rng: rng)
-                     (counts: [n]i64)
-                     (keys: [n]k)
-                     (is: [n]i64) : (rng, []i64) =
-    let (new_rng, consts) = generate_consts key.m rng
-    let (_, temp_offsets) = exscan (+) 0 counts
-    let (shape, offsets) =
-      zip counts temp_offsets
-      |> filter ((!= 0) <-< (.0))
-      |> unzip
-    let m = length shape
-    let shape = shape :> [m]i64
-    let offsets = offsets :> [m]i64
-    let aux i k = temp_offsets[i] + ((key.hash ctx consts k) % counts[i])
-    let js = map2 aux is keys
-    let flags = scatter (replicate n false) offsets (replicate m true)
-    let new_shape =
-      hist (u8.|) 0 n js (replicate n 1u8)
-      |> map i64.u8
-      |> segmented_reduce (+) 0 flags
-      |> sized m
-      |> map2 (\s s' -> (i64.min s (2 * s' + 1)) ** 2) shape
-    in (new_rng, new_shape)
-
-  def dedup_two_level [n]
-                      (ctx: ctx)
-                      (r: rng)
-                      (keys: [n]k) : ?[m].(rng, [m]k) =
+  def dedup [n]
+            (ctx: ctx)
+            (r: rng)
+            (keys: [n]k) : ?[m].(rng, [m]k) =
     if n == 0
     then (r, [])
     else let (r, consts) = generate_consts key.m r
          let is = map ((% i64.max 1 n) <-< key.hash ctx consts) keys
-         let counts =
-           replicate n 1
-           |> hist (+) 0i64 n is
-         -- let (r, shape) = estimate_shape ctx r counts keys is
-         let shape = filter (!= 0) counts |> map (** 2)
+         let flags =
+           replicate n 1u8
+           |> hist (u8.|) 0u8 n is
+         let shape = filter (bool.u8) flags |> map i64.u8
          let s = length shape
          let shape = sized s shape
          let offsets =
-           map (i64.bool <-< (!= 0)) counts
+           map i64.u8 flags
            |> exscan (+) 0
            |> (.1)
          let init_keys = map2 (\k i -> (k, offsets[i])) keys is
