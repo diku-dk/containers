@@ -80,7 +80,7 @@ module mk_array (K: key) (E: rng_engine with int.t = K.i)
          let size = i64.max 1024 est
          in (rng, i64.min n size)
 
-  def dedup_old [n] (ctx: ctx) (r: rng) (arr: [n]k) : ?[m].(rng, [m]k) =
+  def dedup [n] (ctx: ctx) (r: rng) (arr: [n]k) : ?[m].(rng, [m]k) =
     if n == 0
     then (r, [])
     else let keq = key.eq ctx
@@ -288,10 +288,10 @@ module mk_array (K: key) (E: rng_engine with int.t = K.i)
        , uniques
        )
 
-  def dedup [n]
-            (ctx: ctx)
-            (r: rng)
-            (keys: [n]k) : ?[m].(rng, [m]k) =
+  def dedup_two_level [n]
+                      (ctx: ctx)
+                      (r: rng)
+                      (keys: [n]k) : ?[m].(rng, [m]k) =
     if n == 0
     then (r, [])
     else let (r, consts) = generate_consts key.m r
