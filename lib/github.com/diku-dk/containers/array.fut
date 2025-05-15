@@ -69,7 +69,7 @@ module mk_array (K: key) (E: rng_engine with int.t = K.i)
          let (rng, i) = engine.rand rng
          let sample = (rotate (int.to_i64 i % n) keys)[:sample_size]
          let is =
-           map ((% sample_size) <-< key.hash ctx consts) sample
+           map (i64.u64 <-< (%% u64.i64 sample_size) <-< key.hash ctx consts) sample
            |> radix_sort (i64.num_bits - i64.clz sample_size) i64.get_bit
          let est =
            tabulate (n / factor) (\i -> i64.bool (i == 0 || is[i - 1] != is[i]))
@@ -90,25 +90,24 @@ module mk_array (K: key) (E: rng_engine with int.t = K.i)
            loop (uniques, elems, size, old_size, old_rng) = (dest, copy arr, est, 0, r)
            while length elems != 0 do
              let (new_rng, consts) = generate_consts key.m old_rng
-             let bounded_size = i64.min size 15000000
-             let alloc_size = bounded_size + bounded_size / 2
-             let bounded_length = i64.min bounded_size (length elems)
-             let h = (% alloc_size) <-< key.hash ctx consts
+             let alloc_size = size + size / 2
+             let h = i64.u64 <-< (%% u64.i64 alloc_size) <-< key.hash ctx consts
              let hashes = map h elems
              let collision_idxs =
                hist i64.min
                     i64.highest
                     alloc_size
-                    hashes[:bounded_length]
-                    (iota bounded_length)
+                    hashes
+                    (indices hashes)
              let new_uniques =
                filter (!= i64.highest) collision_idxs
-               |> map (\i -> elems[i])
+               |> map (\i -> #[unsafe] elems[i])
              let new_size = i64.max 1024 (size - length new_uniques)
              let new_elems =
                elems
                |> zip hashes
                |> filter (\(h', v) ->
+                            #[unsafe]
                             collision_idxs[h'] == i64.highest
                             || not (elems[collision_idxs[h']] `keq` v))
                |> map (.1)
@@ -138,18 +137,16 @@ module mk_array (K: key) (E: rng_engine with int.t = K.i)
            while length not_reduced != 0 do
              let (new_rng, consts) = generate_consts key.m old_rng
              let keys = map (.0) not_reduced
-             let bounded_size = i64.min size 15000000
-             let alloc_size = bounded_size + bounded_size / 2
-             let bounded_length = i64.min bounded_size (length not_reduced)
-             let h = (% alloc_size) <-< key.hash ctx consts
+             let alloc_size = size + size / 2
+             let h = i64.u64 <-< (%% u64.i64 alloc_size) <-< key.hash ctx consts
              let hashes = map h keys
              let collision_idxs =
                -- Find the smallest indices in regards to each hash to resolve collisions.
                hist i64.min
                     i64.highest
                     alloc_size
-                    hashes[:bounded_length]
-                    (iota bounded_length)
+                    hashes
+                    (indices hashes)
              let (new_reduced, new_not_reduced) =
                -- Elements with the same hash as the element at the smallest index will be reduced.
                partition (\(h', elem) ->
@@ -195,7 +192,7 @@ module mk_array (K: key) (E: rng_engine with int.t = K.i)
              let keys = map (.0) not_reduced
              let size = length old_keys
              let alloc_size = size + size / 2
-             let h = (% alloc_size) <-< key.hash ctx consts
+             let h = i64.u64 <-< (%% u64.i64 alloc_size) <-< key.hash ctx consts
              let hashes = map h keys
              let collision_idxs =
                -- Find the smallest indices in regards to each hash to resolve collisions.
@@ -252,7 +249,7 @@ module mk_array (K: key) (E: rng_engine with int.t = K.i)
     let (new_rng, consts) = generate_consts key.m old_rng
     let is =
       map (\(k, o) ->
-             old_shape_offsets[o] + (key.hash ctx consts k % old_shape[o]))
+             i64.u64 (u64.i64 old_shape_offsets[o] + (key.hash ctx consts k %% u64.i64 old_shape[o])))
           old_keys
     let unique_indices = hist i64.min i64.highest flat_size is (iota n)
     let flag_idxs =
@@ -295,7 +292,7 @@ module mk_array (K: key) (E: rng_engine with int.t = K.i)
     if n == 0
     then (r, [])
     else let (r, consts) = generate_consts key.m r
-         let is = map ((% i64.max 1 n) <-< key.hash ctx consts) keys
+         let is = map (i64.u64 <-< (%% u64.i64 n) <-< key.hash ctx consts) keys
          let flags =
            replicate n 1u8
            |> hist (u8.|) 0u8 n is
