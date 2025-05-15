@@ -11,10 +11,10 @@ module i64_key = {
 
   def m : i64 = 1
 
-  def hash () (a: [m]u64) (x: i64) : i64 =
-    let x = i64.u64 a[0] * x
-    let x = (x ^ (x >> 30)) * (i64.u64 0xbf58476d1ce4e5b9)
-    let x = (x ^ (x >> 27)) * (i64.u64 0x94d049bb133111eb)
+  def hash _ (a: [m]u64) (x: i64) : u64 =
+    let x = a[0] * u64.i64 x
+    let x = (x ^ (x >> 30)) * 0xbf58476d1ce4e5b9
+    let x = (x ^ (x >> 27)) * 0x94d049bb133111eb
     let y = (x ^ (x >> 31))
     in y
 

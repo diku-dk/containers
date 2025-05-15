@@ -205,12 +205,12 @@ module mk_hashmap_unlifted (K: key) (E: rng_engine with int.t = K.i)
     #[sequential]
     if n == 0
     then 0
-    else let x = (key.hash ctx level_one_consts k) % n
-         let o = level_one_offsets[x]
+    else let x = (key.hash ctx level_one_consts k) %% u64.i64 n
+         let o = level_one_offsets[i64.u64 x]
          let cs = level_two_consts[o]
          let s = level_two_shape[o]
-         let y = (key.hash ctx cs k) % s
-         in level_two_offsets[o] + y
+         let y = (key.hash ctx cs k) %% u64.i64 s
+         in level_two_offsets[o] + i64.u64 y
 
   local
   def loop_body [n] [w]
@@ -226,7 +226,7 @@ module mk_hashmap_unlifted (K: key) (E: rng_engine with int.t = K.i)
     let (flat_size, old_shape_offsets) = old_shape |> exscan (+) 0
     let is =
       map (\(k, o) ->
-             old_shape_offsets[o] + (key.hash ctx old_consts[o] k % old_shape[o]))
+             i64.u64 (u64.i64 old_shape_offsets[o] + (key.hash ctx old_consts[o] k %% u64.i64 old_shape[o])))
           old_keys
     let has_no_collisions =
       replicate n 1
@@ -275,7 +275,7 @@ module mk_hashmap_unlifted (K: key) (E: rng_engine with int.t = K.i)
     let n = length keys
     let keys = keys :> [n]k
     let (r, level_one_consts) = generate_consts key.m r
-    let is = map ((% i64.max 1 n) <-< key.hash ctx level_one_consts) keys
+    let is = map (i64.u64 <-< (%% u64.max 1 (u64.i64 n)) <-< key.hash ctx level_one_consts) keys
     let level_one_counts =
       replicate n 1
       |> hist (+) 0i64 n is

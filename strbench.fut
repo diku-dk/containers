@@ -32,7 +32,7 @@ module mk_slice_key
   (S: slice)
   (E: {
     val (==) : S.elem -> S.elem -> bool
-    val word : S.elem -> i64
+    val word : S.elem -> u64
   })
   : key
     with ctx = []S.elem
@@ -47,12 +47,12 @@ module mk_slice_key
   def eq (ctx: []S.elem) (x: k) (y: k) =
     arreq (E.==) (S.get x ctx) (S.get y ctx)
 
-  def hash (ctx: []S.elem) (a: [m]u64) (x: k) : i64 =
+  def hash (ctx: []S.elem) (a: [m]u64) (x: k) : u64 =
     loop v = 0
     for x' in S.get x ctx do
-      let x = i64.u64 a[0] * (v ^ E.word x')
-      let x = (x ^ (x >> 30)) * (i64.u64 0xbf58476d1ce4e5b9)
-      let x = (x ^ (x >> 27)) * (i64.u64 0x94d049bb133111eb)
+      let x = a[0] * (v ^ E.word x')
+      let x = (x ^ (x >> 30)) * 0xbf58476d1ce4e5b9
+      let x = (x ^ (x >> 27)) * 0x94d049bb133111eb
       let y = (x ^ (x >> 31))
       in y
 }
@@ -62,7 +62,7 @@ module u8slice = mk_slice {type elem = u8}
 
 module slice_key = mk_slice_key u8slice {
   def (==) = (u8.==)
-  def word = i64.u8
+  def word = u64.u8
 }
 
 module array = mk_array slice_key engine

@@ -20,5 +20,5 @@ module type key = {
   val eq : ctx -> k -> k -> bool
 
   -- | A given hash function use.
-  val hash : ctx -> [m]i -> k -> i64
+  val hash : ctx -> [m]i -> k -> u64
 }

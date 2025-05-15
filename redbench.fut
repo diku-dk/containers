@@ -12,10 +12,10 @@ module i64_key = {
 
   def m : i64 = 1
 
-  def hash _ (a: [m]u64) (x: i64) : i64 =
-    let x = i64.u64 a[0] * x
-    let x = (x ^ (x >> 30)) * (i64.u64 0xbf58476d1ce4e5b9)
-    let x = (x ^ (x >> 27)) * (i64.u64 0x94d049bb133111eb)
+  def hash _ (a: [m]u64) (x: i64) : u64 =
+    let x = a[0] * u64.i64 x
+    let x = (x ^ (x >> 30)) * 0xbf58476d1ce4e5b9
+    let x = (x ^ (x >> 27)) * 0x94d049bb133111eb
     let y = (x ^ (x >> 31))
     in y
 
@@ -36,7 +36,7 @@ entry replicate_i64 (n: i64) (m: i64) : [n]i64 =
 local
 entry mod_i64 (n: i64) (m: i64) : [n]i64 =
   iota n
-  |> map ((% m) <-< i64_key.hash () ([1] :> [i64_key.m]u64))
+  |> map ((% m) <-< i64.u64 <-< i64_key.hash () ([1] :> [i64_key.m]u64))
 
 local
 def sort_dedup [n] (arr: [n]i64) : []i64 =
