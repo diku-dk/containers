@@ -45,8 +45,10 @@ def eytzinger_index (n: i64) (i: i64) =
   in offset + (i - k) * offset * 2 - 1
 
 def eytzinger [n] 't (xs: [n]t) : ?[m].[m]t =
-  let m = 2 ** (i64.num_bits - i64.clz n) |> i64.i32
-  let f i = xs[let i = eytzinger_index m i in if i < 0 || n <= i then n - 1 else i]
+  let m = 2 ** (i64.num_bits - i64.clz n |> i64.i32) - 1
+  let dest = replicate m xs[n - 1]
+  let xs' = scatter dest (indices xs) xs
+  let f i = xs'[eytzinger_index m i]
   in tabulate m f
 
 def ffs x = i64.ctz x + 1
@@ -58,7 +60,8 @@ def eytzinger_search [n] 't (eq: t -> t -> bool) (lte: t -> t -> bool) (xs: [n]t
       if x `lte` xs[k - 1]
       then 2 * k
       else 2 * k + 1
-  in xs[clamp ((k >> i64.i32 (ffs (!k))) - 1) 0 (n - 1)] `eq` x
+  let i = (k >> i64.i32 (ffs (!k))) - 1
+  in 0 <= i && i < n && eq xs[i] x
 
 local
 entry replicate_i64 (n: i64) (m: i64) : [n]i64 =
@@ -74,9 +77,7 @@ def construct_hashset arr =
   |> (.1)
 
 def construct_eytzinger arr =
-  map u64.i64 arr
-  |> blocked_radix_sort 256 u64.num_bits u64.get_bit
-  |> map i64.u64
+  blocked_radix_sort_int 256 i64.num_bits i64.get_bit arr
   |> eytzinger
 
 def construct_sort [n] (arr: [n]i64) : [n]i64 =
