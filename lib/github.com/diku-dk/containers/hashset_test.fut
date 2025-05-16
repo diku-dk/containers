@@ -17,7 +17,7 @@ module i64_key = {
     let y = (x ^ (x >> 31))
     in y
 
-  def eq () : i64 -> i64 -> bool = (==)
+  def eq _ x _ y = x i64.== y
 }
 
 module engine = xorshift128plus
@@ -33,7 +33,7 @@ def seed = engine.rng_from_seed [1]
 entry test_find_all n =
   let xs = iota n
   let (_, s) = hashset.from_array () seed xs
-  in all (\x -> hashset.member x s) xs
+  in all (\x -> hashset.member () x s) xs
 
 -- ==
 -- entry: test_does_not_find
@@ -45,7 +45,7 @@ entry test_does_not_find n =
   let ys = iota n
   let (_, s) = hashset.from_array () seed ys
   let idxs = (n..<n + 1)
-  in all (\x -> hashset.not_member x s) idxs
+  in all (\x -> hashset.not_member () x s) idxs
 
 -- ==
 -- entry: test_find_all_dups
@@ -54,7 +54,7 @@ entry test_does_not_find n =
 entry test_find_all_dups n =
   let xs = iota n |> map (% 10)
   let (_, s) = hashset.from_array () seed xs
-  in all (\x -> hashset.member x s) xs
+  in all (\x -> hashset.member () x s) xs
 
 -- ==
 -- entry: test_does_not_find_dups
@@ -64,7 +64,7 @@ entry test_does_not_find_dups n =
   let ys = iota n |> map (% 10)
   let (_, s) = hashset.from_array () seed ys
   let idxs = (10..<n)
-  in all (\x -> hashset.not_member x s) idxs
+  in all (\x -> hashset.not_member () x s) idxs
 
 -- ==
 -- entry: test_dedup

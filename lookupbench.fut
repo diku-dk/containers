@@ -15,7 +15,7 @@ module i64_key = {
     let y = (x ^ (x >> 31))
     in y
 
-  def eq _ : i64 -> i64 -> bool = (==)
+  def eq _ x _ y = x i64.== y
 }
 
 module engine = xorshift128plus
@@ -150,4 +150,4 @@ entry bench_eytzinger_lookup (arr: []i64) (arr_tree: []i64) =
 -- script input { construct_random_hashset 1000000i64 }
 -- script input { construct_random_hashset 10000000i64 }
 entry bench_hashset_lookup (arr: []i64) (set: hashset.hashset) =
-  map (\k -> hashset.member k set) arr
+  map (\k -> hashset.member () k set) arr

@@ -29,21 +29,21 @@ module type hashmap_unlifted = {
   -- **Work:** *O(1)*
   --
   -- **Span:** *O(1)*
-  val member [n] [f] 'v : k -> hashmap ctx [n] [f] v -> bool
+  val member [n] [f] 'v : ctx -> k -> hashmap ctx [n] [f] v -> bool
 
   -- | Check if a key is not member of the hashmap
   --
   -- **Work:** *O(1)*
   --
   -- **Span:** *O(1)*
-  val not_member [n] [f] 'v : k -> hashmap ctx [n] [f] v -> bool
+  val not_member [n] [f] 'v : ctx -> k -> hashmap ctx [n] [f] v -> bool
 
   -- | Look up a value.
   --
   -- **Work:** *O(1)*
   --
   -- **Span:** *O(1)*
-  val lookup [n] [f] 'v : k -> hashmap ctx [n] [f] v -> opt v
+  val lookup [n] [f] 'v : ctx -> k -> hashmap ctx [n] [f] v -> opt v
 
   -- | Given a key-value array construct a hashmap.
   --
@@ -363,12 +363,13 @@ module mk_hashmap_unlifted (K: key) (E: rng_engine with int.t = u64)
 
   local
   def offset [n] [f] 'v
+             (ctx: ctx)
              (hmap: hashmap ctx [n] [f] v)
              (key: k) : i64 =
     if length hmap.keys == 0
     then -1
     else let i =
-           level_two_hash hmap.ctx
+           level_two_hash ctx
                           hmap.level_one_consts
                           hmap.level_two
                           key
@@ -378,7 +379,7 @@ module mk_hashmap_unlifted (K: key) (E: rng_engine with int.t = u64)
              (key_values: [u](k, v))
              (hmap: hashmap ctx [n] [f] v) =
     let (keys, values) = unzip key_values
-    let js = map (offset hmap) keys
+    let js = map (offset hmap.ctx hmap) keys
     let is = hist i64.min i64.highest n js (indices key_values)
     let vs = map2 (\i v -> if i != i64.highest then values[i] else v) is hmap.values
     in hmap with values = vs
@@ -400,7 +401,7 @@ module mk_hashmap_unlifted (K: key) (E: rng_engine with int.t = u64)
            (hmap: hashmap ctx [n] [f] v)
            (key_values: [u](k, v)) =
     let (keys, values) = unzip key_values
-    let is = map (offset hmap) keys
+    let is = map (offset hmap.ctx hmap) keys
     let vs = reduce_by_index (copy hmap.values) op ne is values
     in hmap with values = vs
 
@@ -440,35 +441,39 @@ module mk_hashmap_unlifted (K: key) (E: rng_engine with int.t = u64)
 
   local
   def lookup_idx [n] [f] 'v
+                 (ctx: ctx)
                  (k: k)
                  (hmap: hashmap ctx [n] [f] v) : i64 =
     if length hmap.keys == 0
     then -1
-    else let j = i64.min (length hmap.keys - 1) (i64.max 0 (offset hmap k))
+    else let j = i64.min (length hmap.keys - 1) (i64.max 0 (offset ctx hmap k))
          let k' = hmap.keys[j]
-         in if key.eq hmap.ctx k' k then j else -1
+         in if key.eq hmap.ctx k' ctx k then j else -1
 
   def member [n] [f] 'v
+             (ctx: ctx)
              (k: k)
              (hmap: hashmap ctx [n] [f] v) : bool =
     if n == 0
     then false
     else let i =
-           level_two_hash hmap.ctx
+           level_two_hash ctx
                           hmap.level_one_consts
                           hmap.level_two
                           k
-         in key.eq hmap.ctx hmap.lookup_keys[i] k
+         in key.eq hmap.ctx hmap.lookup_keys[i] ctx k
 
   def not_member [n] [f] 'v
+                 (ctx: ctx)
                  (key: k)
                  (hmap: hashmap ctx [n] [f] v) : bool =
-    not (member key hmap)
+    not (member ctx key hmap)
 
   def lookup [n] [f] 'v
+             (ctx: ctx)
              (k: k)
              (hmap: hashmap ctx [n] [f] v) : opt v =
-    let j = lookup_idx k hmap
+    let j = lookup_idx ctx k hmap
     in if j == -1
        then #none
        else some hmap.values[j]
@@ -496,11 +501,11 @@ module type hashmap = {
 
   type~ hashmap 'v
 
-  val member 'v : k -> hashmap v -> bool
+  val member 'v : ctx -> k -> hashmap v -> bool
 
-  val not_member 'v : k -> hashmap v -> bool
+  val not_member 'v : ctx -> k -> hashmap v -> bool
 
-  val lookup 'v : k -> hashmap v -> opt v
+  val lookup 'v : ctx -> k -> hashmap v -> opt v
 
   val from_array [n] 'v :
     ctx -> rng -> [n](k, v) -> (rng, hashmap v)
@@ -580,12 +585,12 @@ module mk_hashmap (K: key) (E: rng_engine with int.t = u64)
   def size 'v (hmap: hashmap v) =
     hashmap.size hmap
 
-  def member 'v (k: k) (hmap: hashmap v) : bool =
-    hashmap.member k hmap
+  def member 'v (ctx: ctx) (k: k) (hmap: hashmap v) : bool =
+    hashmap.member ctx k hmap
 
-  def not_member 'v (key: k) (hmap: hashmap v) : bool =
-    hashmap.not_member key hmap
+  def not_member 'v (ctx: ctx) (key: k) (hmap: hashmap v) : bool =
+    hashmap.not_member ctx key hmap
 
-  def lookup 'v (k: k) (hmap: hashmap v) : opt v =
-    hashmap.lookup k hmap
+  def lookup 'v (ctx: ctx) (k: k) (hmap: hashmap v) : opt v =
+    hashmap.lookup ctx k hmap
 }

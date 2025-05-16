@@ -43,8 +43,8 @@ module mk_slice_key
 
   def m : i64 = 1
 
-  def eq (ctx: []S.elem) (x: k) (y: k) =
-    arreq (E.==) (S.get x ctx) (S.get y ctx)
+  def eq (xctx: []S.elem) (x: k) (yctx: []S.elem) (y: k) =
+    arreq (E.==) (S.get x xctx) (S.get y yctx)
 
   def hash (ctx: []S.elem) (a: [m]u64) (x: k) : u64 =
     loop v = 0
