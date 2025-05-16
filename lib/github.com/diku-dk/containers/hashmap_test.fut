@@ -121,6 +121,7 @@ entry test_update n =
   let xs = iota n
   let (_, h) = hashmap.from_array () seed (zip xs xs)
   let p =
-    hashmap.update (zip xs (replicate n (-1))) h
+    zip xs (replicate n (-1))
+    |> hashmap.update h
     |> hashmap.to_array
   in all ((== (-1)) <-< (.1)) p
