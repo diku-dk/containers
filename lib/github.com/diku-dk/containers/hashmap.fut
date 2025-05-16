@@ -152,6 +152,7 @@ module mk_hashmap_unlifted (K: key) (E: rng_engine with int.t = u64)
     , keys: [n]k
     , values: [n]v
     , offsets: [f]i64
+    , lookup_keys: [f]k
     , level_one_consts: [key.m]u64
     , level_two: [n][2 + key.m]u64
     }
@@ -162,6 +163,7 @@ module mk_hashmap_unlifted (K: key) (E: rng_engine with int.t = u64)
     , keys = []
     , values = []
     , offsets = []
+    , lookup_keys = []
     , level_one_consts = replicate key.m 0
     , level_two = []
     }
@@ -335,9 +337,15 @@ module mk_hashmap_unlifted (K: key) (E: rng_engine with int.t = u64)
       |> map (\o -> keys[o])
       |> sized n
     let offsets = hist i64.min i64.highest flat_size (map hash2 key_reordered) (indices key_reordered)
+    let lookup_keys_dest =
+      if n == 0
+      then sized flat_size []
+      else replicate flat_size keys[0]
+    let lookup_keys = scatter lookup_keys_dest js keys
     in ( final_r
        , { ctx
          , keys = key_reordered
+         , lookup_keys = lookup_keys
          , values = replicate n ne
          , offsets = offsets
          , level_one_consts = level_one_consts
@@ -412,6 +420,7 @@ module mk_hashmap_unlifted (K: key) (E: rng_engine with int.t = u64)
     let vs = map2 g hmap.keys hmap.values
     in { ctx = hmap.ctx
        , keys = hmap.keys
+       , lookup_keys = hmap.lookup_keys
        , values = vs
        , offsets = hmap.offsets
        , level_one_consts = hmap.level_one_consts
@@ -442,7 +451,14 @@ module mk_hashmap_unlifted (K: key) (E: rng_engine with int.t = u64)
   def member [n] [f] 'v
              (k: k)
              (hmap: hashmap ctx [n] [f] v) : bool =
-    -1 != lookup_idx k hmap
+    if n == 0
+    then false
+    else let i =
+           level_two_hash hmap.ctx
+                          hmap.level_one_consts
+                          hmap.level_two
+                          k
+         in key.eq hmap.ctx hmap.lookup_keys[i] k
 
   def not_member [n] [f] 'v
                  (key: k)
