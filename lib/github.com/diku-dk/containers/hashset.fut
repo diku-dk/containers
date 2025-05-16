@@ -27,14 +27,14 @@ module type hashset_unlifted = {
   -- **Work:** *O(1)*
   --
   -- **Span:** *O(1)*
-  val member [n] [f] : k -> hashset [n] [f] -> bool
+  val member [n] [f] : ctx -> k -> hashset [n] [f] -> bool
 
   -- | Check if a key is not member of the hashset
   --
   -- **Work:** *O(1)*
   --
   -- **Span:** *O(1)*
-  val not_member [n] [f] : k -> hashset [n] [f] -> bool
+  val not_member [n] [f] : ctx -> k -> hashset [n] [f] -> bool
 
   -- | Given an array keys construct a hashset.
   --
@@ -85,14 +85,16 @@ module mk_hashset_unlifted (K: key) (E: rng_engine with int.t = u64)
     hashmap.size set
 
   def member [n] [f]
+             (ctx: ctx)
              (key: k)
              (set: hashset [n] [f]) : bool =
-    hashmap.member key set
+    hashmap.member ctx key set
 
   def not_member [n] [f]
+                 (ctx: ctx)
                  (key: k)
                  (set: hashset [n] [f]) : bool =
-    hashmap.not_member key set
+    hashmap.not_member ctx key set
 }
 
 module type hashset = {
@@ -104,9 +106,9 @@ module type hashset = {
 
   type~ hashset
 
-  val member : k -> hashset -> bool
+  val member : ctx -> k -> hashset -> bool
 
-  val not_member : k -> hashset -> bool
+  val not_member : ctx -> k -> hashset -> bool
 
   val from_array [n] : ctx -> rng -> [n]k -> (rng, hashset)
 
@@ -139,9 +141,9 @@ module mk_hashset (K: key) (E: rng_engine with int.t = u64)
   def size (set: hashset) =
     hashset.size set
 
-  def member (key: k) (set: hashset) : bool =
-    hashset.member key set
+  def member (ctx: ctx) (key: k) (set: hashset) : bool =
+    hashset.member ctx key set
 
-  def not_member (key: k) (set: hashset) : bool =
-    hashset.not_member key set
+  def not_member (ctx: ctx) (key: k) (set: hashset) : bool =
+    hashset.not_member ctx key set
 }
