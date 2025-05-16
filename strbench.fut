@@ -36,7 +36,6 @@ module mk_slice_key
   })
   : key
     with ctx = []S.elem
-    with i = u64
     with k = S.slice = {
   type i = u64
   type k = S.slice
