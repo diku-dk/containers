@@ -5,7 +5,6 @@ import "hashset"
 
 -- The hash function was found [here](http://stackoverflow.com/a/12996028).
 module i64_key = {
-  type i = u64
   type k = i64
   type ctx = ()
 
