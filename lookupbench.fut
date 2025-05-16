@@ -3,7 +3,6 @@ import "lib/github.com/diku-dk/containers/hashset"
 import "lib/github.com/diku-dk/cpprandom/random"
 
 module i64_key = {
-  type i = u64
   type k = i64
   type ctx = ()
 

@@ -34,7 +34,7 @@ module type array = {
   val dedup [n] : ctx -> rng -> [n]k -> ?[m].(rng, [m]k)
 }
 
-module mk_array (K: key) (E: rng_engine with int.t = K.i)
+module mk_array (K: key) (E: rng_engine with int.t = u64)
   : array
     with rng = E.rng
     with k = K.k
@@ -42,7 +42,6 @@ module mk_array (K: key) (E: rng_engine with int.t = K.i)
   module key = K
   module engine = E
   type rng = engine.rng
-  type int = key.i
   type k = key.k
   type~ ctx = K.ctx
   module int = engine.int

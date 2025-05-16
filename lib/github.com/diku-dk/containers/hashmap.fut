@@ -22,28 +22,28 @@ module type hashmap_unlifted = {
   type rng
 
   -- | The hashmap definitionen.
-  type hashmap 'ctx [n] [w] [f] 'v
+  type hashmap 'ctx [n] [f] 'v
 
   -- | Check if a key is member of the hashmap.
   --
   -- **Work:** *O(1)*
   --
   -- **Span:** *O(1)*
-  val member [n] [w] [f] 'v : k -> hashmap ctx [n] [w] [f] v -> bool
+  val member [n] [f] 'v : k -> hashmap ctx [n] [f] v -> bool
 
   -- | Check if a key is not member of the hashmap
   --
   -- **Work:** *O(1)*
   --
   -- **Span:** *O(1)*
-  val not_member [n] [w] [f] 'v : k -> hashmap ctx [n] [w] [f] v -> bool
+  val not_member [n] [f] 'v : k -> hashmap ctx [n] [f] v -> bool
 
   -- | Look up a value.
   --
   -- **Work:** *O(1)*
   --
   -- **Span:** *O(1)*
-  val lookup [n] [w] [f] 'v : k -> hashmap ctx [n] [w] [f] v -> opt v
+  val lookup [n] [f] 'v : k -> hashmap ctx [n] [f] v -> opt v
 
   -- | Given a key-value array construct a hashmap.
   --
@@ -51,7 +51,7 @@ module type hashmap_unlifted = {
   --
   -- **Expected Span:** *O(log n)*
   val from_array [u] 'v :
-    ctx -> rng -> [u](k, v) -> ?[n][f][w].(rng, hashmap ctx [n] [w] [f] v)
+    ctx -> rng -> [u](k, v) -> ?[n][f].(rng, hashmap ctx [n] [f] v)
 
   -- | Create hashmap with default value.
   --
@@ -63,7 +63,7 @@ module type hashmap_unlifted = {
     -> rng
     -> [u]k
     -> v
-    -> ?[n][f][w].(rng, hashmap ctx [n] [w] [f] v)
+    -> ?[n][f].(rng, hashmap ctx [n] [f] v)
 
   -- | Create hashmap where duplicates are reduced with an commutative
   -- and associative operation.
@@ -77,44 +77,44 @@ module type hashmap_unlifted = {
     -> (v -> v -> v)
     -> v
     -> [u](k, v)
-    -> ?[n][f][w].(rng, hashmap ctx [n] [w] [f] v)
+    -> ?[n][f].(rng, hashmap ctx [n] [f] v)
 
   -- | Compute a histogram using the given key value pairs.
   --
   -- **Work:** *O(n + u ✕ W(op))*
   --
   -- **Span:** *O(u)* in the worst case but O(1) in the best case.
-  val hist [n] [w] [f] [u] 'v :
+  val hist [n] [f] [u] 'v :
     (v -> v -> v)
     -> v
-    -> hashmap ctx [n] [w] [f] v
+    -> hashmap ctx [n] [f] v
     -> [u](k, v)
-    -> hashmap ctx [n] [w] [f] v
+    -> hashmap ctx [n] [f] v
 
   -- | Map a function over the hashmap values.
   --
   -- **Work:** *O(n ✕ W(g))*
   --
   -- **Span:** *O(S(g))*
-  val map [n] [w] [f] 'v 't :
-    (g: v -> t) -> hashmap ctx [n] [w] [f] v -> hashmap ctx [n] [w] [f] t
+  val map [n] [f] 'v 't :
+    (g: v -> t) -> hashmap ctx [n] [f] v -> hashmap ctx [n] [f] t
 
   -- | Map a function over the hashmap values.
   --
   -- **Work:** *O(n ✕ W(g))*
   --
   -- **Span:** *O(S(g))*
-  val map_with_key [n] [w] [f] 'v 't :
+  val map_with_key [n] [f] 'v 't :
     (g: k -> v -> t)
-    -> hashmap ctx [n] [w] [f] v
-    -> hashmap ctx [n] [w] [f] t
+    -> hashmap ctx [n] [f] v
+    -> hashmap ctx [n] [f] t
 
   -- | Convert hashmap to an array of key-value pairs.
   --
   -- **Work:** *O(n)*
   --
   -- **Span:** *O(1)*
-  val to_array [n] [w] [f] 'v : hashmap ctx [n] [w] [f] v -> [](k, v)
+  val to_array [n] [f] 'v : hashmap ctx [n] [f] v -> [](k, v)
 
   -- | Updates the value of the hash map using the key with the
   -- smallest index.
@@ -122,20 +122,20 @@ module type hashmap_unlifted = {
   -- **Work:** *O(n + u)*
   --
   -- **Span:** *O(u)* in the worst case but O(1) in the best case.
-  val update [n] [w] [f] [u] 'v :
+  val update [n] [f] [u] 'v :
     [u](k, v)
-    -> hashmap ctx [n] [w] [f] v
-    -> hashmap ctx [n] [w] [f] v
+    -> hashmap ctx [n] [f] v
+    -> hashmap ctx [n] [f] v
 
   -- | The number of elements in the hashmap.
   --
   -- **Work:** *O(1)*
   --
   -- **Span:** *O(1)*
-  val size [n] [w] [f] 'v : hashmap ctx [n] [w] [f] v -> i64
+  val size [n] [f] 'v : hashmap ctx [n] [f] v -> i64
 }
 
-module mk_hashmap_unlifted (K: key) (E: rng_engine with int.t = K.i)
+module mk_hashmap_unlifted (K: key) (E: rng_engine with int.t = u64)
   : hashmap_unlifted
     with rng = E.rng
     with k = K.k
@@ -143,35 +143,27 @@ module mk_hashmap_unlifted (K: key) (E: rng_engine with int.t = K.i)
   module key = K
   module engine = E
   type rng = engine.rng
-  type int = key.i
   type k = key.k
   type~ ctx = key.ctx
-  module int = engine.int
   module array = mk_array K E
 
-  type hashmap 'ctx [n] [w] [f] 'v =
+  type hashmap 'ctx [n] [f] 'v =
     { ctx: ctx
     , keys: [n]k
     , values: [n]v
     , offsets: [f]i64
-    , level_one_consts: [key.m]int
-    , level_one_offsets: [n]i64
-    , level_two_offsets: [w]i64
-    , level_two_consts: [w][key.m]int
-    , level_two_shape: [w]i64
+    , level_one_consts: [key.m]u64
+    , level_two: [n][2 + key.m]u64
     }
 
   local
-  def empty 'v ctx : ?[n][w][f].hashmap ctx [n] [w] [f] v =
+  def empty 'v ctx : ?[n][f].hashmap ctx [n] [f] v =
     { ctx
     , keys = []
     , values = []
     , offsets = []
-    , level_one_consts = replicate key.m (int.u8 0)
-    , level_one_offsets = []
-    , level_two_offsets = []
-    , level_two_consts = []
-    , level_two_shape = []
+    , level_one_consts = replicate key.m 0
+    , level_two = []
     }
 
   local
@@ -194,33 +186,30 @@ module mk_hashmap_unlifted (K: key) (E: rng_engine with int.t = K.i)
 
   local
   #[inline]
-  def level_two_hash (ctx: ctx)
-                     (level_one_consts: [key.m]int)
-                     (n: i64)
-                     (level_one_offsets: []i64)
-                     (level_two_offsets: []i64)
-                     (level_two_consts: [][key.m]int)
-                     (level_two_shape: []i64)
+  def level_two_hash [n]
+                     (ctx: ctx)
+                     (level_one_consts: [key.m]u64)
+                     (level_two: [n][2 + key.m]u64)
                      (k: k) =
     #[sequential]
     if n == 0
     then 0
-    else let x = (key.hash ctx level_one_consts k) %% u64.i64 n
-         let o = level_one_offsets[i64.u64 x]
-         let cs = level_two_consts[o]
-         let s = level_two_shape[o]
-         let y = (key.hash ctx cs k) %% u64.i64 s
-         in level_two_offsets[o] + i64.u64 y
+    else let o = (key.hash ctx level_one_consts k) %% u64.i64 n
+         let (arr, cs) = split level_two[i64.u64 o]
+         let o' = i64.u64 arr[0]
+         let s = i64.u64 arr[1]
+         let y = (key.hash ctx cs k) %% u64.max 1 (u64.i64 s)
+         in o' + i64.u64 y
 
   local
   def loop_body [n] [w]
                 (ctx: ctx)
                 (old_rng: rng)
                 (old_keys: [n](k, i64))
-                (old: [w](i64, i64, [key.m]int)) : ( rng
+                (old: [w](i64, i64, [key.m]u64)) : ( rng
                                                    , [](k, i64)
-                                                   , [](i64, i64, [key.m]int)
-                                                   , [](i64, i64, [key.m]int)
+                                                   , [](i64, i64, [key.m]u64)
+                                                   , [](i64, i64, [key.m]u64)
                                                    ) =
     let (_, old_shape, old_consts) = unzip3 old
     let (flat_size, old_shape_offsets) = old_shape |> exscan (+) 0
@@ -258,49 +247,48 @@ module mk_hashmap_unlifted (K: key) (E: rng_engine with int.t = K.i)
       |> unzip
     let not_done =
       map2 (\(i, shp, _) c -> (i, shp + 1, c))
-           (temp_not_done :> [s](i64, i64, [key.m]int))
+           (temp_not_done :> [s](i64, i64, [key.m]u64))
            new_not_done_consts
     let new_rng = engine.join_rng rngs
     in ( new_rng
        , new_keys
-       , not_done :> [s](i64, i64, [key.m]int)
-       , done :> [z](i64, i64, [key.m]int)
+       , not_done :> [s](i64, i64, [key.m]u64)
+       , done :> [z](i64, i64, [key.m]u64)
        )
 
-  def unsafe_from_array_replicate [u] 'v
+  def unsafe_from_array_replicate [n] 'v
                                   (ctx: ctx)
                                   (r: rng)
-                                  (keys: [u]k)
-                                  (ne: v) : ?[n][f][w].(rng, hashmap ctx [n] [w] [f] v) =
-    let n = length keys
-    let keys = keys :> [n]k
+                                  (keys: [n]k)
+                                  (ne: v) : ?[f].(rng, hashmap ctx [n] [f] v) =
     let (r, level_one_consts) = generate_consts key.m r
     let is = map (i64.u64 <-< (%% u64.max 1 (u64.i64 n)) <-< key.hash ctx level_one_consts) keys
     let level_one_counts =
       replicate n 1
       |> hist (+) 0i64 n is
-    let shape =
-      level_one_counts
-      |> filter (!= 0)
-      |> map (** 2)
+    let (idxs, shape) =
+      zip (iota n) level_one_counts
+      |> filter ((!= 0) <-< (.1))
+      |> map (\(i, s) -> (i, s ** 2))
+      |> unzip
     let s = length shape
     let shape = sized s shape
-    let level_one_offsets =
-      map (i64.bool <-< (!= 0)) level_one_counts
-      |> exscan (+) 0
-      |> (.1)
-      |> map2 (\f o -> if f != 0 then o else 0) level_one_counts
+    let idxs = sized s idxs
     let (r, init_level_two_consts) =
       engine.split_rng s r
       |> map (generate_consts key.m)
       |> unzip
       |> (\(rngs, b) -> (engine.join_rng rngs, b))
+    let level_one_offsets =
+      map (i64.bool <-< (!= 0)) level_one_counts
+      |> exscan (+) 0
+      |> (.1)
+      |> map2 (\f o -> if f != 0 then o else 0) level_one_counts
     let init_keys = map2 (\k i -> (k, level_one_offsets[i])) keys is
-    let (r, filler_consts) = generate_consts key.m r
-    let dest = replicate n (0, 0, filler_consts)
+    let dest = replicate s (0, 0, replicate key.m 0)
     let (final_r, _, _, done, size) =
       loop (old_rng, old_keys, old_not_done, old_done, old_size) =
-             (r, init_keys, zip3 (iota s) shape init_level_two_consts, dest, 0)
+             (r, init_keys, zip3 idxs shape init_level_two_consts, dest, 0)
       while length old_not_done != 0 do
         let ( new_rng
             , new_keys
@@ -321,23 +309,24 @@ module mk_hashmap_unlifted (K: key) (E: rng_engine with int.t = K.i)
         , unordered_level_two_consts
         ) =
       unzip3 done
-    let shape_dest = replicate s 0
+    let shape_dest = replicate n 0
     let level_two_shape =
       scatter shape_dest order unordered_level_two_shape
     let (flat_size, level_two_offsets) =
       exscan (+) 0 level_two_shape
-      |> (\(a, b) -> (a, map2 (\s o -> if s != 0 then o else 0) level_two_shape b))
-    let consts_dest = replicate s (replicate key.m (int.u8 0))
+      |> (\(a, b) -> (a, map2 (\f o -> if f == 0 then 0 else o) level_two_shape b))
+    let consts_dest = replicate n (replicate key.m 0)
     let level_two_consts =
       scatter consts_dest order unordered_level_two_consts
+    let level_two: [n][2 + key.m]u64 =
+      map3 (\o s cs -> [u64.i64 o, u64.i64 s] ++ cs)
+           level_two_offsets
+           level_two_shape
+           level_two_consts
     let hash2 =
       level_two_hash ctx
                      level_one_consts
-                     n
-                     level_one_offsets
-                     level_two_offsets
-                     level_two_consts
-                     level_two_shape
+                     level_two
     let js = map hash2 keys
     let temp_offsets = hist i64.min i64.highest flat_size js (iota n)
     let key_reordered =
@@ -352,10 +341,7 @@ module mk_hashmap_unlifted (K: key) (E: rng_engine with int.t = K.i)
          , values = replicate n ne
          , offsets = offsets
          , level_one_consts = level_one_consts
-         , level_one_offsets = level_one_offsets
-         , level_two_offsets = level_two_offsets
-         , level_two_consts = level_two_consts
-         , level_two_shape = level_two_shape
+         , level_two = level_two
          }
        )
 
@@ -363,30 +349,26 @@ module mk_hashmap_unlifted (K: key) (E: rng_engine with int.t = K.i)
                            (ctx: ctx)
                            (r: rng)
                            (keys: [u]k)
-                           (ne: v) : ?[n][f][w].(rng, hashmap ctx [n] [w] [f] v) =
+                           (ne: v) : ?[n][f].(rng, hashmap ctx [n] [f] v) =
     let (r, keys) = array.dedup ctx r keys
     in unsafe_from_array_replicate ctx r keys ne
 
   local
-  def offset [n] [w] [f] 'v
-             (hmap: hashmap ctx [n] [w] [f] v)
+  def offset [n] [f] 'v
+             (hmap: hashmap ctx [n] [f] v)
              (key: k) : i64 =
     if length hmap.keys == 0
     then -1
     else let i =
            level_two_hash hmap.ctx
                           hmap.level_one_consts
-                          n
-                          hmap.level_one_offsets
-                          hmap.level_two_offsets
-                          hmap.level_two_consts
-                          hmap.level_two_shape
+                          hmap.level_two
                           key
          in hmap.offsets[i]
 
-  def update [n] [w] [f] [u] 'v
+  def update [n] [f] [u] 'v
              (key_values: [u](k, v))
-             (hmap: hashmap ctx [n] [w] [f] v) =
+             (hmap: hashmap ctx [n] [f] v) =
     let (keys, values) = unzip key_values
     let js = map (offset hmap) keys
     let is = hist i64.min i64.highest n js (indices key_values)
@@ -396,7 +378,7 @@ module mk_hashmap_unlifted (K: key) (E: rng_engine with int.t = K.i)
   def from_array [u] 'v
                  (ctx: ctx)
                  (r: rng)
-                 (key_values: [u](k, v)) : ?[n][f][w].(rng, hashmap ctx [n] [w] [f] v) =
+                 (key_values: [u](k, v)) : ?[n][f].(rng, hashmap ctx [n] [f] v) =
     if u == 0
     then (r, empty ctx)
     else let (keys, values) = unzip key_values
@@ -404,10 +386,10 @@ module mk_hashmap_unlifted (K: key) (E: rng_engine with int.t = K.i)
          let final_hmap = update key_values hmap
          in (r, final_hmap)
 
-  def hist [n] [w] [f] [u] 'v
+  def hist [n] [f] [u] 'v
            (op: v -> v -> v)
            (ne: v)
-           (hmap: hashmap ctx [n] [w] [f] v)
+           (hmap: hashmap ctx [n] [f] v)
            (key_values: [u](k, v)) =
     let (keys, values) = unzip key_values
     let is = map (offset hmap) keys
@@ -419,70 +401,67 @@ module mk_hashmap_unlifted (K: key) (E: rng_engine with int.t = K.i)
                       (r: rng)
                       (op: v -> v -> v)
                       (ne: v)
-                      (key_values: [u](k, v)) : ?[n][f][w].(rng, hashmap ctx [n] [w] [f] v) =
+                      (key_values: [u](k, v)) : ?[n][f].(rng, hashmap ctx [n] [f] v) =
     let keys = map (.0) key_values
     let (r, hmap) = from_array_replicate ctx r keys ne
     in (r, hist op ne hmap key_values)
 
-  def map_with_key [n] [w] [f] 'v 't
+  def map_with_key [n] [f] 'v 't
                    (g: k -> v -> t)
-                   (hmap: hashmap ctx [n] [w] [f] v) : hashmap ctx [n] [w] [f] t =
+                   (hmap: hashmap ctx [n] [f] v) : hashmap ctx [n] [f] t =
     let vs = map2 g hmap.keys hmap.values
     in { ctx = hmap.ctx
        , keys = hmap.keys
        , values = vs
        , offsets = hmap.offsets
        , level_one_consts = hmap.level_one_consts
-       , level_one_offsets = hmap.level_one_offsets
-       , level_two_offsets = hmap.level_two_offsets
-       , level_two_consts = hmap.level_two_consts
-       , level_two_shape = hmap.level_two_shape
+       , level_two = hmap.level_two
        }
 
-  def map [n] [w] [f] 'v 't
+  def map [n] [f] 'v 't
           (g: v -> t)
-          (hmap: hashmap ctx [n] [w] [f] v) : hashmap ctx [n] [w] [f] t =
+          (hmap: hashmap ctx [n] [f] v) : hashmap ctx [n] [f] t =
     map_with_key (\_ v -> g v) hmap
 
-  def to_array [n] [w] [f] 'v (hmap: hashmap ctx [n] [w] [f] v) : [](k, v) =
+  def to_array [n] [f] 'v (hmap: hashmap ctx [n] [f] v) : [](k, v) =
     zip hmap.keys hmap.values
 
-  def size [n] [w] [f] 'v (hmap: hashmap ctx [n] [w] [f] v) =
+  def size [n] [f] 'v (hmap: hashmap ctx [n] [f] v) =
     length hmap.keys
 
   local
-  def lookup_idx [n] [w] [f] 'v
+  def lookup_idx [n] [f] 'v
                  (k: k)
-                 (hmap: hashmap ctx [n] [w] [f] v) : i64 =
+                 (hmap: hashmap ctx [n] [f] v) : i64 =
     if length hmap.keys == 0
     then -1
     else let j = i64.min (length hmap.keys - 1) (i64.max 0 (offset hmap k))
          let k' = hmap.keys[j]
          in if key.eq hmap.ctx k' k then j else -1
 
-  def member [n] [w] [f] 'v
+  def member [n] [f] 'v
              (k: k)
-             (hmap: hashmap ctx [n] [w] [f] v) : bool =
+             (hmap: hashmap ctx [n] [f] v) : bool =
     -1 != lookup_idx k hmap
 
-  def not_member [n] [w] [f] 'v
+  def not_member [n] [f] 'v
                  (key: k)
-                 (hmap: hashmap ctx [n] [w] [f] v) : bool =
+                 (hmap: hashmap ctx [n] [f] v) : bool =
     not (member key hmap)
 
-  def lookup [n] [w] [f] 'v
+  def lookup [n] [f] 'v
              (k: k)
-             (hmap: hashmap ctx [n] [w] [f] v) : opt v =
+             (hmap: hashmap ctx [n] [f] v) : opt v =
     let j = lookup_idx k hmap
     in if j == -1
        then #none
        else some hmap.values[j]
 
-  def union [n] [w] [f] [n'] [w'] [f'] 'v
+  def union [n] [f] [n'] [f'] 'v
             (ctx: ctx)
             (r: rng)
-            (hmap: hashmap ctx [n] [w] [f] v)
-            (hmap': hashmap ctx [n'] [w'] [f'] v) =
+            (hmap: hashmap ctx [n] [f] v)
+            (hmap': hashmap ctx [n'] [f'] v) =
     if n == 0
     then (r, hmap')
     else if n' == 0
@@ -519,7 +498,7 @@ module type hashmap = {
   val hist [n] 'v :
     (v -> v -> v) -> v -> hashmap v -> [n](k, v) -> hashmap v
 
-  val map_with_key [n] [w] [f] 'v 't :
+  val map_with_key [n] [f] 'v 't :
     (g: k -> v -> t)
     -> hashmap v
     -> hashmap t
@@ -536,7 +515,7 @@ module type hashmap = {
   val size 'v : hashmap v -> i64
 }
 
-module mk_hashmap (K: key) (E: rng_engine with int.t = K.i)
+module mk_hashmap (K: key) (E: rng_engine with int.t = u64)
   : hashmap
     with rng = E.rng
     with k = K.k
@@ -547,7 +526,7 @@ module mk_hashmap (K: key) (E: rng_engine with int.t = K.i)
   type ctx = hashmap.ctx
 
   type~ hashmap 'v =
-    ?[n][w][f].hashmap.hashmap ctx [n] [w] [f] v
+    ?[n][f].hashmap.hashmap ctx [n] [f] v
 
   def from_array [n] 'v (ctx: ctx) (r: rng) (key_values: [n](k, v)) : (rng, hashmap v) =
     hashmap.from_array ctx r key_values
