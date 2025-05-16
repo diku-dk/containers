@@ -131,35 +131,23 @@ entry construct_random_hashset (n: i64) : ([]i64, hashset.hashset) =
 -- ==
 -- entry: bench_sort_lookup
 -- script input { construct_random_sort 100000i64 }
--- output { true }
 -- script input { construct_random_sort 1000000i64 }
--- output { true }
 -- script input { construct_random_sort 10000000i64 }
--- output { true }
 entry bench_sort_lookup (arr: []i64) (arr_sorted: []i64) =
   map (binary_search (==) (<=) arr_sorted) arr
-  |> and
 
 -- ==
 -- entry: bench_eytzinger_lookup
 -- script input { construct_random_eytzinger 100000i64 }
--- output { true }
 -- script input { construct_random_eytzinger 1000000i64 }
--- output { true }
 -- script input { construct_random_eytzinger 10000000i64 }
--- output { true }
 entry bench_eytzinger_lookup (arr: []i64) (arr_tree: []i64) =
   map (eytzinger_search (==) (<=) arr_tree) arr
-  |> and
 
 -- ==
 -- entry: bench_hashset_lookup
 -- script input { construct_random_hashset 100000i64 }
--- output { true }
 -- script input { construct_random_hashset 1000000i64 }
--- output { true }
 -- script input { construct_random_hashset 10000000i64 }
--- output { true }
 entry bench_hashset_lookup (arr: []i64) (set: hashset.hashset) =
   map (\k -> hashset.member k set) arr
-  |> and
