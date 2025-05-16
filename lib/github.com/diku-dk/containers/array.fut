@@ -82,7 +82,7 @@ module mk_array (K: key) (E: rng_engine with int.t = u64)
   def dedup [n] (ctx: ctx) (r: rng) (arr: [n]k) : ?[m].(rng, [m]k) =
     if n == 0
     then (r, [])
-    else let keq = key.eq ctx
+    else let keq a b = key.eq ctx a ctx b
          let dest = replicate n arr[0]
          let (r, est) = estimate_distinct ctx r 128 arr
          let (uniques, _, _, final_size, final_rng) =
@@ -127,7 +127,7 @@ module mk_array (K: key) (E: rng_engine with int.t = u64)
                     (arr: [n](k, v)) : (rng, [](k, v)) =
     if n == 0
     then (r, [])
-    else let keq = key.eq ctx
+    else let keq a b = key.eq ctx a ctx b
          let dest = replicate n arr[0]
          let (r, est) = map (.0) arr |> estimate_distinct ctx r 128
          let (reduction, _, _, final_size, final_rng) =
@@ -181,7 +181,7 @@ module mk_array (K: key) (E: rng_engine with int.t = u64)
                      (arr: [n](k, v)) : (rng, [](k, v), [](k, v)) =
     if n == 0 || m == 0
     then (r, [], arr)
-    else let keq = key.eq ctx
+    else let keq a b = key.eq ctx a ctx b
          let dest = replicate n arr[0]
          let (reduction, not_done, _, final_size, final_rng) =
            -- Expected number of iterations is O(log n).
@@ -266,7 +266,7 @@ module mk_array (K: key) (E: rng_engine with int.t = u64)
     let uniques =
       filter (!= i64.highest) unique_indices
       |> map (\i -> old_keys[i].0)
-    let keq = key.eq ctx
+    let keq a b = key.eq ctx a ctx b
     let new_keys =
       zip is old_keys
       |> filter (\(h, (k, _)) ->

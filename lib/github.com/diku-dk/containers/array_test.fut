@@ -19,7 +19,7 @@ module i64_key = {
     let y = (x ^ (x >> 31))
     in y
 
-  def eq _ : i64 -> i64 -> bool = (==)
+  def eq _ x _ y = x i64.== y
 }
 
 module engine = xorshift128plus

@@ -14,7 +14,7 @@ module type key = {
   val m : i64
 
   -- | Equality definition for the key.
-  val eq : ctx -> k -> k -> bool
+  val eq : ctx -> k -> ctx -> k -> bool
 
   -- | A given hash function use.
   val hash : ctx -> [m]u64 -> k -> u64
