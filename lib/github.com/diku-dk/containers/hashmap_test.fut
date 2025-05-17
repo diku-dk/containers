@@ -125,3 +125,32 @@ entry test_update n =
     |> hashmap.update h
     |> hashmap.to_array
   in all ((== (-1)) <-< (.1)) p
+
+-- ==
+-- entry: test_insert
+-- compiled random input { 1000i64 }
+-- output { true }
+entry test_insert n =
+  let xs = iota n
+  let (_, h) = hashmap.from_array () seed (zip xs xs)
+  let p =
+    zip (iota (2 * n)) (replicate (2 * n) (-1))
+    |> hashmap.insert () seed h
+    |> (.1)
+    |> hashmap.to_array
+  in all ((== (-1)) <-< (.1)) p && (length p == n * 2)
+
+-- ==
+-- entry: test_insert_hist
+-- compiled random input { 1000i64 }
+-- output { true }
+entry test_insert_hist n =
+  let xs = iota n
+  let (_, h) = hashmap.from_array () seed (zip xs (replicate n 1))
+  let p =
+    zip (iota (2 * n)) (replicate (2 * n) 1)
+    |> hashmap.insert_hist () seed (+) 0 h
+    |> (.1)
+    |> hashmap.to_array
+    |> map (.1)
+  in i64.sum p == n * 3

@@ -75,3 +75,17 @@ entry test_dedup n =
   let (_, s) = hashset.from_array () seed ys
   let arr = hashset.to_array s
   in length arr == 100 && all (\a -> or (map (== a) (iota 100))) arr
+
+-- ==
+-- entry: test_insert
+-- compiled random input { 1000i64 }
+-- output { true }
+entry test_insert n =
+  let xs = iota n
+  let (_, h) = hashset.from_array () seed xs
+  let p =
+    iota (2 * n)
+    |> hashset.insert () seed h
+    |> (.1)
+    |> hashset.to_array
+  in length p == n * 2

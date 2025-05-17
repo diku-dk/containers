@@ -571,7 +571,7 @@ module mk_hashmap_unlifted (K: key) (E: rng_engine with int.t = u64)
          let (r, keys) =
            key_values
            |> map (.0)
-           |> filter (\k -> member ctx k hmap)
+           |> filter (\k -> not_member ctx k hmap)
            |> array.dedup ctx r
          let keys' = map (.0) key_values'
          let filler = if u < n then key_values'[0].1 else key_values[0].1
@@ -590,7 +590,7 @@ module mk_hashmap_unlifted (K: key) (E: rng_engine with int.t = u64)
     let (r, keys) =
       key_values
       |> map (.0)
-      |> filter (\k -> member ctx k hmap)
+      |> filter (\k -> not_member ctx k hmap)
       |> array.dedup ctx r
     let keys' = map (.0) key_values'
     let keys'' = keys ++ keys'
