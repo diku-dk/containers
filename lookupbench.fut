@@ -108,7 +108,7 @@ entry construct_random_eytzinger n =
   in (arr, construct_eytzinger arr)
 
 local
-entry construct_random_hashset (n: i64) : ([]i64, hashset.hashset) =
+entry construct_random_hashset (n: i64) : ([]i64, hashset.set []) =
   let arr = random_array_i64 n
   in (arr, construct_hashset arr)
 
@@ -133,5 +133,5 @@ entry bench_eytzinger_lookup (arr: []i64) (arr_tree: []i64) =
 -- script input { construct_random_hashset 100000i64 }
 -- script input { construct_random_hashset 1000000i64 }
 -- script input { construct_random_hashset 10000000i64 }
-entry bench_hashset_lookup (arr: []i64) (set: hashset.hashset) =
+entry bench_hashset_lookup (arr: []i64) (set: hashset.set []) =
   map (\k -> hashset.member () k set) arr
