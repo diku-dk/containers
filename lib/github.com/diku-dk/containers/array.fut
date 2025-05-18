@@ -7,11 +7,11 @@
 import "../cpprandom/random"
 import "../sorts/radix_sort"
 import "../segmented/segmented"
-import "key"
+import "hashkey"
 
 module type array = {
   -- | The key type.
-  type k
+  type key
 
   -- | The context type.
   type ctx
@@ -26,23 +26,29 @@ module type array = {
   -- array. And every value with the same key will be reduced with an
   -- associative and commutative operator `op`@term, futhermore an
   -- neutral element `ne`@term must be given.
-  val reduce_by_key [n] 'v : ctx -> rng -> (v -> v -> v) -> v -> [n](k, v) -> ?[m].(rng, [m](k, v))
+  val reduce_by_key [n] 'v :
+    ctx
+    -> rng
+    -> (v -> v -> v)
+    -> v
+    -> [n](key, v)
+    -> ?[m].(rng, [m](key, v))
 
   -- | Removes duplicate elements from an array as defined by an
   -- equality `eq`@term. This implementation works much like
   -- `reduce_by_key`@term but saves some steps which makes it faster.
-  val dedup [n] : ctx -> rng -> [n]k -> ?[m].(rng, [m]k)
+  val dedup [n] : ctx -> rng -> [n]key -> ?[m].(rng, [m]key)
 }
 
-module mk_array (K: key) (E: rng_engine with int.t = u64)
+module mk_array (K: hashkey) (E: rng_engine with int.t = u64)
   : array
     with rng = E.rng
-    with k = K.k
+    with key = K.key
     with ctx = K.ctx = {
   module key = K
   module engine = E
   type rng = engine.rng
-  type k = key.k
+  type key = key.key
   type~ ctx = K.ctx
   module int = engine.int
 
@@ -60,7 +66,7 @@ module mk_array (K: key) (E: rng_engine with int.t = u64)
                         (ctx: ctx)
                         (rng: rng)
                         (factor: i64)
-                        (keys: [n]k) : (rng, i64) =
+                        (keys: [n]key) : (rng, i64) =
     if n == 0
     then (rng, 0)
     else let sample_size = i64.max 1 (n / factor)
@@ -79,7 +85,7 @@ module mk_array (K: key) (E: rng_engine with int.t = u64)
          let size = i64.max 1024 est
          in (rng, i64.min n size)
 
-  def dedup [n] (ctx: ctx) (r: rng) (arr: [n]k) : ?[m].(rng, [m]k) =
+  def dedup [n] (ctx: ctx) (r: rng) (arr: [n]key) : ?[m].(rng, [m]key) =
     if n == 0
     then (r, [])
     else let keq a b = key.eq ctx a ctx b
@@ -124,7 +130,7 @@ module mk_array (K: key) (E: rng_engine with int.t = u64)
                     (r: rng)
                     (op: v -> v -> v)
                     (ne: v)
-                    (arr: [n](k, v)) : (rng, [](k, v)) =
+                    (arr: [n](key, v)) : (rng, [](key, v)) =
     if n == 0
     then (r, [])
     else let keq a b = key.eq ctx a ctx b
@@ -177,8 +183,8 @@ module mk_array (K: key) (E: rng_engine with int.t = u64)
                      (r: rng)
                      (op: v -> v -> v)
                      (ne: v)
-                     (keys: [m]k)
-                     (arr: [n](k, v)) : (rng, [](k, v), [](k, v)) =
+                     (keys: [m]key)
+                     (arr: [n](key, v)) : (rng, [](key, v), [](key, v)) =
     if n == 0 || m == 0
     then (r, [], arr)
     else let keq a b = key.eq ctx a ctx b
@@ -238,11 +244,11 @@ module mk_array (K: key) (E: rng_engine with int.t = u64)
   def loop_body [n] [w]
                 (ctx: ctx)
                 (old_rng: rng)
-                (old_keys: [n](k, i64))
+                (old_keys: [n](key, i64))
                 (old_shape: [w]i64) : ( rng
-                                      , [](k, i64)
+                                      , [](key, i64)
                                       , []i64
-                                      , []k
+                                      , []key
                                       ) =
     let (flat_size, old_shape_offsets) = old_shape |> exscan (+) 0
     let (new_rng, consts) = generate_consts key.m old_rng
@@ -273,7 +279,7 @@ module mk_array (K: key) (E: rng_engine with int.t = u64)
                    unique_indices[h] == i64.highest
                    || not (old_keys[unique_indices[h]].0 `keq` k))
       |> map (.1)
-      |> map (\(k, o) -> (k, new_offsets[o]))
+      |> map (\(key, o) -> (key, new_offsets[o]))
     let new_shape =
       zip seg_has_no_collision old_shape
       |> filter (\(f, _) -> not f)
@@ -287,7 +293,7 @@ module mk_array (K: key) (E: rng_engine with int.t = u64)
   def dedup_two_level [n]
                       (ctx: ctx)
                       (r: rng)
-                      (keys: [n]k) : ?[m].(rng, [m]k) =
+                      (keys: [n]key) : ?[m].(rng, [m]key) =
     if n == 0
     then (r, [])
     else let (r, consts) = generate_consts key.m r
@@ -329,13 +335,13 @@ module mk_array (K: key) (E: rng_engine with int.t = u64)
                             (r: rng)
                             (op: v -> v -> v)
                             (ne: v)
-                            (arr: [n](k, v)) : (rng, [](k, v)) =
+                            (arr: [n](key, v)) : (rng, [](key, v)) =
     if n == 0
     then (r, [])
     else let block = 10000000
          let (r, keys) = dedup ctx r (map (.0) arr)
          let m = length keys
-         let keys = keys :> [m]k
+         let keys = keys :> [m]key
          let n_blocks = m / block
          let q_rest = m % block
          let keys = sized (n_blocks * block + q_rest) keys

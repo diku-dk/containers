@@ -1,22 +1,7 @@
 import "lib/github.com/diku-dk/sorts/radix_sort"
 import "lib/github.com/diku-dk/containers/hashset"
+import "lib/github.com/diku-dk/containers/hashkey"
 import "lib/github.com/diku-dk/cpprandom/random"
-
-module i64_key = {
-  type k = i64
-  type ctx = ()
-
-  def m : i64 = 1
-
-  def hash _ (a: [m]u64) (x: i64) : u64 =
-    let x = a[0] * u64.i64 x
-    let x = (x ^ (x >> 30)) * 0xbf58476d1ce4e5b9
-    let x = (x ^ (x >> 27)) * 0x94d049bb133111eb
-    let y = (x ^ (x >> 31))
-    in y
-
-  def eq _ x _ y = x i64.== y
-}
 
 module engine = xorshift128plus
 module hashset = mk_hashset i64_key engine
@@ -72,8 +57,7 @@ entry mod_i64 (n: i64) (m: i64) : [n]i64 =
   |> map ((% m) <-< i64.u64 <-< i64_key.hash () ([1] :> [i64_key.m]u64))
 
 def construct_hashset arr =
-  hashset.from_array () seed arr
-  |> (.1)
+  hashset.from_array () arr
 
 def construct_eytzinger arr =
   blocked_radix_sort_int 256 i64.num_bits i64.get_bit arr

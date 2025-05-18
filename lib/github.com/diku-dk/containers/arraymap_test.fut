@@ -1,12 +1,11 @@
 -- | ignore
 
 import "../cpprandom/random"
-import "hashmap"
-import "hashkey"
+import "arraymap"
+import "ordkey"
 import "opt"
 
-module engine = xorshift128plus
-module hashmap = mk_hashmap i64_key engine
+module arraymap = mk_arraymap i64_key
 
 -- ==
 -- entry: test_find_all
@@ -17,9 +16,9 @@ module hashmap = mk_hashmap i64_key engine
 entry test_find_all n =
   let vs = map (+ 10) (iota n)
   let xs = iota n
-  let h = hashmap.from_array () (zip xs vs)
-  let v = map (from_opt (-1) <-< \x -> hashmap.lookup () x h) xs
-  in all (\x -> hashmap.member () x h) xs
+  let h = arraymap.from_array () (zip xs vs)
+  let v = map (from_opt (-1) <-< \x -> arraymap.lookup () x h) xs
+  in all (\x -> arraymap.member () x h) xs
      && all (\x -> any (== x) v) vs
 
 -- ==
@@ -30,10 +29,10 @@ entry test_find_all n =
 -- output { true }
 entry test_does_not_find n =
   let xs = iota n
-  let h = hashmap.from_array () (zip xs (iota n))
+  let h = arraymap.from_array () (zip xs (iota n))
   let idxs = (n..<n + 1)
-  let v = map (from_opt (-1) <-< \x -> hashmap.lookup () x h) idxs
-  in all (\x -> hashmap.not_member () x h) idxs
+  let v = map (from_opt (-1) <-< \x -> arraymap.lookup () x h) idxs
+  in all (\x -> arraymap.not_member () x h) idxs
      && all (== (-1)) v
 
 -- ==
@@ -42,8 +41,8 @@ entry test_does_not_find n =
 -- output { true }
 entry test_find_all_dups n =
   let xs = iota n |> map (% 10)
-  let h = hashmap.from_array () (zip xs (iota n))
-  in all (\x -> hashmap.member () x h) xs
+  let h = arraymap.from_array () (zip xs (iota n))
+  in all (\x -> arraymap.member () x h) xs
 
 -- ==
 -- entry: test_does_not_find_dups
@@ -52,9 +51,9 @@ entry test_find_all_dups n =
 entry test_does_not_find_dups n =
   let m = 10
   let xs = iota n |> map (% m)
-  let h = hashmap.from_array () (zip xs (iota n))
+  let h = arraymap.from_array () (zip xs (iota n))
   let idxs = (m..<n)
-  in all (\x -> hashmap.not_member () x h) idxs
+  in all (\x -> arraymap.not_member () x h) idxs
 
 -- ==
 -- entry: test_dedup
@@ -63,8 +62,8 @@ entry test_does_not_find_dups n =
 entry test_dedup n =
   let m = 50
   let xs = iota n |> map (% m)
-  let h = hashmap.from_array () (zip xs (iota n))
-  let arr = hashmap.to_array h |> map (.0)
+  let h = arraymap.from_array () (zip xs (iota n))
+  let arr = arraymap.to_array h |> map (.0)
   in length arr == m
      && all (\a -> or (map (== a) (iota m))) arr
 
@@ -75,8 +74,8 @@ entry test_dedup n =
 entry test_hist [m] (xs: [m]i64) =
   let n = 50
   let ks = map (% n) xs
-  let h = hashmap.from_array_hist () (+) 0 (zip ks (replicate m 1i64))
-  let (is, vs) = hashmap.to_array h |> unzip
+  let h = arraymap.from_array_hist () (+) 0 (zip ks (replicate m 1i64))
+  let (is, vs) = arraymap.to_array h |> unzip
   let res = scatter (replicate n 0i64) is vs
   let expected = hist (+) 0i64 n ks (replicate m 1i64)
   in and (map2 (==) res expected)
@@ -87,8 +86,8 @@ entry test_hist [m] (xs: [m]i64) =
 -- output { true }
 entry test_map n =
   let xs = iota n
-  let h = hashmap.from_array () (zip xs xs)
-  let p = hashmap.map (* 2) h |> hashmap.to_array
+  let h = arraymap.from_array () (zip xs xs)
+  let p = arraymap.map (* 2) h |> arraymap.to_array
   in all (\(k, v) -> k * 2 == v) p
 
 -- ==
@@ -97,11 +96,11 @@ entry test_map n =
 -- output { true }
 entry test_update n =
   let xs = iota n
-  let h = hashmap.from_array () (zip xs xs)
+  let h = arraymap.from_array () (zip xs xs)
   let p =
     zip xs (replicate n (-1))
-    |> hashmap.update h
-    |> hashmap.to_array
+    |> arraymap.update h
+    |> arraymap.to_array
   in all ((== (-1)) <-< (.1)) p
 
 -- ==
@@ -110,11 +109,11 @@ entry test_update n =
 -- output { true }
 entry test_insert n =
   let xs = iota n
-  let h = hashmap.from_array () (zip xs xs)
+  let h = arraymap.from_array () (zip xs xs)
   let p =
     zip (iota (2 * n)) (replicate (2 * n) (-1))
-    |> hashmap.insert () h
-    |> hashmap.to_array
+    |> arraymap.insert () h
+    |> arraymap.to_array
   in all ((== (-1)) <-< (.1)) p && (length p == n * 2)
 
 -- ==
@@ -123,10 +122,10 @@ entry test_insert n =
 -- output { true }
 entry test_insert_hist n =
   let xs = iota n
-  let h = hashmap.from_array () (zip xs (replicate n 1))
+  let h = arraymap.from_array () (zip xs (replicate n 1))
   let p =
     zip (iota (2 * n)) (replicate (2 * n) 1)
-    |> hashmap.insert_hist () (+) 0 h
-    |> hashmap.to_array
+    |> arraymap.insert_hist () (+) 0 h
+    |> arraymap.to_array
     |> map (.1)
   in i64.sum p == n * 3
