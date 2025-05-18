@@ -6,10 +6,12 @@
 -- duplicate keys.
 
 import "../cpprandom/random"
+import "set"
 import "hashmap"
 import "hashkey"
 
-module type hashset_unlifted = {
+-- | An implementation of sets built on two level hashsets.
+module type two_level_hashset = {
   -- | The key type.
   type key
 
@@ -47,14 +49,14 @@ module type hashset_unlifted = {
   -- **Expected Work:** *O(n)*
   --
   -- **Expected Span:** *O(log n)*
-  val unsafe_from_array [u] : ctx -> [u]key -> ?[n][f].hashset [n] [f]
+  val unsafe_from_array [n] : ctx -> [n]key -> ?[f].hashset [n] [f]
 
   -- | Convert hashset to an array of keys.
   --
   -- **Work:** *O(1)*
   --
   -- **Span:** *O(1)*
-  val to_array [n] [f] : hashset [n] [f] -> []key
+  val to_array [n] [f] : hashset [n] [f] -> [n]key
 
   -- | The number of elements in the hashset.
   --
@@ -80,8 +82,9 @@ module type hashset_unlifted = {
     ctx -> hashset [n] [f] -> [u]key -> ?[n'][f'].hashset [n'] [f']
 }
 
-module mk_hashset_unlifted (K: hashkey) (E: rng_engine with int.t = u64)
-  : hashset_unlifted
+-- | Build a set that internally uses `mk_two_level_hashmap@term`.
+module mk_two_level_hashset (K: hashkey) (E: rng_engine with int.t = u64)
+  : two_level_hashset
     with key = K.key
     with ctx = K.ctx = {
   module hashmap = mk_two_level_hashmap K E
@@ -156,43 +159,42 @@ module type hashset = {
 }
 
 module mk_hashset (K: hashkey) (E: rng_engine with int.t = u64)
-  : hashset
+  : set
     with key = K.key
     with ctx = K.ctx = {
-  module hashset = mk_hashset_unlifted K E
+  module hashset = mk_two_level_hashset K E
   type key = hashset.key
   type ctx = hashset.ctx
 
-  type~ hashset = ?[n][f].hashset.hashset [n] [f]
+  type~ set [n] = ?[f].hashset.hashset [n] [f]
 
   def from_array [n]
                  (ctx: ctx)
-                 (keys: [n]key) : hashset =
+                 (keys: [n]key) : ?[m].set [m] =
     hashset.from_array ctx keys
 
   def unsafe_from_array [n]
                         (ctx: ctx)
-                        (keys: [n]key) : hashset =
+                        (keys: [n]key) : set [n] =
     hashset.unsafe_from_array ctx keys
 
-  def to_array (set: hashset) : []key =
+  def to_array [n] (set: set [n]) : [n]key =
     hashset.to_array set
 
-  def size (set: hashset) =
-    hashset.size set
+  def size [n] (_: set [n]) = n
 
-  def context (set: hashset) =
+  def context (set: set []) =
     hashset.context set
 
-  def member (ctx: ctx) (key: key) (set: hashset) : bool =
+  def member (ctx: ctx) (key: key) (set: set []) : bool =
     hashset.member ctx key set
 
-  def not_member (ctx: ctx) (key: key) (set: hashset) : bool =
+  def not_member (ctx: ctx) (key: key) (set: set []) : bool =
     hashset.not_member ctx key set
 
   def insert [n]
              (ctx: ctx)
-             (set: hashset)
-             (keys: [n]key) : hashset =
+             (set: set [])
+             (keys: [n]key) : set [] =
     hashset.insert ctx set keys
 }
