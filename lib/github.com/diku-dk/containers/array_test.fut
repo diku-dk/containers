@@ -4,23 +4,7 @@ import "../sorts/radix_sort"
 import "../segmented/segmented"
 import "../cpprandom/random"
 import "array"
-
--- The hash function was found [here](http://stackoverflow.com/a/12996028).
-module i64_key = {
-  type k = i64
-  type ctx = ()
-
-  def m : i64 = 1
-
-  def hash _ (a: [m]u64) (x: i64) : u64 =
-    let x = a[0] * u64.i64 x
-    let x = (x ^ (x >> 30)) * 0xbf58476d1ce4e5b9
-    let x = (x ^ (x >> 27)) * 0x94d049bb133111eb
-    let y = (x ^ (x >> 31))
-    in y
-
-  def eq _ x _ y = x i64.== y
-}
+import "hashkey"
 
 module engine = xorshift128plus
 module array = mk_array i64_key engine

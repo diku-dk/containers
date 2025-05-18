@@ -1,5 +1,5 @@
 import "lib/github.com/diku-dk/segmented/segmented"
-import "lib/github.com/diku-dk/containers/key"
+import "lib/github.com/diku-dk/containers/hashkey"
 import "lib/github.com/diku-dk/containers/hashmap"
 import "lib/github.com/diku-dk/containers/hashset"
 import "lib/github.com/diku-dk/cpprandom/random"
@@ -34,19 +34,19 @@ module mk_slice_key
     val (==) : S.elem -> S.elem -> bool
     val word : S.elem -> u64
   })
-  : key
+  : hashkey
     with ctx = []S.elem
-    with k = S.slice = {
+    with key = S.slice = {
   type i = u64
-  type k = S.slice
+  type key = S.slice
   type~ ctx = ?[l].[l]S.elem
 
   def m : i64 = 1
 
-  def eq (xctx: []S.elem) (x: k) (yctx: []S.elem) (y: k) =
+  def eq (xctx: []S.elem) (x: key) (yctx: []S.elem) (y: key) =
     arreq (E.==) (S.get x xctx) (S.get y yctx)
 
-  def hash (ctx: []S.elem) (a: [m]u64) (x: k) : u64 =
+  def hash (ctx: []S.elem) (a: [m]u64) (x: key) : u64 =
     loop v = 0
     for x' in S.get x ctx do
       let x = a[0] * (v ^ E.word x')
@@ -87,8 +87,7 @@ def words [n] (s: [n]char) =
 entry mkinput (s: []char) = (s, words s)
 
 entry bench_hashset_dedup [l] [k] (ctx: [l]u8) (words: [k](i64, i64)) =
-  hashset.from_array ctx seed (map (uncurry u8slice.mk) words)
-  |> (.1)
+  hashset.from_array ctx (map (uncurry u8slice.mk) words)
   |> hashset.to_array
   |> map u8slice.unmk
   |> map (.0)

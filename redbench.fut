@@ -4,23 +4,7 @@ import "lib/github.com/diku-dk/segmented/segmented"
 import "lib/github.com/diku-dk/containers/hashset"
 import "lib/github.com/diku-dk/containers/array"
 import "lib/github.com/diku-dk/containers/hashmap"
-
-module i64_key = {
-  type i = u64
-  type k = i64
-  type ctx = ()
-
-  def m : i64 = 1
-
-  def hash _ (a: [m]u64) (x: i64) : u64 =
-    let x = a[0] * u64.i64 x
-    let x = (x ^ (x >> 30)) * 0xbf58476d1ce4e5b9
-    let x = (x ^ (x >> 27)) * 0x94d049bb133111eb
-    let y = (x ^ (x >> 31))
-    in y
-
-  def eq _ x _ y = x i64.== y
-}
+import "lib/github.com/diku-dk/containers/hashkey"
 
 module engine = xorshift128plus
 module array = mk_array i64_key engine
@@ -91,15 +75,12 @@ entry bench_array_count_occourences [n] (arr: [n]i64) =
 
 local
 entry bench_hashset_dedup [n] (arr: [n]i64) =
-  hashset.from_array () seed arr
-  |> (.1)
-  |> hashset.to_array
+  hashset.from_array () arr |> hashset.to_array
 
 local
 entry bench_hashmap_count_occourences [n] (arr: [n]i64) =
   zip arr (replicate n 1)
-  |> hashmap.from_array_hist () seed (+) 0
-  |> (.1)
+  |> hashmap.from_array_hist () (+) 0
   |> hashmap.to_array
   |> map (.0)
 
