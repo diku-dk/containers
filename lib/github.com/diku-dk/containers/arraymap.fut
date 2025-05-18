@@ -33,7 +33,7 @@ module mk_arraymap (K: ordkey) : map with key = K.key with ctx = K.ctx = {
 
   def eytzinger [n] 't (xs: [n]t) : ?[m].[m]t =
     let m = 2 ** (i64.num_bits - i64.clz n |> i64.i32) - 1
-    let dest = replicate m xs[n - 1]
+    let dest = if n == 0 then [] else replicate m xs[n - 1]
     let xs' = scatter dest (indices xs) xs
     let f i = xs'[eytzinger_index m i]
     in tabulate m f
