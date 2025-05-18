@@ -57,7 +57,7 @@ module mk_arraymap (K: ordkey) : map with key = K.key with ctx = K.ctx = {
       |> (\kvs ->
             let (keys, vals) = unzip kvs
             let flags =
-              map3 (\i x y -> i == 0 || K.eq ctx x ctx y)
+              map3 (\i x y -> i == 0 || !(K.eq ctx x ctx y))
                    (indices kvs)
                    keys
                    (rotate (-1) keys)
