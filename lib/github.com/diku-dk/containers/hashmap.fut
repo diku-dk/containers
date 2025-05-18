@@ -115,12 +115,14 @@ module type two_level_hashmap = {
     -> [u](key, v)
     -> ?[n][f].map ctx [n] [f] v
 
-  -- | Compute a histogram using the given key value pairs.
+  -- | Combine key-value pairs into a map using the provided
+  -- associative and commutative operation. Keys that are not present
+  -- in the map is not added.
   --
   -- **Work:** *O(n + u ✕ W(op))*
   --
   -- **Span:** *O(u)* in the worst case but O(1) in the best case.
-  val hist [n] [f] [u] 'v :
+  val adjust [n] [f] [u] 'v :
     (v -> v -> v)
     -> v
     -> map ctx [n] [f] v
@@ -196,7 +198,7 @@ module type two_level_hashmap = {
   -- **Expected Work:** *O(n' + (n + u) ✕ W(op))*
   --
   -- **Expected Span:** *O(log (n + u))* (Assuming best case for hist)
-  val insert_hist [n] [f] [u] 'v :
+  val insert_with [n] [f] [u] 'v :
     ctx
     -> (v -> v -> v)
     -> v
@@ -216,6 +218,26 @@ module mk_two_level_hashmap (K: hashkey) (E: rng_engine with int.t = u64)
   type~ ctx = key.ctx
   module array = mk_array K E
 
+  -- | The hashmap data type.
+  -- n: The number of keys.
+  -- f: The level two size.
+  -- ctx: The context used for the lookup function.
+  -- keys: The n unique keys in the hashmap.
+  -- values: The values for each corresponding key where each index
+  -- matches up with the corresponding key.
+  -- offsets: The combination of the level one hash function and level
+  -- two hash function will map to an offset in this array into the
+  -- keys and values array.
+  -- lookup_keys: This array is like keys but the offsets array is not
+  -- needed and the hash function can just be used. This array allows
+  -- for member to do one less array lookup.
+  -- level_one_consts: Constants for the level one hash function.
+  -- level_two: The level one hash function will hash into this array
+  -- where each array in it contains first an offset into an flattened
+  -- f sized array, the size of the subarray is at the second index,
+  -- and the remaining vlaues are the constants for the second level
+  -- hash function.
+  -- rng: The random number generator state.
   type map 'ctx [n] [f] 'v =
     { ctx: ctx
     , keys: [n]key
@@ -267,14 +289,25 @@ module mk_two_level_hashmap (K: hashkey) (E: rng_engine with int.t = u64)
     #[sequential]
     if n == 0
     then 0
-    else let o = (key.hash ctx level_one_consts k) %% u64.i64 n
+    else -- The offset to get the level two hash function.
+         let o = (key.hash ctx level_one_consts k) %% u64.i64 n
          let (arr, cs) = split level_two[i64.u64 o]
+         -- The offset into the flat representation
          let o' = i64.u64 arr[0]
+         -- The size of the subarray.
          let s = i64.u64 arr[1]
          let y = (key.hash ctx cs k) %% u64.max 1 (u64.i64 s)
          in o' + i64.u64 y
 
-  local
+  -- | Given an array of keys with index into an irregular array
+  -- (old_keys). And an array of tuples with an index which
+  -- corresponds to its original position, the shape of the array, and
+  -- the constants that will be used for the hash function for the
+  -- subarray. This function will return which subarrays for a given
+  -- hash function leads to zero collisions. The remaining will get
+  -- new constants and a new shape.
+  --
+  -- precondition: old_keys must not contain duplicate keys.
   def loop_body [n] [w]
                 (ctx: ctx)
                 (old_rng: rng)
@@ -287,38 +320,53 @@ module mk_two_level_hashmap (K: hashkey) (E: rng_engine with int.t = u64)
     let (_, old_shape, old_consts) = unzip3 old
     let (flat_size, old_shape_offsets) = old_shape |> exscan (+) 0
     let is =
+      -- Determine the indices in the flatten array.
       map (\(k, o) ->
              i64.u64 (u64.i64 old_shape_offsets[o] + (key.hash ctx old_consts[o] k %% u64.i64 old_shape[o])))
           old_keys
     let has_no_collisions =
+      -- Collisions in the flatten array.
       rep 1
       |> hist (+) 0 flat_size is
       |> map (<= 1)
     let flag_idxs =
       map2 (\i j -> if i == 0 then -1 else j) old_shape old_shape_offsets
     let flags =
+      -- Flags for the flatten array.
       scatter (rep false) flag_idxs (rep true)
     let seg_has_no_collision =
+      -- A segmented reduce to determine which segments has collisions.
       segmented_reduce (&&) true flags has_no_collisions
       |> sized w
     let new_offsets =
+      -- We wanna filter every key that lead to zero collisions. So we
+      -- have to update every key that lead to a collision with a new
+      -- offset. This is done by mapping every segment which had no
+      -- collisions to zero and otherwise to 1.
       map (\f -> if f then 0 else 1) seg_has_no_collision
       |> scan (+) 0
       |> map2 (\f o -> if f then -1 else o - 1) seg_has_no_collision
     let new_keys =
+      -- Filter every key which lead to no collisions and update the
+      -- offset.
       filter (\(_, o) -> not seg_has_no_collision[o]) old_keys
       |> map (\(key, o) -> (key, new_offsets[o]))
     let (done, temp_not_done) =
+      -- The subarrays are partitioned by if the subarray lead to zero
+      -- collisions and is therefore done.
       zip seg_has_no_collision old
       |> partition (\(f, _) -> f)
       |> (\(a, b) -> (map (.1) a, map (.1) b))
     let z = length done
     let s = length temp_not_done
     let (rngs, new_not_done_consts) =
+      -- The new constants for the level two hash function.
       engine.split_rng s old_rng
       |> map (generate_consts key.m)
       |> unzip
     let not_done =
+      -- Increment the shape size to get better odds for the second
+      -- level hash function of having no collisions.
       map2 (\(i, shp, _) c -> (i, shp + 1, c))
            (temp_not_done :> [s](i64, i64, [key.m]u64))
            new_not_done_consts
@@ -329,15 +377,23 @@ module mk_two_level_hashmap (K: hashkey) (E: rng_engine with int.t = u64)
        , done :> [z](i64, i64, [key.m]u64)
        )
 
+  -- | Construct a level two hash function.
+  --
+  -- precondition: keys must not contain duplicates.
   def unsafe_from_array_rep [n] 'v
                             (ctx: ctx)
                             (keys: [n]key)
                             (ne: v) : ?[f].map ctx [n] [f] v =
     let r = engine.rng_from_seed [123, i32.i64 n]
+    -- The level one hash function is determined here.
     let (r, level_one_consts) = generate_consts key.m r
+    -- The indices to the subarray the keys will land in.
     let is = map (i64.u64 <-< (%% u64.max 1 (u64.i64 n)) <-< key.hash ctx level_one_consts) keys
+    -- The number of keys in a given subarray.
     let level_one_counts = hist (+) 0i64 n is (rep 1)
     let (idxs, shape) =
+      -- The index into the level one array for level two hash functions
+      -- and the shape for each subarray.
       zip (iota n) level_one_counts
       |> filter ((!= 0) <-< (.1))
       |> map (\(i, s) -> (i, s ** 2))
@@ -346,11 +402,13 @@ module mk_two_level_hashmap (K: hashkey) (E: rng_engine with int.t = u64)
     let shape = sized s shape
     let idxs = sized s idxs
     let (r, init_level_two_consts) =
+      -- Initial levl two hash function constants.
       engine.split_rng s r
       |> map (generate_consts key.m)
       |> unzip
       |> (\(rngs, b) -> (engine.join_rng rngs, b))
     let level_one_offsets =
+      -- The initial offsets into the the flatten array for every key.
       map (i64.bool <-< (!= 0)) level_one_counts
       |> exscan (+) 0
       |> (.1)
@@ -358,6 +416,8 @@ module mk_two_level_hashmap (K: hashkey) (E: rng_engine with int.t = u64)
     let init_keys = map2 (\k i -> (k, level_one_offsets[i])) keys is
     let dest = replicate s (0, 0, replicate key.m 0)
     let (final_r, _, _, done, size) =
+      -- Loop until all the hash function have been found that lead
+      -- to no collisions.
       loop (old_rng, old_keys, old_not_done, old_done, old_size) =
              (r, init_keys, zip3 idxs shape init_level_two_consts, dest, 0)
       while length old_not_done != 0 do
@@ -382,14 +442,18 @@ module mk_two_level_hashmap (K: hashkey) (E: rng_engine with int.t = u64)
       unzip3 done
     let shape_dest = replicate n 0
     let level_two_shape =
+      -- The shapes of the flatten array.
       scatter shape_dest order unordered_level_two_shape
     let (flat_size, level_two_offsets) =
+      -- The offsets into the flatten array.
       exscan (+) 0 level_two_shape
       |> (\(a, b) -> (a, map2 (\f o -> if f == 0 then 0 else o) level_two_shape b))
     let consts_dest = replicate n (replicate key.m 0)
     let level_two_consts =
+      -- The constants for the level two hash functions.
       scatter consts_dest order unordered_level_two_consts
     let level_two: [n][2 + key.m]u64 =
+      -- Encode the offsets, shapes, and constants for better locality.
       map3 (\o s cs -> [u64.i64 o, u64.i64 s] ++ cs)
            level_two_offsets
            level_two_shape
@@ -401,11 +465,14 @@ module mk_two_level_hashmap (K: hashkey) (E: rng_engine with int.t = u64)
     let js = map hash2 keys
     let temp_offsets = hist i64.min i64.highest flat_size js (iota n)
     let key_reordered =
+      -- Reorder the keys so they match the combined hash functions.
       temp_offsets
       |> filter (\o -> 0 <= o && o < n)
       |> map (\o -> keys[o])
       |> sized n
-    let offsets = hist i64.min i64.highest flat_size (map hash2 key_reordered) (indices key_reordered)
+    let offsets =
+      -- The offsets into the keys array.
+      hist i64.min i64.highest flat_size (map hash2 key_reordered) (indices key_reordered)
     let lookup_keys_dest =
       if n == 0
       then sized flat_size []
@@ -447,7 +514,9 @@ module mk_two_level_hashmap (K: hashkey) (E: rng_engine with int.t = u64)
              (key_values: [u](key, v)) =
     let (keys, values) = unzip key_values
     let js = map (offset hmap.ctx hmap) keys
-    let is = hist i64.min i64.highest n js (indices key_values)
+    let is =
+      -- The smallest indices for each key-value pair.
+      hist i64.min i64.highest n js (indices key_values)
     let vs = map2 (\i v -> if i != i64.highest then values[i] else v) is hmap.values
     in hmap with values = vs
 
@@ -469,11 +538,11 @@ module mk_two_level_hashmap (K: hashkey) (E: rng_engine with int.t = u64)
          let hmap = unsafe_from_array_rep ctx keys values[0]
          in update hmap key_values
 
-  def hist [n] [f] [u] 'v
-           (op: v -> v -> v)
-           (ne: v)
-           (hmap: map ctx [n] [f] v)
-           (key_values: [u](key, v)) =
+  def adjust [n] [f] [u] 'v
+             (op: v -> v -> v)
+             (ne: v)
+             (hmap: map ctx [n] [f] v)
+             (key_values: [u](key, v)) =
     let (keys, values) = unzip key_values
     let is = map (offset hmap.ctx hmap) keys
     let vs = reduce_by_index (copy hmap.values) op ne is values
@@ -486,7 +555,7 @@ module mk_two_level_hashmap (K: hashkey) (E: rng_engine with int.t = u64)
                       (key_values: [u](key, v)) : ?[n][f].map ctx [n] [f] v =
     let keys = map (.0) key_values
     let hmap = from_array_rep ctx keys ne
-    in hist op ne hmap key_values
+    in adjust op ne hmap key_values
 
   def unsafe_from_array_hist [u] 'v
                              (ctx: ctx)
@@ -495,7 +564,7 @@ module mk_two_level_hashmap (K: hashkey) (E: rng_engine with int.t = u64)
                              (key_values: [u](key, v)) : ?[n][f].map ctx [n] [f] v =
     let keys = map (.0) key_values
     let hmap = unsafe_from_array_rep ctx keys ne
-    in hist op ne hmap key_values
+    in adjust op ne hmap key_values
 
   def to_array [n] [f] 'v (hmap: map ctx [n] [f] v) : [](key, v) =
     zip hmap.keys hmap.values
@@ -553,6 +622,8 @@ module mk_two_level_hashmap (K: hashkey) (E: rng_engine with int.t = u64)
     then hmap
     else let key_values' = to_array hmap
          let (rng, keys) =
+           -- First remove keys that are in the hashmap then
+           -- deduplicate the keys.
            key_values
            |> map (.0)
            |> filter (\k -> not_member ctx k hmap)
@@ -563,7 +634,7 @@ module mk_two_level_hashmap (K: hashkey) (E: rng_engine with int.t = u64)
          let hmap' = unsafe_from_array_rep ctx keys'' filler
          in update hmap' (key_values ++ key_values') with rng = rng
 
-  def insert_hist [n] [f] [u] 'v
+  def insert_with [n] [f] [u] 'v
                   (ctx: ctx)
                   (op: v -> v -> v)
                   (ne: v)
@@ -578,7 +649,7 @@ module mk_two_level_hashmap (K: hashkey) (E: rng_engine with int.t = u64)
     let keys' = map (.0) key_values'
     let keys'' = keys ++ keys'
     let hmap' = unsafe_from_array_rep ctx keys'' ne
-    in hist op ne hmap' (key_values ++ key_values') with rng = rng
+    in adjust op ne hmap' (key_values ++ key_values') with rng = rng
 
   def map_with_key [n] [f] 'v 't
                    (g: key -> v -> t)
@@ -618,12 +689,12 @@ module mk_hashmap (K: hashkey) (E: rng_engine with int.t = u64)
   def from_array_rep [n] 'v (ctx: ctx) (keys: [n]key) (ne: v) : ?[m].map [m] v =
     hashmap.from_array_rep ctx keys ne
 
-  def hist [n] [u] 'v
-           (op: v -> v -> v)
-           (ne: v)
-           (hmap: map [n] v)
-           (key_values: [u](key, v)) =
-    hashmap.hist op ne hmap key_values
+  def adjust [n] [u] 'v
+             (op: v -> v -> v)
+             (ne: v)
+             (hmap: map [n] v)
+             (key_values: [u](key, v)) =
+    hashmap.adjust op ne hmap key_values
 
   def from_array_hist [u] 'v
                       (ctx: ctx)
@@ -678,11 +749,11 @@ module mk_hashmap (K: hashkey) (E: rng_engine with int.t = u64)
              (key_values: [u](key, v)) =
     hashmap.insert ctx hmap key_values
 
-  def insert_hist [n] [u] 'v
+  def insert_with [n] [u] 'v
                   (ctx: ctx)
                   (op: v -> v -> v)
                   (ne: v)
                   (hmap: map [n] v)
                   (key_values: [u](key, v)) =
-    hashmap.insert_hist ctx op ne hmap key_values
+    hashmap.insert_with ctx op ne hmap key_values
 }

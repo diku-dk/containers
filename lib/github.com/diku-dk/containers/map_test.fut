@@ -90,7 +90,7 @@ module mk_map_test (M: map with ctx = () with key = i64)
     let h = M.from_array () (zip xs (replicate n 1))
     let p =
       zip (iota (2 * n)) (replicate (2 * n) 1)
-      |> M.insert_hist () (+) 0 h
+      |> M.insert_with () (+) 0 h
       |> M.to_array
       |> map (.1)
     in i64.sum p == n * 3

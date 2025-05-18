@@ -105,7 +105,7 @@ module mk_arraymap (K: ordkey) : map with key = K.key with ctx = K.ctx = {
   def not_member ctx k xs =
     !(member ctx k xs)
 
-  def hist [n] [u] 'v (op: v -> v -> v) (ne: v) (m: map [n] v) (kvs: [u](key, v)) : map [n] v =
+  def adjust [n] [u] 'v (op: v -> v -> v) (ne: v) (m: map [n] v) (kvs: [u](key, v)) : map [n] v =
     let is = map (\k -> lookup_index m.ctx k m) (map (.0) kvs)
     in m with vals = reduce_by_index (copy m.vals) op ne is (map (.1) kvs)
 
@@ -113,8 +113,11 @@ module mk_arraymap (K: ordkey) : map with key = K.key with ctx = K.ctx = {
     zip m.keys m.vals
 
   def update [n] [u] 'v (m: map [n] v) (kvs: [u](key, v)) : map [n] v =
-    let is = map (\k -> lookup_index m.ctx k m) (map (.0) kvs)
-    in m with vals = scatter (copy m.vals) is (map (.1) kvs)
+    let (ks, vs) = unzip kvs
+    let js = map (\k -> lookup_index m.ctx k m) ks
+    let is = hist i64.min i64.highest n js (iota u)
+    let new_vals = map2 (\i v -> if i != i64.highest then vs[i] else v) is m.vals
+    in m with vals = new_vals
 
   def size [n] 'a (_: map [n] a) = n
 
@@ -123,7 +126,7 @@ module mk_arraymap (K: ordkey) : map with key = K.key with ctx = K.ctx = {
   def insert [n] [u] 'v (ctx: ctx) (m: map [n] v) (kvs: [u](key, v)) : ?[m].map [m] v =
     from_array ctx (kvs ++ to_array m)
 
-  def insert_hist [n] [u] 'v
+  def insert_with [n] [u] 'v
                   (ctx: ctx)
                   (op: v -> v -> v)
                   (ne: v)

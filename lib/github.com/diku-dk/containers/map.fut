@@ -19,7 +19,7 @@ import "opt"
 -- keys are string slices represented as pairs of integers, denoting offsets and
 -- lengths into some larger string. In such cases it is only meaningful to
 -- compare slices if we also have access to the larger string. A map thus
--- contains a context that is associated with all the keys in that map. Howeer,
+-- contains a context that is associated with all the keys in that map. However,
 -- operations such as `lookup` will take an additional context argument, which
 -- is used for those keys that are not already present of the mapping.
 --
@@ -56,7 +56,7 @@ module type map = {
     -> v
     -> ?[n].map [n] v
 
-  -- | Create map where duplicates are reduced with an commutative
+  -- | Create map where duplicates are reduced with a commutative
   -- and associative operation.
   val from_array_hist [u] 'v :
     ctx
@@ -76,7 +76,7 @@ module type map = {
     -> v
     -> ?[n].map [n] v
 
-  -- | Create map where duplicates are reduced with an commutative
+  -- | Create map where duplicates are reduced with a commutative
   -- and associative operation, assuming no duplicate keys.
   val unsafe_from_array_hist [u] 'v :
     ctx
@@ -85,8 +85,10 @@ module type map = {
     -> [u](key, v)
     -> ?[n].map [n] v
 
-  -- | Compute a histogram using the given key value pairs.
-  val hist [n] [u] 'v :
+  -- | Combine key-value pairs into a map using the provided
+  -- associative and commutative operation. Keys that are not present
+  -- in the map is not added.
+  val adjust [n] [u] 'v :
     (v -> v -> v)
     -> v
     -> map [n] v
@@ -129,7 +131,7 @@ module type map = {
 
   -- | Insert new key-value pairs into a map, combining values of duplicate keys
   -- using the provided associative and commutative operation.
-  val insert_hist [n] [u] 'v :
+  val insert_with [n] [u] 'v :
     ctx
     -> (v -> v -> v)
     -> v
