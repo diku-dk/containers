@@ -117,7 +117,7 @@ module mk_arraymap (K: ordkey) : map with key = K.key with ctx = K.ctx = {
   def context [n] 'a (m: map [n] a) = m.ctx
 
   def insert [n] [u] 'v (ctx: ctx) (m: map [n] v) (kvs: [u](key, v)) : ?[m].map [m] v =
-    from_array ctx (to_array m ++ kvs)
+    from_array ctx (kvs ++ to_array m)
 
   def insert_hist [n] [u] 'v
                   (ctx: ctx)
