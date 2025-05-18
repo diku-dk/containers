@@ -5,6 +5,17 @@ import "array"
 import "map"
 import "ordkey"
 
+local
+def binary_search [n] 't (eq: t -> t -> bool) (lte: t -> t -> bool) (xs: [n]t) (x: t) : i64 =
+  let (l, _) =
+    loop (l, r) = (0, n - 1)
+    while l < r do
+      let t = l + (r - l) / 2
+      in if x `lte` xs[t]
+         then (l, t)
+         else (t + 1, r)
+  in if l >= 0 && l < n && (xs[l] `eq` x) then l else -1
+
 -- | A map that uses a sorted array to represent the mapping.
 module mk_arraymap (K: ordkey) : map with key = K.key with ctx = K.ctx = {
   type key = K.key
@@ -18,44 +29,16 @@ module mk_arraymap (K: ordkey) : map with key = K.key with ctx = K.ctx = {
 
   def neq lte x y = if x `lte` y then !(y `lte` x) else true
 
-  def pack lte xs =
+  def pack eq xs =
     zip3 (indices xs) xs (rotate (-1) xs)
-    |> filter (\(i, x, y) -> i == 0 || neq lte x y)
+    |> filter (\(i, x, y) -> i == 0 || !(eq x y))
     |> map (.1)
-
-  def log2 x = 63 - i64.clz x
-
-  def eytzinger_index (n: i64) (i: i64) =
-    let lvl = log2 (i + 1)
-    let offset = i64.i32 (1 << (log2 n - lvl))
-    let k = i64.i32 ((1 << lvl) - 1)
-    in offset + (i - k) * offset * 2 - 1
-
-  def eytzinger [n] 't (xs: [n]t) : ?[m].[m]t =
-    let m = 2 ** (i64.num_bits - i64.clz n |> i64.i32) - 1
-    let dest = if n == 0 then [] else replicate m xs[n - 1]
-    let xs' = scatter dest (indices xs) xs
-    let f i = xs'[eytzinger_index m i]
-    in tabulate m f
-
-  def ffs x = i64.ctz x + 1
-
-  def eytzinger_search [n] 't (eq: t -> t -> bool) (lte: t -> t -> bool) (xs: [n]t) (x: t) : i64 =
-    let k =
-      loop k = 1
-      while k <= n do
-        if flip lte (xs[k - 1]) x
-        then 2 * k
-        else 2 * k + 1
-    let i = (k >> i64.i32 (ffs (!k))) - 1
-    in if 0 <= i && i < n && eq xs[i] x then i else -1
 
   def from_array [u] 'v (ctx: ctx) (kvs: [u](key, v)) : ?[n].map [n] v =
     let (keys, vals) =
       kvs
       |> merge_sort_by_key (.0) (\x y -> K.lte ctx x ctx y)
-      |> pack (\x y -> K.lte ctx x.0 ctx y.0)
-      |> eytzinger
+      |> pack (\x y -> K.eq ctx x.0 ctx y.0)
       |> unzip
     in {keys, vals, ctx}
 
@@ -65,7 +48,6 @@ module mk_arraymap (K: ordkey) : map with key = K.key with ctx = K.ctx = {
       keys
       |> merge_sort lte
       |> pack lte
-      |> eytzinger
     in {keys, vals = map (const v) keys, ctx}
 
   def from_array_hist [u] 'v (ctx: ctx) (op: v -> v -> v) (ne: v) (kvs: [u](key, v)) : ?[n].map [n] v =
@@ -81,7 +63,6 @@ module mk_arraymap (K: ordkey) : map with key = K.key with ctx = K.ctx = {
                    (rotate (-1) keys)
             let [m] (keys_uniq: [m]key) = zip keys flags |> filter (.1) |> map (.0)
             in zip keys_uniq (sized m (segmented_reduce op ne flags vals)))
-      |> eytzinger
       |> unzip
     in {keys, vals, ctx}
 
@@ -89,7 +70,6 @@ module mk_arraymap (K: ordkey) : map with key = K.key with ctx = K.ctx = {
     let (keys, vals) =
       kvs
       |> merge_sort_by_key (.0) (\x y -> K.lte ctx x ctx y)
-      |> eytzinger
       |> unzip
     in {keys, vals, ctx}
 
@@ -97,17 +77,16 @@ module mk_arraymap (K: ordkey) : map with key = K.key with ctx = K.ctx = {
     let keys =
       keys
       |> merge_sort (\x y -> K.lte ctx x ctx y)
-      |> eytzinger
     in {keys, vals = map (const v) keys, ctx}
 
   def unsafe_from_array_hist [u] 'v (ctx: ctx) (op: v -> v -> v) (v: v) (kvs: [u](key, v)) : ?[n].map [n] v =
     from_array_hist ctx op v kvs
 
   def lookup_index [n] 'a (ctx: ctx) (k: key) (m: map [n] a) : i64 =
-    eytzinger_search (\x y -> K.eq m.ctx x ctx y)
-                     (\x y -> K.lte m.ctx x ctx y)
-                     m.keys
-                     k
+    binary_search (\x y -> K.eq m.ctx x ctx y)
+                  (\x y -> K.lte m.ctx x ctx y)
+                  m.keys
+                  k
 
   def lookup [n] 'a (ctx: ctx) (k: key) (m: map [n] a) : opt a =
     match lookup_index ctx k m
