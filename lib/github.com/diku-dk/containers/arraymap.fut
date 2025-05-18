@@ -1,3 +1,7 @@
+-- | Array-based key-value maps.
+--
+-- Requires an ordering on the elements to provide relatively efficient lookups.
+
 import "../sorts/merge_sort"
 import "../segmented/segmented"
 import "opt"
