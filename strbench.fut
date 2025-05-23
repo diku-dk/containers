@@ -1,5 +1,6 @@
 import "lib/github.com/diku-dk/segmented/segmented"
 import "lib/github.com/diku-dk/containers/hashkey"
+import "lib/github.com/diku-dk/containers/key"
 import "lib/github.com/diku-dk/containers/hashmap"
 import "lib/github.com/diku-dk/containers/hashset"
 import "lib/github.com/diku-dk/cpprandom/random"
@@ -43,7 +44,7 @@ module mk_slice_key
 
   def m : i64 = 1
 
-  def eq (xctx: []S.elem) (x: key) (yctx: []S.elem) (y: key) =
+  def (==) (xctx: []S.elem, x: key) (yctx: []S.elem, y: key) =
     arreq (E.==) (S.get x xctx) (S.get y yctx)
 
   def hash (ctx: []S.elem) (a: [m]u64) (x: key) : u64 =
