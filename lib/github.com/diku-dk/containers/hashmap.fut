@@ -584,7 +584,7 @@ module mk_two_level_hashmap (K: hashkey) (E: rng_engine with int.t = u64)
     then -1
     else let j = i64.min (length hmap.keys - 1) (i64.max 0 (offset ctx hmap k))
          let k' = hmap.keys[j]
-         in if key.eq hmap.ctx k' ctx k then j else -1
+         in if (hmap.ctx, k') key.== (ctx, k) then j else -1
 
   def member [n] [f] 'v
              (ctx: ctx)
@@ -597,7 +597,7 @@ module mk_two_level_hashmap (K: hashkey) (E: rng_engine with int.t = u64)
                           hmap.level_one_consts
                           hmap.level_two
                           k
-         in key.eq hmap.ctx hmap.lookup_keys[i] ctx k
+         in (hmap.ctx, hmap.lookup_keys[i]) key.== (ctx, k)
 
   def not_member [n] [f] 'v
                  (ctx: ctx)
@@ -886,7 +886,7 @@ module mk_open_addressing_hashmap
     let r = engine.rng_from_seed [123, i32.i64 u]
     let (r, consts) = generate_consts K.m r
     let filler = (false, keys[0])
-    let keq a b = K.eq ctx a ctx b
+    let keq a b = (ctx, a) K.== (ctx, b)
     let hash = K.hash ctx consts
     let hashes' = map hash keys
     let size = P.hashmap_size u
@@ -938,7 +938,7 @@ module mk_open_addressing_hashmap
                  (k: key)
                  (hmap: map ctx [n] [f] v) : i64 =
     let h = K.hash ctx hmap.consts k
-    let keq a b = K.eq hmap.ctx a ctx b
+    let keq a b = (hmap.ctx, a) K.== (ctx, b)
     in (.2)
        <| loop (is_found, i, j) = (false, 0, -1)
           while i < hmap.max_iters || is_found do

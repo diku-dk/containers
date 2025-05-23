@@ -41,13 +41,13 @@ module mk_arraymap (K: ordkey) : map with key = K.key with ctx = K.ctx = {
   def from_array [u] 'v (ctx: ctx) (kvs: [u](key, v)) : ?[n].map [n] v =
     let (keys, vals) =
       kvs
-      |> merge_sort_by_key (.0) (\x y -> K.lte ctx x ctx y)
-      |> pack (\x y -> K.eq ctx x.0 ctx y.0)
+      |> merge_sort_by_key (.0) (\x y -> (ctx, x) K.<= (ctx, y))
+      |> pack (\x y -> (ctx, x.0) K.== (ctx, y.0))
       |> unzip
     in {keys, vals, ctx}
 
   def from_array_rep [u] 'v (ctx: ctx) (keys: [u]key) (v: v) : ?[n].map [n] v =
-    let lte x y = K.lte ctx x ctx y
+    let lte x y = (ctx, x) K.<= (ctx, y)
     let keys =
       keys
       |> merge_sort lte
@@ -57,11 +57,11 @@ module mk_arraymap (K: ordkey) : map with key = K.key with ctx = K.ctx = {
   def from_array_hist [u] 'v (ctx: ctx) (op: v -> v -> v) (ne: v) (kvs: [u](key, v)) : ?[n].map [n] v =
     let (keys, vals) =
       kvs
-      |> merge_sort_by_key (.0) (\x y -> K.lte ctx x ctx y)
+      |> merge_sort_by_key (.0) (\x y -> (ctx, x) K.<= (ctx, y))
       |> (\kvs ->
             let (keys, vals) = unzip kvs
             let flags =
-              map3 (\i x y -> i == 0 || !(K.eq ctx x ctx y))
+              map3 (\i x y -> i == 0 || !((ctx, x) K.== (ctx, y)))
                    (indices kvs)
                    keys
                    (rotate (-1) keys)
@@ -73,22 +73,22 @@ module mk_arraymap (K: ordkey) : map with key = K.key with ctx = K.ctx = {
   def unsafe_from_array [u] 'v (ctx: ctx) (kvs: [u](key, v)) : ?[n].map [n] v =
     let (keys, vals) =
       kvs
-      |> merge_sort_by_key (.0) (\x y -> K.lte ctx x ctx y)
+      |> merge_sort_by_key (.0) (\x y -> (ctx, x) K.<= (ctx, y))
       |> unzip
     in {keys, vals, ctx}
 
   def unsafe_from_array_rep [n] 'v (ctx: ctx) (keys: [n]key) (v: v) : ?[n].map [n] v =
     let keys =
       keys
-      |> merge_sort (\x y -> K.lte ctx x ctx y)
+      |> merge_sort (\x y -> (ctx, x) K.<= (ctx, y))
     in {keys, vals = map (const v) keys, ctx}
 
   def unsafe_from_array_hist [u] 'v (ctx: ctx) (op: v -> v -> v) (v: v) (kvs: [u](key, v)) : ?[n].map [n] v =
     from_array_hist ctx op v kvs
 
   def lookup_index [n] 'a (ctx: ctx) (k: key) (m: map [n] a) : i64 =
-    binary_search (\x y -> K.eq m.ctx x ctx y)
-                  (\x y -> K.lte m.ctx x ctx y)
+    binary_search (\x y -> (m.ctx, x) K.== (ctx, y))
+                  (\x y -> (m.ctx, x) K.<= (ctx, y))
                   m.keys
                   k
 
