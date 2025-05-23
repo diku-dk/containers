@@ -1,6 +1,6 @@
 import "lib/github.com/diku-dk/sorts/radix_sort"
 import "lib/github.com/diku-dk/containers/hashset"
-import "lib/github.com/diku-dk/containers/hashkey"
+import "lib/github.com/diku-dk/containers/key"
 import "lib/github.com/diku-dk/cpprandom/random"
 
 module engine = xorshift128plus
