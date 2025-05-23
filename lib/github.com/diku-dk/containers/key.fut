@@ -40,8 +40,8 @@ module mk_int_key
     let y = (x ^ (x >> 31))
     in y
 
-  def eq _ x _ y = x P.== y
-  def lte _ x _ y = x P.<= y
+  def (==) (_, x) (_, y) = x P.== y
+  def (<=) (_, x) (_, y) = x P.<= y
 }
 
 module i8_key : key with ctx = () with key = i8 = mk_int_key i8
