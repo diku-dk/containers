@@ -10,7 +10,7 @@ module type ordkey = {
   -- | Less-than-or-equal.
   val (<=) : (ctx, key) -> (ctx, key) -> bool
 
-  -- | Equality. This can be defined in terms of `lte`, but sometimes a more
+  -- | Equality. This can be defined in terms of `<=`, but sometimes a more
   -- efficient implementation is possible.
   val (==) : (ctx, key) -> (ctx, key) -> bool
 }
