@@ -1,9 +1,6 @@
 -- | Static hashmaps.
 --
--- This is an implementation of a static hash table using [two level
--- hashing](https://en.wikipedia.org/wiki/Double_hashing). The modules time
--- complexities assumes only unique keys but the modules does work with
--- duplicate keys.
+-- Implementations of the `map`@mtype module type using hash-based data structures.
 
 import "../segmented/segmented"
 import "../cpprandom/random"
@@ -207,6 +204,10 @@ module type two_level_hashmap = {
     -> ?[n'][f'].map ctx [n'] [f'] v
 }
 
+-- | This is an implementation of a static hash table using [two level
+-- hashing](https://en.wikipedia.org/wiki/Double_hashing). The modules time
+-- complexities assumes only unique keys but the modules does work with
+-- duplicate keys.
 module mk_two_level_hashmap (K: hashkey) (E: rng_engine with int.t = u64)
   : two_level_hashmap
     with key = K.key
