@@ -2,7 +2,7 @@
 
 import "../cpprandom/random"
 import "hashset"
-import "hashkey"
+import "key"
 
 module engine = xorshift128plus
 module hashset = mk_hashset i64_key engine
