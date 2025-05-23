@@ -4,7 +4,7 @@ import "../sorts/radix_sort"
 import "../segmented/segmented"
 import "../cpprandom/random"
 import "array"
-import "hashkey"
+import "key"
 
 module engine = xorshift128plus
 module array = mk_array i64_key engine

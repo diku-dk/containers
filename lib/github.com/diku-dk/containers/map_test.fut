@@ -98,20 +98,19 @@ module mk_map_test (M: map with ctx = () with key = i64)
 
 import "../cpprandom/random"
 import "hashmap"
-module hashkey = import "hashkey"
+import "key"
 import "arraymap"
-module ordkey = import "ordkey"
 import "opt"
 
 module engine = xorshift128plus
 
-module hashmap = mk_hashmap hashkey.i64_key engine
+module hashmap = mk_hashmap i64_key engine
 module hashmap_tests = mk_map_test hashmap
 
-module linhashmap = mk_linear_hashmap hashkey.i64_key engine
+module linhashmap = mk_linear_hashmap i64_key engine
 module linhashmap_tests = mk_map_test linhashmap
 
-module arraymap = mk_arraymap ordkey.i64_key
+module arraymap = mk_arraymap i64_key
 module arraymap_tests = mk_map_test arraymap
 
 -- ==
