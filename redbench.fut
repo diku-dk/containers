@@ -4,7 +4,7 @@ import "lib/github.com/diku-dk/segmented/segmented"
 import "lib/github.com/diku-dk/containers/hashset"
 import "lib/github.com/diku-dk/containers/array"
 import "lib/github.com/diku-dk/containers/hashmap"
-import "lib/github.com/diku-dk/containers/hashkey"
+import "lib/github.com/diku-dk/containers/key"
 
 module engine = xorshift128plus
 module array = mk_array i64_key engine
