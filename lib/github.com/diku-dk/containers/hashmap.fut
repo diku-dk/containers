@@ -1,6 +1,6 @@
 -- | Static hashmaps.
 --
--- Implementations of the `map`@mtype module type using hash-based data structures.
+-- Implementations of the `map`@mtype@"map" module type using hash-based data structures.
 
 import "../segmented/segmented"
 import "../cpprandom/random"
