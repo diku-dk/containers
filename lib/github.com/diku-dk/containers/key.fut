@@ -1,8 +1,8 @@
 -- | Definitions of modules that implement both the `hashkey`@mtype@"hashkey"
 -- and `ordkey`@mtype@"ordkey" module types for a variety of types.
 
-import "hashkey"
-import "ordkey"
+open import "hashkey"
+open import "ordkey"
 
 module type key = {
   type ctx
@@ -44,7 +44,12 @@ module mk_int_key
   def (<=) (_, x) (_, y) = x P.<= y
 }
 
-module i8_key : key with ctx = () with key = i8 = mk_int_key i8
-module i16_key : key with ctx = () with key = i16 = mk_int_key i16
-module i32_key : key with ctx = () with key = i32 = mk_int_key i32
-module i64_key : key with ctx = () with key = i64 = mk_int_key i64
+module u8key : key with ctx = () with key = u8 = mk_int_key u8
+module u16key : key with ctx = () with key = u16 = mk_int_key u16
+module u32key : key with ctx = () with key = u32 = mk_int_key u32
+module u64key : key with ctx = () with key = u64 = mk_int_key u64
+
+module i8key : key with ctx = () with key = i8 = mk_int_key i8
+module i16key : key with ctx = () with key = i16 = mk_int_key i16
+module i32key : key with ctx = () with key = i32 = mk_int_key i32
+module i64key : key with ctx = () with key = i64 = mk_int_key i64

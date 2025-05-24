@@ -68,3 +68,13 @@ def bind_opt 'a 'b (f: a -> opt b) (a: opt a) : opt b =
   match a
   case #some a -> f a
   case #none -> #none
+
+-- | Find the first `#some` element if one exists.
+def first_some 't (xs: [](opt t)) : opt t =
+  reduce (\x y ->
+            match (x, y)
+            case (#some x, _) -> #some x
+            case (_, #some y) -> #some y
+            case _ -> #none)
+         #none
+         xs

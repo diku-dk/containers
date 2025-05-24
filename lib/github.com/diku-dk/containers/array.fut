@@ -8,6 +8,31 @@ import "../cpprandom/random"
 import "../sorts/radix_sort"
 import "../segmented/segmented"
 import "hashkey"
+import "opt"
+
+-- | Compare two arrays for equality using a provided operator.
+def arreq [n] [m] 't ((==): t -> t -> bool) (x: [n]t) (y: [m]t) =
+  n i64.== m
+  && (loop (ok, i) = (true, 0)
+      while ok && i < n do
+        (ok && (x[i] == y[i]), i + 1)).0
+
+-- Lexicographical comparison of two arrays. Returns true if `a <= b`.
+def arrle [n] [m] 't ((<=): t -> t -> bool) (a: [n]t) (b: [m]t) : bool =
+  let minlen = i64.min n m
+  let (<) = \x y -> x <= y && !(y <= x)
+  let cmp =
+    map2 (\x y : opt bool ->
+            if x < y
+            then #some true
+            else if y < x
+            then #some false
+            else #none)
+         (take minlen a)
+         (take minlen b)
+  in match first_some cmp
+     case #some res -> res
+     case #none -> n i64.<= m
 
 module type array = {
   -- | The key type.
