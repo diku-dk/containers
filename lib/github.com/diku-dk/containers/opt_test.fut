@@ -69,3 +69,15 @@ entry test_add_identity (arr: []i64) (arr': []i64) =
   |> map some
   |> reduce combine' #none
   |> is_some
+
+-- ==
+-- entry: test_first_some
+-- input { [1,2,3] } output { 1 }
+-- input { [-1,-2,-3] } output { 0 }
+-- input { [1,-2,3] } output { 1 }
+-- input { [-1,-2,3] } output { 3 }
+entry test_first_some (xs: []i32) =
+  xs
+  |> map (\x : opt i32 -> if x > 0 then #some x else #none)
+  |> first_some
+  |> from_opt 0

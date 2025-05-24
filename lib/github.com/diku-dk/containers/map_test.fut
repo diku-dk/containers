@@ -104,13 +104,13 @@ import "opt"
 
 module engine = xorshift128plus
 
-module hashmap = mk_hashmap i64_key engine
+module hashmap = mk_hashmap i64key engine
 module hashmap_tests = mk_map_test hashmap
 
-module linhashmap = mk_linear_hashmap i64_key engine
+module linhashmap = mk_linear_hashmap i64key engine
 module linhashmap_tests = mk_map_test linhashmap
 
-module arraymap = mk_arraymap i64_key
+module arraymap = mk_arraymap i64key
 module arraymap_tests = mk_map_test arraymap
 
 -- ==

@@ -5,7 +5,7 @@ import "hashset"
 import "key"
 
 module engine = xorshift128plus
-module hashset = mk_hashset i64_key engine
+module hashset = mk_hashset i64key engine
 
 -- ==
 -- entry: test_find_all

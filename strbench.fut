@@ -6,64 +6,11 @@ import "lib/github.com/diku-dk/containers/hashset"
 import "lib/github.com/diku-dk/cpprandom/random"
 import "lib/github.com/diku-dk/sorts/radix_sort"
 import "lib/github.com/diku-dk/containers/array"
-
-module type slice = {
-  type elem
-  type slice
-  val mk : (i: i64) -> (n: i64) -> slice
-  val unmk : slice -> (i64, i64)
-  val get [n] : slice -> [n]elem -> ?[k].[k]elem
-}
-
-module mk_slice (E: {type elem}) : slice with elem = E.elem = {
-  type elem = E.elem
-  type slice = {i: i64, n: i64}
-  def mk i n = {i, n}
-  def unmk {i, n} = (i, n)
-  def get {i, n} xs = xs[i:i + n]
-}
-
-def arreq [n] [m] 't (eq: t -> t -> bool) (x: [n]t) (y: [m]t) =
-  n == m
-  && (loop (ok, i) = (true, 0)
-      while ok && i < n do
-        (ok && (x[i] `eq` y[i]), i + 1)).0
-
-module mk_slice_key
-  (S: slice)
-  (E: {
-    val (==) : S.elem -> S.elem -> bool
-    val word : S.elem -> u64
-  })
-  : hashkey
-    with ctx = []S.elem
-    with key = S.slice = {
-  type i = u64
-  type key = S.slice
-  type~ ctx = ?[l].[l]S.elem
-
-  def m : i64 = 1
-
-  def (==) (xctx: []S.elem, x: key) (yctx: []S.elem, y: key) =
-    arreq (E.==) (S.get x xctx) (S.get y yctx)
-
-  def hash (ctx: []S.elem) (a: [m]u64) (x: key) : u64 =
-    loop v = 0
-    for x' in S.get x ctx do
-      let x = a[0] * (v ^ E.word x')
-      let x = (x ^ (x >> 30)) * 0xbf58476d1ce4e5b9
-      let x = (x ^ (x >> 27)) * 0x94d049bb133111eb
-      let y = (x ^ (x >> 31))
-      in y
-}
+import "lib/github.com/diku-dk/containers/slice"
 
 module engine = xorshift128plus
-module u8slice = mk_slice {type elem = u8}
 
-module slice_key = mk_slice_key u8slice {
-  def (==) = (u8.==)
-  def word = u64.u8
-}
+module slice_key = mk_slice_key u8key
 
 module array = mk_array slice_key engine
 module hashset = mk_hashset slice_key engine
@@ -88,15 +35,15 @@ def words [n] (s: [n]char) =
 entry mkinput (s: []char) = (s, words s)
 
 entry bench_hashset_dedup [l] [k] (ctx: [l]u8) (words: [k](i64, i64)) =
-  hashset.from_array ctx (map (uncurry u8slice.mk) words)
+  hashset.from_array ctx (map (uncurry slice.mk) words)
   |> hashset.to_array
-  |> map u8slice.unmk
+  |> map slice.unmk
   |> map (.0)
 
 entry bench_array_dedup [l] [k] (ctx: [l]u8) (words: [k](i64, i64)) =
-  array.dedup ctx seed (map (uncurry u8slice.mk) words)
+  array.dedup ctx seed (map (uncurry slice.mk) words)
   |> (.1)
-  |> map u8slice.unmk
+  |> map slice.unmk
   |> map (.0)
 
 entry bench_sort_dedup [l] [k] (ctx: [l]u8) (words: [k](i64, i64)) =
@@ -110,8 +57,8 @@ entry bench_sort_dedup [l] [k] (ctx: [l]u8) (words: [k](i64, i64)) =
     map (\i ->
            i == 0
            || !arreq (==)
-                     (u8slice.get (uncurry u8slice.mk sorted[i - 1]) ctx)
-                     (u8slice.get (uncurry u8slice.mk sorted[i]) ctx))
+                     (slice.get (uncurry slice.mk sorted[i - 1]) ctx)
+                     (slice.get (uncurry slice.mk sorted[i]) ctx))
         (indices words)
   in zip flags sorted |> filter (.0) |> map (.1.0)
 
