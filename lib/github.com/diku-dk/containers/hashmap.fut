@@ -97,21 +97,6 @@ module type two_level_hashmap = {
     -> v
     -> ?[f].map ctx [n] [f] v
 
-  -- | Create hashmap where duplicates are reduced with an commutative
-  -- and associative operation. If any keys are duplicates then the
-  -- function call will never finish.  It does less work than the safe
-  -- variant.
-  --
-  -- **Expected Work:** *O(n + u ✕ W(op))*
-  --
-  -- **Expected Span:** *O(log n)* (Assuming best case for hist)
-  val from_array_hist_nodup [u] 'v :
-    ctx
-    -> (v -> v -> v)
-    -> v
-    -> [u](key, v)
-    -> ?[n][f].map ctx [n] [f] v
-
   -- | Combine key-value pairs into a map using the provided
   -- associative and commutative operation. Keys that are not present
   -- in the map is not added.
@@ -557,15 +542,6 @@ module mk_two_level_hashmap (K: hashkey) (E: rng_engine with int.t = u64)
     let hmap = from_array_rep ctx keys ne
     in adjust op ne hmap key_values
 
-  def from_array_hist_nodup [u] 'v
-                            (ctx: ctx)
-                            (op: v -> v -> v)
-                            (ne: v)
-                            (key_values: [u](key, v)) : ?[n][f].map ctx [n] [f] v =
-    let keys = map (.0) key_values
-    let hmap = from_array_rep_nodup ctx keys ne
-    in adjust op ne hmap key_values
-
   def to_array [n] [f] 'v (hmap: map ctx [n] [f] v) : [](key, v) =
     zip hmap.keys hmap.values
 
@@ -709,13 +685,6 @@ module mk_hashmap (K: hashkey) (E: rng_engine with int.t = u64)
   def from_array_rep_nodup [n] 'v (ctx: ctx) (keys: [n]key) (ne: v) : map [n] v =
     hashmap.from_array_rep_nodup ctx keys ne
 
-  def from_array_hist_nodup [u] 'v
-                            (ctx: ctx)
-                            (op: v -> v -> v)
-                            (ne: v)
-                            (key_values: [u](key, v)) : ?[n].map [n] v =
-    hashmap.from_array_hist_nodup ctx op ne key_values
-
   def map [n] 'v 't (g: v -> t) (hmap: map [n] v) : map [n] t =
     hashmap.map g hmap
 
@@ -794,13 +763,6 @@ module type open_addressing_hashmap = {
     ctx
     -> [n]key
     -> v
-    -> ?[f].map ctx [n] [f] v
-
-  val from_array_hist_nodup [n] 'v :
-    ctx
-    -> (v -> v -> v)
-    -> v
-    -> [n](key, v)
     -> ?[f].map ctx [n] [f] v
 
   val adjust [n] [f] [u] 'v :
@@ -1051,15 +1013,6 @@ module mk_open_addressing_hashmap
     let hmap = from_array_rep ctx keys ne
     in adjust op ne hmap key_values
 
-  def from_array_hist_nodup [n] 'v
-                            (ctx: ctx)
-                            (op: v -> v -> v)
-                            (ne: v)
-                            (key_values: [n](key, v)) : ?[f].map ctx [n] [f] v =
-    let hmap = from_array_hist ctx op ne key_values
-    in hmap with keys = sized n hmap.keys
-            with values = sized n hmap.values
-
   def to_array [n] [f] 'v (hmap: map ctx [n] [f] v) : [](key, v) =
     zip hmap.keys hmap.values
 
@@ -1164,13 +1117,6 @@ module mk_linear_hashmap (K: hashkey) (E: rng_engine with int.t = u64)
 
   def from_array_rep_nodup [n] 'v (ctx: ctx) (keys: [n]key) (ne: v) : map [n] v =
     hashmap.from_array_rep_nodup ctx keys ne
-
-  def from_array_hist_nodup [u] 'v
-                            (ctx: ctx)
-                            (op: v -> v -> v)
-                            (ne: v)
-                            (key_values: [u](key, v)) : ?[n].map [n] v =
-    hashmap.from_array_hist_nodup ctx op ne key_values
 
   def map [n] 'v 't (g: v -> t) (hmap: map [n] v) : map [n] t =
     hashmap.map g hmap
