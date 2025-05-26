@@ -49,7 +49,7 @@ module type two_level_hashset = {
   -- **Expected Work:** *O(n)*
   --
   -- **Expected Span:** *O(log n)*
-  val unsafe_from_array [n] : ctx -> [n]key -> ?[f].hashset [n] [f]
+  val from_array_nodup [n] : ctx -> [n]key -> ?[f].hashset [n] [f]
 
   -- | Convert hashset to an array of keys.
   --
@@ -99,10 +99,10 @@ module mk_two_level_hashset (K: hashkey) (E: rng_engine with int.t = u64)
                  (keys: [u]key) : ?[n][f].hashset [n] [f] =
     hashmap.from_array_rep ctx keys ()
 
-  def unsafe_from_array [u]
-                        (ctx: ctx)
-                        (keys: [u]key) : ?[n][f].hashset [n] [f] =
-    hashmap.unsafe_from_array_rep ctx keys ()
+  def from_array_nodup [u]
+                       (ctx: ctx)
+                       (keys: [u]key) : ?[n][f].hashset [n] [f] =
+    hashmap.from_array_rep_nodup ctx keys ()
 
   def to_array [n] [f] (set: hashset [n] [f]) : []key =
     hashmap.to_array set
@@ -146,7 +146,7 @@ module type hashset = {
 
   val from_array [n] : ctx -> [n]key -> hashset
 
-  val unsafe_from_array [n] : ctx -> [n]key -> hashset
+  val from_array_nodup [n] : ctx -> [n]key -> hashset
 
   val to_array : hashset -> []key
 
@@ -173,10 +173,10 @@ module mk_hashset (K: hashkey) (E: rng_engine with int.t = u64)
                  (keys: [n]key) : ?[m].set [m] =
     hashset.from_array ctx keys
 
-  def unsafe_from_array [n]
-                        (ctx: ctx)
-                        (keys: [n]key) : set [n] =
-    hashset.unsafe_from_array ctx keys
+  def from_array_nodup [n]
+                       (ctx: ctx)
+                       (keys: [n]key) : set [n] =
+    hashset.from_array_nodup ctx keys
 
   def to_array [n] (set: set [n]) : [n]key =
     hashset.to_array set

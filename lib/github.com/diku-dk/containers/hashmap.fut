@@ -81,7 +81,7 @@ module type two_level_hashmap = {
   -- **Expected Work:** *O(n + u)*
   --
   -- **Expected Span:** *O(log n)*
-  val unsafe_from_array [n] 'v :
+  val from_array_nodup [n] 'v :
     ctx -> [n](key, v) -> ?[f].map ctx [n] [f] v
 
   -- | Create hashmap with default value. If any keys are duplicates
@@ -91,7 +91,7 @@ module type two_level_hashmap = {
   -- **Expected Work:** *O(n)*
   --
   -- **Expected Span:** *O(log n)*
-  val unsafe_from_array_rep [n] 'v :
+  val from_array_rep_nodup [n] 'v :
     ctx
     -> [n]key
     -> v
@@ -105,7 +105,7 @@ module type two_level_hashmap = {
   -- **Expected Work:** *O(n + u ✕ W(op))*
   --
   -- **Expected Span:** *O(log n)* (Assuming best case for hist)
-  val unsafe_from_array_hist [u] 'v :
+  val from_array_hist_nodup [u] 'v :
     ctx
     -> (v -> v -> v)
     -> v
@@ -380,10 +380,10 @@ module mk_two_level_hashmap (K: hashkey) (E: rng_engine with int.t = u64)
   -- | Construct a level two hash function.
   --
   -- precondition: keys must not contain duplicates.
-  def unsafe_from_array_rep [n] 'v
-                            (ctx: ctx)
-                            (keys: [n]key)
-                            (ne: v) : ?[f].map ctx [n] [f] v =
+  def from_array_rep_nodup [n] 'v
+                           (ctx: ctx)
+                           (keys: [n]key)
+                           (ne: v) : ?[f].map ctx [n] [f] v =
     let r = engine.rng_from_seed [123, i32.i64 n]
     -- The level one hash function is determined here.
     let (r, level_one_consts) = generate_consts key.m r
@@ -493,7 +493,7 @@ module mk_two_level_hashmap (K: hashkey) (E: rng_engine with int.t = u64)
                      (keys: [u]key)
                      (ne: v) : ?[n][f].map ctx [n] [f] v =
     let (_rng, keys) = array.dedup ctx (engine.rng_from_seed [i32.i64 u]) keys
-    in unsafe_from_array_rep ctx keys ne
+    in from_array_rep_nodup ctx keys ne
 
   local
   def offset [n] [f] 'v
@@ -529,13 +529,13 @@ module mk_two_level_hashmap (K: hashkey) (E: rng_engine with int.t = u64)
          let hmap = from_array_rep ctx keys values[0]
          in update hmap key_values
 
-  def unsafe_from_array [n] 'v
-                        (ctx: ctx)
-                        (key_values: [n](key, v)) : ?[f].(map ctx [n] [f] v) =
+  def from_array_nodup [n] 'v
+                       (ctx: ctx)
+                       (key_values: [n](key, v)) : ?[f].(map ctx [n] [f] v) =
     if n == 0
     then empty ctx :> map ctx [n] [0] v
     else let (keys, values) = unzip key_values
-         let hmap = unsafe_from_array_rep ctx keys values[0]
+         let hmap = from_array_rep_nodup ctx keys values[0]
          in update hmap key_values
 
   def adjust [n] [f] [u] 'v
@@ -557,13 +557,13 @@ module mk_two_level_hashmap (K: hashkey) (E: rng_engine with int.t = u64)
     let hmap = from_array_rep ctx keys ne
     in adjust op ne hmap key_values
 
-  def unsafe_from_array_hist [u] 'v
-                             (ctx: ctx)
-                             (op: v -> v -> v)
-                             (ne: v)
-                             (key_values: [u](key, v)) : ?[n][f].map ctx [n] [f] v =
+  def from_array_hist_nodup [u] 'v
+                            (ctx: ctx)
+                            (op: v -> v -> v)
+                            (ne: v)
+                            (key_values: [u](key, v)) : ?[n][f].map ctx [n] [f] v =
     let keys = map (.0) key_values
-    let hmap = unsafe_from_array_rep ctx keys ne
+    let hmap = from_array_rep_nodup ctx keys ne
     in adjust op ne hmap key_values
 
   def to_array [n] [f] 'v (hmap: map ctx [n] [f] v) : [](key, v) =
@@ -631,7 +631,7 @@ module mk_two_level_hashmap (K: hashkey) (E: rng_engine with int.t = u64)
          let keys' = map (.0) key_values'
          let filler = if u < n then key_values'[0].1 else key_values[0].1
          let keys'' = keys ++ keys'
-         let hmap' = unsafe_from_array_rep ctx keys'' filler
+         let hmap' = from_array_rep_nodup ctx keys'' filler
          in update hmap' (key_values ++ key_values') with rng = rng
 
   def insert_with [n] [f] [u] 'v
@@ -648,7 +648,7 @@ module mk_two_level_hashmap (K: hashkey) (E: rng_engine with int.t = u64)
       |> array.dedup ctx (hmap.rng)
     let keys' = map (.0) key_values'
     let keys'' = keys ++ keys'
-    let hmap' = unsafe_from_array_rep ctx keys'' ne
+    let hmap' = from_array_rep_nodup ctx keys'' ne
     in adjust op ne hmap' (key_values ++ key_values') with rng = rng
 
   def map_with_key [n] [f] 'v 't
@@ -703,18 +703,18 @@ module mk_hashmap (K: hashkey) (E: rng_engine with int.t = u64)
                       (key_values: [u](key, v)) : ?[n].map [n] v =
     hashmap.from_array_hist ctx op ne key_values
 
-  def unsafe_from_array [n] 'v (ctx: ctx) (key_values: [n](key, v)) : map [n] v =
-    hashmap.unsafe_from_array ctx key_values
+  def from_array_nodup [n] 'v (ctx: ctx) (key_values: [n](key, v)) : map [n] v =
+    hashmap.from_array_nodup ctx key_values
 
-  def unsafe_from_array_rep [n] 'v (ctx: ctx) (keys: [n]key) (ne: v) : map [n] v =
-    hashmap.unsafe_from_array_rep ctx keys ne
+  def from_array_rep_nodup [n] 'v (ctx: ctx) (keys: [n]key) (ne: v) : map [n] v =
+    hashmap.from_array_rep_nodup ctx keys ne
 
-  def unsafe_from_array_hist [u] 'v
-                             (ctx: ctx)
-                             (op: v -> v -> v)
-                             (ne: v)
-                             (key_values: [u](key, v)) : ?[n].map [n] v =
-    hashmap.unsafe_from_array_hist ctx op ne key_values
+  def from_array_hist_nodup [u] 'v
+                            (ctx: ctx)
+                            (op: v -> v -> v)
+                            (ne: v)
+                            (key_values: [u](key, v)) : ?[n].map [n] v =
+    hashmap.from_array_hist_nodup ctx op ne key_values
 
   def map [n] 'v 't (g: v -> t) (hmap: map [n] v) : map [n] t =
     hashmap.map g hmap
@@ -787,16 +787,16 @@ module type open_addressing_hashmap = {
     -> [u](key, v)
     -> ?[n][f].map ctx [n] [f] v
 
-  val unsafe_from_array [n] 'v :
+  val from_array_nodup [n] 'v :
     ctx -> [n](key, v) -> ?[f].map ctx [n] [f] v
 
-  val unsafe_from_array_rep [n] 'v :
+  val from_array_rep_nodup [n] 'v :
     ctx
     -> [n]key
     -> v
     -> ?[f].map ctx [n] [f] v
 
-  val unsafe_from_array_hist [n] 'v :
+  val from_array_hist_nodup [n] 'v :
     ctx
     -> (v -> v -> v)
     -> v
@@ -948,10 +948,10 @@ module mk_open_addressing_hashmap
        , ctx = ctx
        }
 
-  def unsafe_from_array_rep [n] 'v
-                            (ctx: ctx)
-                            (keys: [n]key)
-                            (ne: v) : ?[f].map ctx [n] [f] v =
+  def from_array_rep_nodup [n] 'v
+                           (ctx: ctx)
+                           (keys: [n]key)
+                           (ne: v) : ?[f].map ctx [n] [f] v =
     let hmap = from_array_rep ctx keys ne
     in hmap with keys = sized n hmap.keys
             with values = sized n hmap.values
@@ -1025,9 +1025,9 @@ module mk_open_addressing_hashmap
          let hmap = from_array_rep ctx keys values[0]
          in update hmap key_values
 
-  def unsafe_from_array [n] 'v
-                        (ctx: ctx)
-                        (key_values: [n](key, v)) : ?[f].map ctx [n] [f] v =
+  def from_array_nodup [n] 'v
+                       (ctx: ctx)
+                       (key_values: [n](key, v)) : ?[f].map ctx [n] [f] v =
     let hmap = from_array ctx key_values
     in hmap with keys = sized n hmap.keys
             with values = sized n hmap.values
@@ -1051,11 +1051,11 @@ module mk_open_addressing_hashmap
     let hmap = from_array_rep ctx keys ne
     in adjust op ne hmap key_values
 
-  def unsafe_from_array_hist [n] 'v
-                             (ctx: ctx)
-                             (op: v -> v -> v)
-                             (ne: v)
-                             (key_values: [n](key, v)) : ?[f].map ctx [n] [f] v =
+  def from_array_hist_nodup [n] 'v
+                            (ctx: ctx)
+                            (op: v -> v -> v)
+                            (ne: v)
+                            (key_values: [n](key, v)) : ?[f].map ctx [n] [f] v =
     let hmap = from_array_hist ctx op ne key_values
     in hmap with keys = sized n hmap.keys
             with values = sized n hmap.values
@@ -1159,18 +1159,18 @@ module mk_linear_hashmap (K: hashkey) (E: rng_engine with int.t = u64)
                       (key_values: [u](key, v)) : ?[n].map [n] v =
     hashmap.from_array_hist ctx op ne key_values
 
-  def unsafe_from_array [n] 'v (ctx: ctx) (key_values: [n](key, v)) : map [n] v =
-    hashmap.unsafe_from_array ctx key_values
+  def from_array_nodup [n] 'v (ctx: ctx) (key_values: [n](key, v)) : map [n] v =
+    hashmap.from_array_nodup ctx key_values
 
-  def unsafe_from_array_rep [n] 'v (ctx: ctx) (keys: [n]key) (ne: v) : map [n] v =
-    hashmap.unsafe_from_array_rep ctx keys ne
+  def from_array_rep_nodup [n] 'v (ctx: ctx) (keys: [n]key) (ne: v) : map [n] v =
+    hashmap.from_array_rep_nodup ctx keys ne
 
-  def unsafe_from_array_hist [u] 'v
-                             (ctx: ctx)
-                             (op: v -> v -> v)
-                             (ne: v)
-                             (key_values: [u](key, v)) : ?[n].map [n] v =
-    hashmap.unsafe_from_array_hist ctx op ne key_values
+  def from_array_hist_nodup [u] 'v
+                            (ctx: ctx)
+                            (op: v -> v -> v)
+                            (ne: v)
+                            (key_values: [u](key, v)) : ?[n].map [n] v =
+    hashmap.from_array_hist_nodup ctx op ne key_values
 
   def map [n] 'v 't (g: v -> t) (hmap: map [n] v) : map [n] t =
     hashmap.map g hmap
