@@ -115,7 +115,7 @@ module arraymap = mk_arraymap i64key
 module arraymap_tests = mk_map_test arraymap
 
 module eytzinger = mk_eytzinger i64key
-module eytzinger_tests = mk_map_test arraymap
+module eytzinger_tests = mk_map_test eytzinger
 
 -- ==
 -- entry: hashmap_find_all arraymap_find_all linhashmap_find_all eytzinger_find_all
