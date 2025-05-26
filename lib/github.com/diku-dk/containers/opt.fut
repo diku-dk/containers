@@ -1,11 +1,6 @@
--- | `opt`@term type.
---
--- A type which can be used to signify the lack of a value.
+-- | A type for signifing missing values.
 
--- | The `opt`@term type
---
--- A `opt`@term type is a sum type. It is either `#some` containg a
--- value `a`@term or `#none`.
+-- Either `#some` containg a value `a`@term or `#none`.
 type opt 'a = #none | #some a
 
 -- | Extents a binary operation to have `#none` as a identity element.
@@ -19,9 +14,9 @@ def add_identity 'a (op: a -> a -> a) (a: opt a) (b: opt a) : opt a =
   case (#none, #some _) -> b
   case (#none, #none) -> #none
 
--- | Unpacks a `opt` type.
+-- | Unpacks an `opt` value.
 --
--- If `#some a`@term then `a` is returned, otherwise `ne`@term is returned.
+-- If `#some a` then `a` is returned, otherwise `ne` is returned.
 def from_opt 'a (ne: a) (a: opt a) : a =
   match a
   case #some a' -> a'

@@ -6,8 +6,7 @@
 -- these bits can then be related to the indexes of
 -- another array.
 --
--- `nbs`@term is assumed to be constant in the time
--- complexities.
+-- `nbs` is assumed to be constant in the time complexities.
 
 module type bitset = {
   -- | The integral module used in the definition of the bitset.
@@ -118,7 +117,7 @@ module type bitset = {
   -- **Work:** *O(n)*
   --
   -- **Span:** *O(log n)*
-  val == [n] : bitset [(n - 1) / nbs + 1] -> bitset [(n - 1) / nbs + 1] -> bool
+  val (==) [n] : bitset [(n - 1) / nbs + 1] -> bitset [(n - 1) / nbs + 1] -> bool
 
   -- | Convert an array of indices to a bitset.
   --

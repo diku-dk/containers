@@ -671,7 +671,7 @@ module mk_two_level_hashmap (K: hashkey) (E: rng_engine with int.t = u64)
     map_with_key (\_ v -> g v) hmap
 }
 
--- | Create an implementation of `map`@mtype using two level hash tables.
+-- | Create an implementation of `map`@mtype@"map" using two level hash tables.
 module mk_hashmap (K: hashkey) (E: rng_engine with int.t = u64)
   : map
     with key = K.key
