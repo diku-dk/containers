@@ -787,6 +787,22 @@ module type open_addressing_hashmap = {
     -> [u](key, v)
     -> ?[n][f].map ctx [n] [f] v
 
+  val unsafe_from_array [n] 'v :
+    ctx -> [n](key, v) -> ?[f].map ctx [n] [f] v
+
+  val unsafe_from_array_rep [n] 'v :
+    ctx
+    -> [n]key
+    -> v
+    -> ?[f].map ctx [n] [f] v
+
+  val unsafe_from_array_hist [n] 'v :
+    ctx
+    -> (v -> v -> v)
+    -> v
+    -> [n](key, v)
+    -> ?[f].map ctx [n] [f] v
+
   val adjust [n] [f] [u] 'v :
     (v -> v -> v)
     -> v
@@ -932,6 +948,14 @@ module mk_open_addressing_hashmap
        , ctx = ctx
        }
 
+  def unsafe_from_array_rep [n] 'v
+                            (ctx: ctx)
+                            (keys: [n]key)
+                            (ne: v) : ?[f].map ctx [n] [f] v =
+    let hmap = from_array_rep ctx keys ne
+    in hmap with keys = sized n hmap.keys
+            with values = sized n hmap.values
+
   local
   def lookup_idx [n] [f] 'v
                  (ctx: ctx)
@@ -1001,6 +1025,13 @@ module mk_open_addressing_hashmap
          let hmap = from_array_rep ctx keys values[0]
          in update hmap key_values
 
+  def unsafe_from_array [n] 'v
+                        (ctx: ctx)
+                        (key_values: [n](key, v)) : ?[f].map ctx [n] [f] v =
+    let hmap = from_array ctx key_values
+    in hmap with keys = sized n hmap.keys
+            with values = sized n hmap.values
+
   def adjust [n] [f] [u] 'v
              (op: v -> v -> v)
              (ne: v)
@@ -1019,6 +1050,15 @@ module mk_open_addressing_hashmap
     let keys = map (.0) key_values
     let hmap = from_array_rep ctx keys ne
     in adjust op ne hmap key_values
+
+  def unsafe_from_array_hist [n] 'v
+                             (ctx: ctx)
+                             (op: v -> v -> v)
+                             (ne: v)
+                             (key_values: [n](key, v)) : ?[f].map ctx [n] [f] v =
+    let hmap = from_array_hist ctx op ne key_values
+    in hmap with keys = sized n hmap.keys
+            with values = sized n hmap.values
 
   def to_array [n] [f] 'v (hmap: map ctx [n] [f] v) : [](key, v) =
     zip hmap.keys hmap.values
