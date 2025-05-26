@@ -1159,6 +1159,19 @@ module mk_linear_hashmap (K: hashkey) (E: rng_engine with int.t = u64)
                       (key_values: [u](key, v)) : ?[n].map [n] v =
     hashmap.from_array_hist ctx op ne key_values
 
+  def unsafe_from_array [n] 'v (ctx: ctx) (key_values: [n](key, v)) : map [n] v =
+    hashmap.unsafe_from_array ctx key_values
+
+  def unsafe_from_array_rep [n] 'v (ctx: ctx) (keys: [n]key) (ne: v) : map [n] v =
+    hashmap.unsafe_from_array_rep ctx keys ne
+
+  def unsafe_from_array_hist [u] 'v
+                             (ctx: ctx)
+                             (op: v -> v -> v)
+                             (ne: v)
+                             (key_values: [u](key, v)) : ?[n].map [n] v =
+    hashmap.unsafe_from_array_hist ctx op ne key_values
+
   def map [n] 'v 't (g: v -> t) (hmap: map [n] v) : map [n] t =
     hashmap.map g hmap
 
