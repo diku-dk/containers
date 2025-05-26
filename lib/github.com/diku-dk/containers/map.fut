@@ -76,15 +76,6 @@ module type map = {
     -> v
     -> ?[n].map [n] v
 
-  -- | Create map where duplicates are reduced with a commutative
-  -- and associative operation, assuming no duplicate keys.
-  val from_array_hist_nodup [u] 'v :
-    ctx
-    -> (v -> v -> v)
-    -> v
-    -> [u](key, v)
-    -> ?[n].map [n] v
-
   -- | Combine key-value pairs into a map using the provided
   -- associative and commutative operation. Keys that are not present
   -- in the map is not added.

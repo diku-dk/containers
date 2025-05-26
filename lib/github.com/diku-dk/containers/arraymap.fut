@@ -83,9 +83,6 @@ module mk_arraymap (K: ordkey) : map with key = K.key with ctx = K.ctx = {
       |> merge_sort (\x y -> (ctx, x) K.<= (ctx, y))
     in {keys, vals = map (const v) keys, ctx}
 
-  def from_array_hist_nodup [u] 'v (ctx: ctx) (op: v -> v -> v) (v: v) (kvs: [u](key, v)) : ?[n].map [n] v =
-    from_array_hist ctx op v kvs
-
   def lookup_index [n] 'a (ctx: ctx) (k: key) (m: map [n] a) : i64 =
     binary_search (\x y -> (m.ctx, x) K.== (ctx, y))
                   (\x y -> (m.ctx, x) K.<= (ctx, y))
