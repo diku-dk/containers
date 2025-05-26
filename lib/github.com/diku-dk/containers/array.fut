@@ -61,10 +61,10 @@ module type array_key = {
 
   -- | Reduce by key works like Futharks `reduce_by_index` but instead of the
   -- need to make every value correspond to an index in some array it can
-  -- instead correspond to a key. Here an array of `n`@term key `k`@term and
-  -- value `v`@term pairs are given as an array. And every value with the same
-  -- key will be reduced with an associative and commutative operator `op`@term,
-  -- futhermore an neutral element `ne`@term must be given.
+  -- instead correspond to a key. Here an array of `n` key `k` and value `v`
+  -- pairs are given as an array. And every value with the same key will be
+  -- reduced with an associative and commutative operator `op`, futhermore an
+  -- neutral element `ne` must be given.
   val reduce_by_key [n] 'v :
     ctx
     -> rng
@@ -74,8 +74,8 @@ module type array_key = {
     -> ?[m].(rng, [m](key, v))
 
   -- | Removes duplicate elements from an array as defined by the equality
-  -- relation of the key. This implementation works much like
-  -- `reduce_by_key`@term but saves some steps which makes it faster.
+  -- relation of the key. This implementation works much like `reduce_by_key`
+  -- but saves some steps which makes it faster.
   val dedup [n] : ctx -> rng -> [n]key -> ?[m].(rng, [m]key)
 }
 
