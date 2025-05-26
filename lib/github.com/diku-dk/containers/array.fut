@@ -1,8 +1,7 @@
--- | Array related operations, like `reduce_by_key`@term.
+-- | Functions on pure arrays.
 --
--- This module contains functions for manipulating arrays.
--- Which might be something like deduplication or a generalized
--- reduction by a key.
+-- This module contains modules and functions for manipulating arrays. Which
+-- might be something like deduplication or a generalized reduction by a key.
 
 import "../cpprandom/random"
 import "../sorts/radix_sort"
@@ -10,31 +9,47 @@ import "../segmented/segmented"
 import "hashkey"
 import "opt"
 
--- | Compare two arrays for equality using a provided operator.
-def arreq [n] [m] 't ((==): t -> t -> bool) (x: [n]t) (y: [m]t) =
-  n i64.== m
-  && (loop (ok, i) = (true, 0)
-      while ok && i < n do
-        (ok && (x[i] == y[i]), i + 1)).0
-
--- Lexicographical comparison of two arrays. Returns true if `a <= b`.
-def arrle [n] [m] 't ((<=): t -> t -> bool) (a: [n]t) (b: [m]t) : bool =
-  let minlen = i64.min n m
-  let (<) = \x y -> x <= y && !(y <= x)
-  let cmp =
-    map2 (\x y : opt bool ->
-            if x < y
-            then #some true
-            else if y < x
-            then #some false
-            else #none)
-         (take minlen a)
-         (take minlen b)
-  in match first_some cmp
-     case #some res -> res
-     case #none -> n i64.<= m
-
+local
+-- | Fairly simple functions on arrays. Implemented by the module `array`@term.
 module type array = {
+  -- | True if the provided arrays have the same size and the same elements as
+  -- determined by the provided operator.
+  val eq [n] [m] 't : (eq: t -> t -> bool) -> [n]t -> [m]t -> bool
+
+  -- | Lexicographical less-or-equal comparison of two arrays.
+  val le [n] [m] 't : (lte: t -> t -> bool) -> [n]t -> [m]t -> bool
+}
+
+module array : array = {
+  -- | Compare two arrays for equality using a provided operator.
+  def eq [n] [m] 't ((==): t -> t -> bool) (x: [n]t) (y: [m]t) =
+    n i64.== m
+    && (loop (ok, i) = (true, 0)
+        while ok && i < n do
+          (ok && (x[i] == y[i]), i + 1)).0
+
+  -- Lexicographical comparison of two arrays. Returns true if `a <= b`.
+  def le [n] [m] 't ((<=): t -> t -> bool) (a: [n]t) (b: [m]t) : bool =
+    let minlen = i64.min n m
+    let (<) = \x y -> x <= y && !(y <= x)
+    let cmp =
+      map2 (\x y : opt bool ->
+              if x < y
+              then #some true
+              else if y < x
+              then #some false
+              else #none)
+           (take minlen a)
+           (take minlen b)
+    in match first_some cmp
+       case #some res -> res
+       case #none -> n i64.<= m
+}
+
+-- | A module type for functions on arrays of keys. Use `mk_array_key`@term
+-- to produce a module that implements this module type, given a random number
+-- generator.
+module type array_key = {
   -- | The key type.
   type key
 
@@ -44,13 +59,12 @@ module type array = {
   -- | The random number generator.
   type rng
 
-  -- | Reduce by key works like Futharks `reduce_by_index` but instead
-  -- of the need to make every value correspond to an index in some
-  -- array it can instead correspond to a key. Here an array of
-  -- `n`@term key `k`@term and value `v`@term pairs are given as an
-  -- array. And every value with the same key will be reduced with an
-  -- associative and commutative operator `op`@term, futhermore an
-  -- neutral element `ne`@term must be given.
+  -- | Reduce by key works like Futharks `reduce_by_index` but instead of the
+  -- need to make every value correspond to an index in some array it can
+  -- instead correspond to a key. Here an array of `n`@term key `k`@term and
+  -- value `v`@term pairs are given as an array. And every value with the same
+  -- key will be reduced with an associative and commutative operator `op`@term,
+  -- futhermore an neutral element `ne`@term must be given.
   val reduce_by_key [n] 'v :
     ctx
     -> rng
@@ -59,14 +73,14 @@ module type array = {
     -> [n](key, v)
     -> ?[m].(rng, [m](key, v))
 
-  -- | Removes duplicate elements from an array as defined by an
-  -- equality `eq`@term. This implementation works much like
+  -- | Removes duplicate elements from an array as defined by the equality
+  -- relation of the key. This implementation works much like
   -- `reduce_by_key`@term but saves some steps which makes it faster.
   val dedup [n] : ctx -> rng -> [n]key -> ?[m].(rng, [m]key)
 }
 
-module mk_array (K: hashkey) (E: rng_engine with int.t = u64)
-  : array
+module mk_array_key (K: hashkey) (E: rng_engine with int.t = u64)
+  : array_key
     with rng = E.rng
     with key = K.key
     with ctx = K.ctx = {

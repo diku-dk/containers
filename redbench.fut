@@ -7,7 +7,7 @@ import "lib/github.com/diku-dk/containers/hashmap"
 import "lib/github.com/diku-dk/containers/key"
 
 module engine = xorshift128plus
-module array = mk_array i64key engine
+module array_key = mk_array_key i64key engine
 module hashset = mk_hashset i64key engine
 module hashmap = mk_hashmap i64key engine
 
@@ -64,12 +64,12 @@ def sort_count_occourences [n] (arr: [n]i64) : [](i64, i64) =
 -- script input { replicate_i64 100000000i64 1i64 }
 local
 entry bench_array_dedup [n] (arr: [n]i64) =
-  array.dedup () seed arr |> (.1)
+  array_key.dedup () seed arr |> (.1)
 
 local
 entry bench_array_count_occourences [n] (arr: [n]i64) =
   zip arr (replicate n 1)
-  |> array.reduce_by_key () seed (+) 0i64
+  |> array_key.reduce_by_key () seed (+) 0i64
   |> (.1)
   |> unzip
 

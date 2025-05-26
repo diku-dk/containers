@@ -12,7 +12,7 @@ module engine = xorshift128plus
 
 module slice_key = mk_slice_key u8key
 
-module array = mk_array slice_key engine
+module array_key = mk_array_key slice_key engine
 module hashset = mk_hashset slice_key engine
 
 def seed = engine.rng_from_seed [1]
@@ -41,7 +41,7 @@ entry bench_hashset_dedup [l] [k] (ctx: [l]u8) (words: [k](i64, i64)) =
   |> map (.0)
 
 entry bench_array_dedup [l] [k] (ctx: [l]u8) (words: [k](i64, i64)) =
-  array.dedup ctx seed (map (uncurry slice.mk) words)
+  array_key.dedup ctx seed (map (uncurry slice.mk) words)
   |> (.1)
   |> map slice.unmk
   |> map (.0)
@@ -56,9 +56,9 @@ entry bench_sort_dedup [l] [k] (ctx: [l]u8) (words: [k](i64, i64)) =
   let flags =
     map (\i ->
            i == 0
-           || !arreq (==)
-                     (slice.get (uncurry slice.mk sorted[i - 1]) ctx)
-                     (slice.get (uncurry slice.mk sorted[i]) ctx))
+           || !array.eq (==)
+                        (slice.get (uncurry slice.mk sorted[i - 1]) ctx)
+                        (slice.get (uncurry slice.mk sorted[i]) ctx))
         (indices words)
   in zip flags sorted |> filter (.0) |> map (.1.0)
 
