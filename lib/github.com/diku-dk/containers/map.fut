@@ -66,11 +66,11 @@ module type map = {
     -> ?[n].map [n] v
 
   -- | Given a key-value array construct a map, assuming no duplicate keys.
-  val unsafe_from_array [u] 'v :
+  val from_array_nodup [u] 'v :
     ctx -> [u](key, v) -> ?[n].map [n] v
 
   -- | Create map with default value, assuming no duplicate keys.
-  val unsafe_from_array_rep [u] 'v :
+  val from_array_rep_nodup [u] 'v :
     ctx
     -> [u]key
     -> v
@@ -78,7 +78,7 @@ module type map = {
 
   -- | Create map where duplicates are reduced with a commutative
   -- and associative operation, assuming no duplicate keys.
-  val unsafe_from_array_hist [u] 'v :
+  val from_array_hist_nodup [u] 'v :
     ctx
     -> (v -> v -> v)
     -> v

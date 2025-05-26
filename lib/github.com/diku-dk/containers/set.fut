@@ -31,7 +31,7 @@ module type set = {
   -- | Given an array keys construct a set. If the given keys
   -- contains duplicates then the function call will never finish.
   -- Inturn it does less work.
-  val unsafe_from_array [u] : ctx -> [u]key -> ?[n].set [n]
+  val from_array_nodup [u] : ctx -> [u]key -> ?[n].set [n]
 
   -- | Convert set to an array of keys.
   val to_array [n] : set [n] -> [n]key
