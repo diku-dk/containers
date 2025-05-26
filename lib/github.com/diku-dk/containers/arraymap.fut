@@ -70,20 +70,20 @@ module mk_arraymap (K: ordkey) : map with key = K.key with ctx = K.ctx = {
       |> unzip
     in {keys, vals, ctx}
 
-  def unsafe_from_array [u] 'v (ctx: ctx) (kvs: [u](key, v)) : ?[n].map [n] v =
+  def from_array_nodup [u] 'v (ctx: ctx) (kvs: [u](key, v)) : ?[n].map [n] v =
     let (keys, vals) =
       kvs
       |> merge_sort_by_key (.0) (\x y -> (ctx, x) K.<= (ctx, y))
       |> unzip
     in {keys, vals, ctx}
 
-  def unsafe_from_array_rep [n] 'v (ctx: ctx) (keys: [n]key) (v: v) : ?[n].map [n] v =
+  def from_array_rep_nodup [n] 'v (ctx: ctx) (keys: [n]key) (v: v) : ?[n].map [n] v =
     let keys =
       keys
       |> merge_sort (\x y -> (ctx, x) K.<= (ctx, y))
     in {keys, vals = map (const v) keys, ctx}
 
-  def unsafe_from_array_hist [u] 'v (ctx: ctx) (op: v -> v -> v) (v: v) (kvs: [u](key, v)) : ?[n].map [n] v =
+  def from_array_hist_nodup [u] 'v (ctx: ctx) (op: v -> v -> v) (v: v) (kvs: [u](key, v)) : ?[n].map [n] v =
     from_array_hist ctx op v kvs
 
   def lookup_index [n] 'a (ctx: ctx) (k: key) (m: map [n] a) : i64 =
