@@ -217,7 +217,7 @@ module mk_two_level_hashmap (K: hashkey) (E: rng_engine with int.t = u64)
   type rng = engine.rng
   type key = key.key
   type~ ctx = key.ctx
-  module array = mk_array K E
+  module array = mk_array_key K E
 
   -- | The hashmap data type.
   -- n: The number of keys.

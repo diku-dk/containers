@@ -53,10 +53,10 @@ module mk_slice_key (E: key with ctx = ())
   def m : i64 = E.m
 
   def (<=) (xctx: ctx, x: key) (yctx: ctx, y: key) =
-    arrle (\x y -> ((), x) E.<= ((), y)) (slice.get x xctx) (slice.get y yctx)
+    array.le (\x y -> ((), x) E.<= ((), y)) (slice.get x xctx) (slice.get y yctx)
 
   def (==) (xctx: ctx, x: key) (yctx: ctx, y: key) =
-    arreq (\x y -> ((), x) E.== ((), y)) (slice.get x xctx) (slice.get y yctx)
+    array.eq (\x y -> ((), x) E.== ((), y)) (slice.get x xctx) (slice.get y yctx)
 
   def hash (ctx: []E.key) (a: [m]u64) (x: key) : u64 =
     loop v = 0

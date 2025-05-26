@@ -7,7 +7,7 @@ import "array"
 import "key"
 
 module engine = xorshift128plus
-module array = mk_array i64key engine
+module array = mk_array_key i64key engine
 def seed = engine.rng_from_seed [1]
 
 local
