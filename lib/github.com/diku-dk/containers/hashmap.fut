@@ -293,16 +293,23 @@ module mk_two_level_hashmap (K: hashkey) (E: rng_engine with int.t = u64)
   -- new constants and a new shape.
   --
   -- precondition: old_keys must not contain duplicate keys.
-  def loop_body [n] [w]
+  def loop_body [n] [w] [m]
                 (ctx: ctx)
                 (old_rng: rng)
                 (old_keys: [n](key, i64))
-                (old: [w](i64, i64, [key.m]u64)) : ( rng
-                                                   , [](key, i64)
-                                                   , [](i64, i64, [key.m]u64)
-                                                   , [](i64, i64, [key.m]u64)
-                                                   ) =
-    let (_, old_shape, old_consts) = unzip3 old
+                (old_ishape: [w](i64, i64))
+                (old_dest: *[m][2 + key.m]u64) : ( rng
+                                                 , [](key, i64)
+                                                 , [](i64, i64)
+                                                 , *[m][2 + key.m]u64
+                                                 ) =
+    let (new_rng, old_consts) =
+      -- Level two hash function constants.
+      engine.split_rng w old_rng
+      |> map (generate_consts key.m)
+      |> unzip
+      |> (\(rngs, b) -> (engine.join_rng rngs, b))
+    let (_, old_shape) = unzip old_ishape
     let (flat_size, old_shape_offsets) = old_shape |> exscan (+) 0
     let is =
       -- Determine the indices in the flatten array.
@@ -336,30 +343,30 @@ module mk_two_level_hashmap (K: hashkey) (E: rng_engine with int.t = u64)
       -- offset.
       filter (\(_, o) -> not seg_has_no_collision[o]) old_keys
       |> map (\(key, o) -> (key, new_offsets[o]))
-    let (done, temp_not_done) =
+    let (idone, inot_done) =
       -- The subarrays are partitioned by if the subarray lead to zero
       -- collisions and is therefore done.
-      zip seg_has_no_collision old
-      |> partition (\(f, _) -> f)
-      |> (\(a, b) -> (map (.1) a, map (.1) b))
-    let z = length done
-    let s = length temp_not_done
-    let (rngs, new_not_done_consts) =
-      -- The new constants for the level two hash function.
-      engine.split_rng s old_rng
-      |> map (generate_consts key.m)
-      |> unzip
+      (indices old_ishape)
+      |> partition (\i -> seg_has_no_collision[i])
     let not_done =
       -- Increment the shape size to get better odds for the second
       -- level hash function of having no collisions.
-      map2 (\(i, shp, _) c -> (i, shp + 1, c))
-           (temp_not_done :> [s](i64, i64, [key.m]u64))
-           new_not_done_consts
-    let new_rng = engine.join_rng rngs
+      map (\i -> old_ishape[i]) inot_done
+      |> map (\(i, shp) -> (i, shp + 1))
+    let done_consts = map (\i -> old_consts[i]) idone
+    let done_shape =
+      map (\i -> old_ishape[i]) idone
+      |> map (\(_, shp) -> [0, u64.i64 shp])
+    let js =
+      map (\i -> old_ishape[i]) idone
+      |> map (\(i, _) -> i)
+    let done =
+      map2 (\a b -> a ++ b) done_shape done_consts
+    let new_dest = scatter old_dest js done
     in ( new_rng
        , new_keys
-       , not_done :> [s](i64, i64, [key.m]u64)
-       , done :> [z](i64, i64, [key.m]u64)
+       , not_done
+       , new_dest
        )
 
   -- | Construct a level two hash function.
@@ -376,73 +383,45 @@ module mk_two_level_hashmap (K: hashkey) (E: rng_engine with int.t = u64)
     let is = map (i64.u64 <-< (%% u64.max 1 (u64.i64 n)) <-< key.hash ctx level_one_consts) keys
     -- The number of keys in a given subarray.
     let level_one_counts = hist (+) 0i64 n is (rep 1)
-    let (idxs, shape) =
+    let ishape =
       -- The index into the level one array for level two hash functions
       -- and the shape for each subarray.
       zip (iota n) level_one_counts
       |> filter ((!= 0) <-< (.1))
       |> map (\(i, s) -> (i, s ** 2))
-      |> unzip
-    let s = length shape
-    let shape = sized s shape
-    let idxs = sized s idxs
-    let (r, init_level_two_consts) =
-      -- Initial levl two hash function constants.
-      engine.split_rng s r
-      |> map (generate_consts key.m)
-      |> unzip
-      |> (\(rngs, b) -> (engine.join_rng rngs, b))
     let level_one_offsets =
       -- The initial offsets into the the flatten array for every key.
       map (i64.bool <-< (!= 0)) level_one_counts
-      |> exscan (+) 0
-      |> (.1)
-      |> map2 (\f o -> if f != 0 then o else 0) level_one_counts
+      |> scan (+) 0
+      |> map2 (\f o -> if f != 0 then o - 1 else -1) level_one_counts
     let init_keys = map2 (\k i -> (k, level_one_offsets[i])) keys is
-    let dest = replicate s (0, 0, replicate key.m 0)
-    let (final_r, _, _, done, size) =
+    let dest = replicate n (replicate (2 + key.m) 0)
+    let (final_r, _, _, done) =
       -- Loop until all the hash function have been found that lead
       -- to no collisions.
-      loop (old_rng, old_keys, old_not_done, old_done, old_size) =
-             (r, init_keys, zip3 idxs shape init_level_two_consts, dest, 0)
-      while length old_not_done != 0 do
+      loop (old_rng, old_keys, old_not_done, old_done) =
+             (r, init_keys, ishape, dest)
+      while length old_keys != 0 do
         let ( new_rng
             , new_keys
             , new_not_done
             , new_done
             ) =
-          loop_body ctx old_rng old_keys old_not_done
-        let is = map (+ old_size) (indices new_done)
+          loop_body ctx old_rng old_keys old_not_done old_done
         in ( new_rng
            , new_keys
            , new_not_done
-           , scatter old_done is new_done
-           , old_size + length new_done
+           , new_done
            )
-    let done = take size done
-    let ( order
-        , unordered_level_two_shape
-        , unordered_level_two_consts
-        ) =
-      unzip3 done
-    let shape_dest = replicate n 0
-    let level_two_shape =
-      -- The shapes of the flatten array.
-      scatter shape_dest order unordered_level_two_shape
+    let t_done = transpose done
+    let level_two_shape = map i64.u64 t_done[1]
     let (flat_size, level_two_offsets) =
       -- The offsets into the flatten array.
-      exscan (+) 0 level_two_shape
+      level_two_shape
+      |> exscan (+) 0
       |> (\(a, b) -> (a, map2 (\f o -> if f == 0 then 0 else o) level_two_shape b))
-    let consts_dest = replicate n (replicate key.m 0)
-    let level_two_consts =
-      -- The constants for the level two hash functions.
-      scatter consts_dest order unordered_level_two_consts
-    let level_two: [n][2 + key.m]u64 =
-      -- Encode the offsets, shapes, and constants for better locality.
-      map3 (\o s cs -> [u64.i64 o, u64.i64 s] ++ cs)
-           level_two_offsets
-           level_two_shape
-           level_two_consts
+    let t_done[0] = map u64.i64 level_two_offsets
+    let level_two = transpose t_done
     let hash2 =
       level_two_hash ctx
                      level_one_consts
