@@ -83,11 +83,15 @@ module type two_level_hashset = {
 }
 
 -- | Build a set that internally uses `mk_two_level_hashmap@term`.
-module mk_two_level_hashset (K: hashkey) (E: rng_engine with int.t = u64)
+module mk_two_level_hashset
+  (I: integral)
+  (U: integral)
+  (K: hashkey with uint = U.t)
+  (E: rng_engine with int.t = U.t)
   : two_level_hashset
     with key = K.key
     with ctx = K.ctx = {
-  module hashmap = mk_two_level_hashmap K E
+  module hashmap = mk_two_level_hashmap I U K E
   type key = hashmap.key
   type ctx = hashmap.ctx
 
@@ -158,11 +162,15 @@ module type hashset = {
     ctx -> hashset -> [u]key -> hashset
 }
 
-module mk_hashset (K: hashkey) (E: rng_engine with int.t = u64)
+module mk_hashset_params
+  (I: integral)
+  (U: integral)
+  (K: hashkey with uint = U.t)
+  (E: rng_engine with int.t = U.t)
   : set
     with key = K.key
     with ctx = K.ctx = {
-  module hashset = mk_two_level_hashset K E
+  module hashset = mk_two_level_hashset I U K E
   type key = hashset.key
   type ctx = hashset.ctx
 
@@ -198,3 +206,7 @@ module mk_hashset (K: hashkey) (E: rng_engine with int.t = u64)
              (keys: [n]key) : set [] =
     hashset.insert ctx set keys
 }
+
+module mk_hashset = mk_hashset_params i64 u64
+
+module mk_hashset_u32 = mk_hashset_params i32 u32

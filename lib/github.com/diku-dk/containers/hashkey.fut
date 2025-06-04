@@ -12,6 +12,9 @@ module type hashkey = {
   -- | Key type.
   type key
 
+  -- | The hash type
+  type uint
+
   -- | Number constants the hash function is depended on.
   val m : i64
 
@@ -19,5 +22,5 @@ module type hashkey = {
   val (==) : (ctx, key) -> (ctx, key) -> bool
 
   -- | A given hash function use.
-  val hash : ctx -> [m]u64 -> key -> u64
+  val hash : ctx -> [m]uint -> key -> uint
 }

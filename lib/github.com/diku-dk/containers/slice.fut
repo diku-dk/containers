@@ -42,13 +42,15 @@ module slice : slice = {
 -- | Create a `key`@mtype@"key" for slices of some specific element type. The
 -- element type must also be provided with a `key`@mtype module for which the
 -- context is unit.
-module mk_slice_key (E: key with ctx = ())
+module mk_slice_key (E: key with ctx = () with uint = u64)
   : key
     with ctx = []E.key
-    with key = slice.slice E.key = {
+    with key = slice.slice E.key
+    with uint = u64 = {
   type i = u64
   type key = slice.slice E.key
   type~ ctx = ?[l].[l]E.key
+  type uint = u64
 
   def m : i64 = E.m
 
@@ -58,7 +60,7 @@ module mk_slice_key (E: key with ctx = ())
   def (==) (xctx: ctx, x: key) (yctx: ctx, y: key) =
     array.eq (\x y -> ((), x) E.== ((), y)) (slice.get x xctx) (slice.get y yctx)
 
-  def hash (ctx: []E.key) (a: [m]u64) (x: key) : u64 =
+  def hash (ctx: []E.key) (a: [m]uint) (x: key) : uint =
     -- Fowler–Noll–Vo (FNV) style hash combining
     loop h = 2166136261
     for x' in slice.get x ctx do
