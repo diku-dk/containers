@@ -33,15 +33,16 @@ module mk_int_key
   type ctx = ()
   type uint = u64
 
-  def m : i64 = 1
+  def m : i64 = 6
 
-  -- The hash function was found [here](http://stackoverflow.com/a/12996028).
+  -- https://lemire.me/blog/2018/08/15/fast-strongly-universal-64-bit-hashing-everywhere/
   def hash _ (a: [m]uint) (x: key) : uint =
-    let x = (u64.max 1 a[0]) * u64.i64 (P.to_i64 x)
-    let x = (x ^ (x >> 30)) * 0xbf58476d1ce4e5b9
-    let x = (x ^ (x >> 27)) * 0x94d049bb133111eb
-    let y = (x ^ (x >> 31))
-    in y
+    let x' = u64.i64 (P.to_i64 x)
+    let low = x'
+    let high = x' >> 32
+    let low_hash = (a[0] * low + a[1] * high + a[2]) >> 32
+    let high_hash = (a[3] * low + a[4] * high + a[5]) & 0xFFFFFFFF00000000
+    in low_hash | high_hash
 
   def (==) (_, x) (_, y) = x P.== y
   def (<=) (_, x) (_, y) = x P.<= y
@@ -71,15 +72,25 @@ module mk_int_key_u32
   type ctx = ()
   type uint = u32
 
-  def m : i64 = 1
+  def m : i64 = 4
 
-  -- The hash function was found [here](http://stackoverflow.com/a/12996028).
+  -- 2^61 - 1
+  def prime : u64 = 0x1FFFFFFFFFFFFFFF
+
+  def mod_prime a = a %% prime
+
+  def concat a b =
+    mod_prime ((u64.u32 a << 32) + u64.u32 b)
+
+  def constants arr =
+    ( concat arr[0] arr[1]
+    , concat arr[2] arr[3]
+    )
+
   def hash _ (a: [m]uint) (x: key) : uint =
-    let x = (u32.max 1 a[0]) * u32.i64 (P.to_i64 x)
-    let x = (x ^ (x >> 16)) * 0x119de1f3
-    let x = (x ^ (x >> 16)) * 0x119de1f3
-    let y = (x ^ (x >> 16))
-    in y
+    let (a', b') = constants a
+    let y = (u64.max 1 a') * u64.i64 (P.to_i64 x) + b'
+    in u32.u64 (mod_prime y)
 
   def (==) (_, x) (_, y) = x P.== y
   def (<=) (_, x) (_, y) = x P.<= y
