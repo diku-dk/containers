@@ -262,12 +262,12 @@ module mk_two_level_hashmap
 
   local
   #[inline]
-  def generate_consts (n: i64) (r: rng) =
-    #[sequential]
-    engine.split_rng n r
-    |> map engine.rand
-    |> unzip
-    |> (\(a, b) -> (engine.join_rng a, b))
+  def generate_consts (n: i64) (r: rng) : (rng, [n]uint) =
+    (\(a, b, _) -> (a, b))
+    <| loop (r', arr: *[n]uint, i) = (r, replicate n (U.i64 0), 0)
+       while i < n do
+         let (r'', a) = engine.rand r'
+         in (r'', arr with [i] = a, i + 1)
 
   local
   def exscan [n] 'a (op: a -> a -> a) (ne: a) (as: [n]a) : (a, [n]a) =
@@ -360,7 +360,7 @@ module mk_two_level_hashmap
       -- Increment the shape size to get better odds for the second
       -- level hash function of having no collisions.
       map (\i -> old_ishape[i]) inot_done
-      |> map (\(i, shp) -> (i, shp I.+ one))
+      |> map (\(i, shp) -> (i, shp))
     let done_shape =
       map (\i -> old_ishape[i]) idone
       |> map (\(_, shp) -> [U.i64 0, to_uint shp])
