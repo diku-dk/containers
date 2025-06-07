@@ -3,9 +3,10 @@ import "lib/github.com/diku-dk/containers/hashset"
 import "lib/github.com/diku-dk/containers/key"
 import "lib/github.com/diku-dk/cpprandom/random"
 
--- xorshift128plus
-module engine = minstd_rand
-module hashset = mk_hashset_u32 i64key_u32 engine
+module engine = xorshift128plus
+
+-- minstd_rand
+module hashset = mk_hashset i64key engine
 def seed = engine.rng_from_seed [1]
 
 def clamp a min max =

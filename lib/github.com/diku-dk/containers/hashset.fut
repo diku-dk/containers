@@ -19,28 +19,28 @@ module type two_level_hashset = {
   type ctx
 
   -- | The hashset type.
-  type hashset [n] [f]
+  type hashset [n] [f] [m]
 
   -- | Check if a key is member of the hashset.
   --
   -- **Work:** *O(1)*
   --
   -- **Span:** *O(1)*
-  val member [n] [f] : ctx -> key -> hashset [n] [f] -> bool
+  val member [n] [f] [m] : ctx -> key -> hashset [n] [f] [m] -> bool
 
   -- | Check if a key is not member of the hashset
   --
   -- **Work:** *O(1)*
   --
   -- **Span:** *O(1)*
-  val not_member [n] [f] : ctx -> key -> hashset [n] [f] -> bool
+  val not_member [n] [f] [m] : ctx -> key -> hashset [n] [f] [m] -> bool
 
   -- | Given an array keys construct a hashset.
   --
   -- **Expected Work:** *O(n)*
   --
   -- **Expected Span:** *O(log n)*
-  val from_array [u] : ctx -> [u]key -> ?[n][f].hashset [n] [f]
+  val from_array [u] : ctx -> [u]key -> ?[n][f][m].hashset [n] [f] [m]
 
   -- | Given an array keys construct a hashset. If the given keys
   -- contains duplicates then the function call will never finish.
@@ -49,28 +49,28 @@ module type two_level_hashset = {
   -- **Expected Work:** *O(n)*
   --
   -- **Expected Span:** *O(log n)*
-  val from_array_nodup [n] : ctx -> [n]key -> ?[f].hashset [n] [f]
+  val from_array_nodup [n] : ctx -> [n]key -> ?[f][m].hashset [n] [f] [m]
 
   -- | Convert hashset to an array of keys.
   --
   -- **Work:** *O(1)*
   --
   -- **Span:** *O(1)*
-  val to_array [n] [f] : hashset [n] [f] -> [n]key
+  val to_array [n] [f] [m] : hashset [n] [f] [m] -> [n]key
 
   -- | The number of elements in the hashset.
   --
   -- **Work:** *O(1)*
   --
   -- **Span:** *O(1)*
-  val size [n] [f] : hashset [n] [f] -> i64
+  val size [n] [f] [m] : hashset [n] [f] [m] -> i64
 
   -- | Gets the context of the hashmap.
   --
   -- **Work:** *O(1)*
   --
   -- **Span:** *O(1)*
-  val context [n] [f] : hashset [n] [f] -> ctx
+  val context [n] [f] [m] : hashset [n] [f] [m] -> ctx
 
   -- | Insert new keys into a hashset. If a key already exists in the
   -- hashset, the new value will overwrite the old one.
@@ -78,8 +78,8 @@ module type two_level_hashset = {
   -- **Expected Work:** *O(n + u)*
   --
   -- **Expected Span:** *O(log (n + u))*
-  val insert [n] [f] [u] :
-    ctx -> hashset [n] [f] -> [u]key -> ?[n'][f'].hashset [n'] [f']
+  val insert [n] [f] [m] [u] :
+    ctx -> hashset [n] [f] [m] -> [u]key -> ?[n'][f'][m'].hashset [n'] [f'] [m']
 }
 
 -- | Build a set that internally uses `mk_two_level_hashmap@term`.
@@ -95,45 +95,45 @@ module mk_two_level_hashset
   type key = hashmap.key
   type ctx = hashmap.ctx
 
-  type hashset [n] [f] =
-    hashmap.map ctx [n] [f] ()
+  type hashset [n] [f] [m] =
+    hashmap.map ctx [n] [f] [m] ()
 
   def from_array [u]
                  (ctx: ctx)
-                 (keys: [u]key) : ?[n][f].hashset [n] [f] =
+                 (keys: [u]key) : ?[n][f][m].hashset [n] [f] [m] =
     hashmap.from_array_rep ctx keys ()
 
   def from_array_nodup [u]
                        (ctx: ctx)
-                       (keys: [u]key) : ?[n][f].hashset [n] [f] =
+                       (keys: [u]key) : ?[n][f][m].hashset [n] [f] [m] =
     hashmap.from_array_rep_nodup ctx keys ()
 
-  def to_array [n] [f] (set: hashset [n] [f]) : []key =
+  def to_array [n] [f] [m] (set: hashset [n] [f] [m]) : []key =
     hashmap.to_array set
     |> map (.0)
 
-  def size [n] [f] (set: hashset [n] [f]) =
+  def size [n] [f] [m] (set: hashset [n] [f] [m]) =
     hashmap.size set
 
-  def context [n] [f] (set: hashset [n] [f]) =
+  def context [n] [f] [m] (set: hashset [n] [f] [m]) =
     hashmap.context set
 
-  def member [n] [f]
+  def member [n] [f] [m]
              (ctx: ctx)
              (key: key)
-             (set: hashset [n] [f]) : bool =
+             (set: hashset [n] [f] [m]) : bool =
     hashmap.member ctx key set
 
-  def not_member [n] [f]
+  def not_member [n] [f] [m]
                  (ctx: ctx)
                  (key: key)
-                 (set: hashset [n] [f]) : bool =
+                 (set: hashset [n] [f] [m]) : bool =
     hashmap.not_member ctx key set
 
-  def insert [n] [f] [u]
+  def insert [n] [f] [m] [u]
              (ctx: ctx)
-             (set: hashset [n] [f])
-             (keys: [u]key) : ?[n'][f'].hashset [n'] [f'] =
+             (set: hashset [n] [f] [m])
+             (keys: [u]key) : ?[n'][f'][m'].hashset [n'] [f'] [m'] =
     hashmap.insert ctx set (zip keys (replicate u ()))
 }
 
@@ -174,7 +174,7 @@ module mk_hashset_params
   type key = hashset.key
   type ctx = hashset.ctx
 
-  type~ set [n] = ?[f].hashset.hashset [n] [f]
+  type~ set [n] = ?[f][m].hashset.hashset [n] [f] [m]
 
   def from_array [n]
                  (ctx: ctx)
