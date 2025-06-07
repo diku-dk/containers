@@ -280,13 +280,13 @@ module mk_two_level_hashmap
 
   local
   #[inline]
-  def lookup_idx_aux [n] [m]
-                     (ctx: ctx)
-                     (level_one_consts: [key.m]uint)
-                     (level_two_consts: [m][key.m]uint)
-                     (level_two: [n][3]int)
-                     (flat_size: int)
-                     (k: key) : int =
+  def lookup_flat_index [n] [m]
+                        (ctx: ctx)
+                        (level_one_consts: [key.m]uint)
+                        (level_two_consts: [m][key.m]uint)
+                        (level_two: [n][3]int)
+                        (flat_size: int)
+                        (k: key) : int =
     if n == 0
     then zero
     else -- The offset to get the level two hash function.
@@ -307,12 +307,12 @@ module mk_two_level_hashmap
     if length hmap.key_values == 0
     then false
     else let i =
-           lookup_idx_aux ctx
-                          hmap.level_one_consts
-                          hmap.level_two_consts
-                          hmap.level_two
-                          (I.i64 f)
-                          k
+           lookup_flat_index ctx
+                             hmap.level_one_consts
+                             hmap.level_two_consts
+                             hmap.level_two
+                             (I.i64 f)
+                             k
          let k' = hmap.lookup_keys[I.to_i64 i]
          in (hmap.ctx, k') key.== (ctx, k)
 
@@ -323,19 +323,19 @@ module mk_two_level_hashmap
     not (member ctx key hmap)
 
   local
-  def lookup_idx [n] [f] [m] 'v
-                 (ctx: ctx)
-                 (hmap: map ctx [n] [f] [m] v)
-                 (k: key) : int =
+  def lookup_index [n] [f] [m] 'v
+                   (ctx: ctx)
+                   (hmap: map ctx [n] [f] [m] v)
+                   (k: key) : int =
     if length hmap.key_values == 0
     then neg_one
     else let i =
-           lookup_idx_aux ctx
-                          hmap.level_one_consts
-                          hmap.level_two_consts
-                          hmap.level_two
-                          (I.i64 f)
-                          k
+           lookup_flat_index ctx
+                             hmap.level_one_consts
+                             hmap.level_two_consts
+                             hmap.level_two
+                             (I.i64 f)
+                             k
          let o = hmap.offsets[I.to_i64 i]
          let (k', _) = hmap.key_values[I.to_i64 o]
          in if (hmap.ctx, k') key.== (ctx, k) then o else neg_one
@@ -347,12 +347,12 @@ module mk_two_level_hashmap
     if length hmap.key_values == 0
     then #none
     else let i =
-           lookup_idx_aux ctx
-                          hmap.level_one_consts
-                          hmap.level_two_consts
-                          hmap.level_two
-                          (I.i64 f)
-                          k
+           lookup_flat_index ctx
+                             hmap.level_one_consts
+                             hmap.level_two_consts
+                             hmap.level_two
+                             (I.i64 f)
+                             k
          let o = hmap.offsets[I.to_i64 i]
          let (k', v) = hmap.key_values[I.to_i64 o]
          in if (hmap.ctx, k') key.== (ctx, k)
@@ -496,11 +496,11 @@ module mk_two_level_hashmap
       :> [n][3]int
     let hash2 =
       I.to_i64
-      <-< lookup_idx_aux ctx
-                         level_one_consts
-                         level_two_consts
-                         level_two
-                         flat_size
+      <-< lookup_flat_index ctx
+                            level_one_consts
+                            level_two_consts
+                            level_two
+                            flat_size
     let js = map hash2 keys
     let reordered =
       -- Reorder the keys so they match the combined hash functions.
@@ -534,7 +534,7 @@ module mk_two_level_hashmap
              (hmap: map ctx [n] [f] [m] v)
              (key_values: [u](key, v)) =
     let (keys, values) = unzip key_values
-    let js = map (I.to_i64 <-< lookup_idx hmap.ctx hmap) keys
+    let js = map (I.to_i64 <-< lookup_index hmap.ctx hmap) keys
     -- The smallest indices for each key-value pair.
     let is = hist i64.min i64.highest n js (indices key_values)
     let (keys', vs') = unzip hmap.key_values
@@ -569,7 +569,7 @@ module mk_two_level_hashmap
              (hmap: map ctx [n] [f] [m] v)
              (key_values: [u](key, v)) =
     let (keys, values) = unzip key_values
-    let is = map (I.to_i64 <-< lookup_idx hmap.ctx hmap) keys
+    let is = map (I.to_i64 <-< lookup_index hmap.ctx hmap) keys
     let keys' = map (.0) hmap.key_values
     let vs = reduce_by_index (map (.1) hmap.key_values) op ne is values
     in hmap with key_values = zip keys' vs
@@ -930,10 +930,10 @@ module mk_open_addressing_hashmap
             with values = sized n hmap.values
 
   local
-  def lookup_idx [n] [f] 'v
-                 (ctx: ctx)
-                 (k: key)
-                 (hmap: map ctx [n] [f] v) : i64 =
+  def lookup_flat_index [n] [f] 'v
+                        (ctx: ctx)
+                        (k: key)
+                        (hmap: map ctx [n] [f] v) : i64 =
     let h = K.hash ctx hmap.consts k
     let keq a b = (hmap.ctx, a) K.== (ctx, b)
     in (.2)
@@ -948,11 +948,11 @@ module mk_open_addressing_hashmap
                )
 
   local
-  def offset [n] [f] 'v
-             (ctx: ctx)
-             (k: key)
-             (hmap: map ctx [n] [f] v) : i64 =
-    let i = lookup_idx ctx k hmap
+  def lookup_index [n] [f] 'v
+                   (ctx: ctx)
+                   (k: key)
+                   (hmap: map ctx [n] [f] v) : i64 =
+    let i = lookup_flat_index ctx k hmap
     in if i == -1
        then -1
        else hmap.offsets[i]
@@ -961,7 +961,7 @@ module mk_open_addressing_hashmap
              (ctx: ctx)
              (k: key)
              (hmap: map ctx [n] [f] v) : bool =
-    -1 != lookup_idx ctx k hmap
+    -1 != lookup_flat_index ctx k hmap
 
   def not_member [n] [f] 'v
                  (ctx: ctx)
@@ -973,7 +973,7 @@ module mk_open_addressing_hashmap
              (ctx: ctx)
              (k: key)
              (hmap: map ctx [n] [f] v) : opt v =
-    let i = offset ctx k hmap
+    let i = lookup_index ctx k hmap
     in if i == -1
        then #none
        else some hmap.values[i]
@@ -982,7 +982,7 @@ module mk_open_addressing_hashmap
              (hmap: map ctx [n] [f] v)
              (key_values: [u](key, v)) =
     let (keys, values) = unzip key_values
-    let js = map (\k -> offset hmap.ctx k hmap) keys
+    let js = map (\k -> lookup_index hmap.ctx k hmap) keys
     let is =
       -- The smallest indices for each key-value pair.
       hist i64.min i64.highest n js (indices key_values)
@@ -1011,7 +1011,7 @@ module mk_open_addressing_hashmap
              (hmap: map ctx [n] [f] v)
              (key_values: [u](key, v)) =
     let (keys, values) = unzip key_values
-    let is = map (\k -> offset hmap.ctx k hmap) keys
+    let is = map (\k -> lookup_index hmap.ctx k hmap) keys
     let vs = reduce_by_index (copy hmap.values) op ne is values
     in hmap with values = vs
 
