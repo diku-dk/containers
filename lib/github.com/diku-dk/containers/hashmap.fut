@@ -389,20 +389,21 @@ module mk_two_level_hashmap
     -- The indices to the subarray the keys will land in.
     let is = map U.(to_i64 <-< (%% max (i64 1) (i64 n)) <-< key.hash ctx level_one_consts) keys
     -- The number of keys in a given subarray.
-    let level_two_shape = hist (I.+) zero n is (rep one)
+    let level_two_counts = hist (I.+) zero n is (rep one)
+    -- The shape for each subarray.
+    let level_two_shape = map (I.** two) level_two_counts
     let ishape =
-      -- The index into the level one array for level two hash functions
-      -- and the shape for each subarray.
-      zip (map I.i64 (iota n)) level_two_shape
-      |> filter ((I.!= zero) <-< (.1))
-      |> map (\(i, s) -> (i, s I.** two))
+      iota n
+      |> map I.i64
+      |> flip zip level_two_shape
+      |> filter (\(_, i) -> i I.!= zero)
     let level_one_offsets =
       -- The initial offsets into the the flatten array for every key.
-      map (I.bool <-< (I.!= zero)) level_two_shape
+      map (I.bool <-< (I.!= zero)) level_two_counts
       |> scan (I.+) zero
-      |> map2 (\f o -> if f I.!= zero then o I.- one else zero) level_two_shape
+      |> map2 (\f o -> if f I.!= zero then o I.- one else zero) level_two_counts
     let init_keys = map2 (\k i -> (k, level_one_offsets[i])) keys is
-    let dest = replicate n one
+    let dest = replicate n zero
     let (final_r, _, _, _, level_two_consts_indices, level_two_consts) =
       -- Loop until all the hash function have been found that lead
       -- to no collisions.
@@ -452,7 +453,9 @@ module mk_two_level_hashmap
       |> sized n
     let offsets =
       -- The offsets into the keys array.
-      hist I.min I.highest (I.to_i64 flat_size) (map hash2 key_reordered) (map (I.i64) (indices key_reordered))
+      scatter (replicate (I.to_i64 flat_size) neg_one)
+              (map hash2 key_reordered)
+              (map (I.i64) (iota n))
     let lookup_keys_dest =
       if n == 0
       then sized (I.to_i64 flat_size) []
