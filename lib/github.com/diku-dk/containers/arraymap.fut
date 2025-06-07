@@ -95,9 +95,7 @@ module mk_arraymap (K: ordkey) : map with key = K.key with ctx = K.ctx = {
     case i -> #some m.vals[i]
 
   def member [n] 'a (ctx: ctx) (k: key) (m: map [n] a) : bool =
-    match lookup ctx k m
-    case #none -> false
-    case #some _ -> true
+    -1 != lookup_index ctx k m
 
   def not_member ctx k xs =
     !(member ctx k xs)

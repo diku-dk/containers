@@ -134,7 +134,7 @@ module mk_eytzinger_unlifted (K: ordkey) : eytzinger_unlifted with key = K.key w
   def ffs x = i64.ctz x + 1
 
   local
-  def lookup_index [n] [f] 'v (ctx: ctx) (x: key) (m: map ctx [n] [f] v) : i64 =
+  def lookup_flat_index [n] [f] 'v (ctx: ctx) (x: key) (m: map ctx [n] [f] v) : i64 =
     let k =
       loop k = 1
       while k <= f do
@@ -143,6 +143,13 @@ module mk_eytzinger_unlifted (K: ordkey) : eytzinger_unlifted with key = K.key w
         else 2 * k + 1
     let i = (k >> i64.i32 (ffs (!k))) - 1
     in if (0 <= i && i < f && (ctx, x) K.== (m.ctx, m.lookup_keys[i]))
+       then i
+       else -1
+
+  local
+  def lookup_index [n] [f] 'v (ctx: ctx) (x: key) (m: map ctx [n] [f] v) : i64 =
+    let i = lookup_flat_index ctx x m
+    in if i != -1
        then m.offsets[i]
        else -1
 
@@ -226,9 +233,7 @@ module mk_eytzinger_unlifted (K: ordkey) : eytzinger_unlifted with key = K.key w
     case i -> #some m.vals[i]
 
   def member [n] [f] 'a (ctx: ctx) (k: key) (m: map ctx [n] [f] a) : bool =
-    match lookup ctx k m
-    case #none -> false
-    case #some _ -> true
+    -1 != lookup_flat_index ctx k m
 
   def not_member ctx k xs =
     !(member ctx k xs)
