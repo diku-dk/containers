@@ -56,7 +56,7 @@ entry replicate_i64 (n: i64) (m: i64) : [n]i64 =
 local
 entry mod_i64 (n: i64) (m: i64) : [n]i64 =
   iota n
-  |> map ((% m) <-< i64.u64 <-< i64key.hash () ([1, 2, 3, 4, 5, 6] :> [i64key.m]u64))
+  |> map ((% m) <-< i64.u64 <-< i64key.hash () ([1, 2, 3, 4, 5, 6] :> [i64key.c]u64))
 
 def construct_hashset arr =
   hashset.from_array () arr
@@ -97,7 +97,7 @@ entry bench_hashset_construct [n] (arr: [n]i64) =
 local
 entry random_array_i64 (n: i64) : []i64 =
   iota n
-  |> map (i64.u64 <-< i64key.hash () ([1, 2, 3, 4, 5, 6] :> [i64key.m]u64))
+  |> map (i64.u64 <-< i64key.hash () ([1, 2, 3, 4, 5, 6] :> [i64key.c]u64))
 
 local
 entry construct_random_sort n =

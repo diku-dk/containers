@@ -52,7 +52,7 @@ module mk_slice_key (E: key with ctx = () with uint = u64)
   type~ ctx = ?[l].[l]E.key
   type uint = u64
 
-  def m : i64 = E.m
+  def c : i64 = E.c
 
   def (<=) (xctx: ctx, x: key) (yctx: ctx, y: key) =
     array.le (\x y -> ((), x) E.<= ((), y)) (slice.get x xctx) (slice.get y yctx)
@@ -60,9 +60,9 @@ module mk_slice_key (E: key with ctx = () with uint = u64)
   def (==) (xctx: ctx, x: key) (yctx: ctx, y: key) =
     array.eq (\x y -> ((), x) E.== ((), y)) (slice.get x xctx) (slice.get y yctx)
 
-  def hash (ctx: []E.key) (a: [m]uint) (x: key) : uint =
+  def hash (ctx: []E.key) (a: [c]uint) (x: key) : uint =
     -- Fowler–Noll–Vo (FNV) style hash combining
     loop h = 2166136261
     for x' in slice.get x ctx do
-      (h * 16777619) ^ E.hash () (sized E.m a) x'
+      (h * 16777619) ^ E.hash () (sized E.c a) x'
 }

@@ -118,7 +118,7 @@ module mk_array_key_params
     if n == 0
     then (rng, U.i64 0)
     else let sample_size = U.(max (i64 1) (i64 n / factor))
-         let (rng, consts) = generate_consts key.m rng
+         let (rng, consts) = generate_consts key.c rng
          let (rng, i) = engine.rand rng
          let sample = (rotate (int.to_i64 i % n) keys)[:U.to_i64 sample_size]
          let hs =
@@ -144,7 +144,7 @@ module mk_array_key_params
          let (uniques, _, _, final_size, final_rng) =
            loop (uniques, elems, size, old_size, old_rng) = (dest, copy arr, copy est, 0, r)
            while length elems != 0 do
-             let (new_rng, consts) = generate_consts key.m old_rng
+             let (new_rng, consts) = generate_consts key.c old_rng
              let alloc_size = U.(size + size / i64 2)
              let h = to_int <-< (U.%% alloc_size) <-< key.hash ctx consts
              let hashes = map h elems
@@ -190,7 +190,7 @@ module mk_array_key_params
            -- Expected number of iterations is O(log n).
            loop (reduced, not_reduced, size, old_size, old_rng) = (dest, arr, copy est, 0, r)
            while length not_reduced != 0 do
-             let (new_rng, consts) = generate_consts key.m old_rng
+             let (new_rng, consts) = generate_consts key.c old_rng
              let keys = map (.0) not_reduced
              let alloc_size = U.(size + size / i64 2)
              let h = to_int <-< (U.%% alloc_size) <-< key.hash ctx consts

@@ -242,8 +242,8 @@ module mk_two_level_hashmap
     , key_values: [n](key, v)
     , offsets: [f]int
     , lookup_keys: [f]key
-    , level_one_consts: [key.m]uint
-    , level_two_consts: [m][key.m]uint
+    , level_one_consts: [key.c]uint
+    , level_two_consts: [m][key.c]uint
     , level_two: [n][3]int
     , rng: rng
     }
@@ -282,8 +282,8 @@ module mk_two_level_hashmap
   #[inline]
   def lookup_flat_index [n] [m]
                         (ctx: ctx)
-                        (level_one_consts: [key.m]uint)
-                        (level_two_consts: [m][key.m]uint)
+                        (level_one_consts: [key.c]uint)
+                        (level_two_consts: [m][key.c]uint)
                         (level_two: [n][3]int)
                         (flat_size: int)
                         (k: key) : int =
@@ -375,14 +375,14 @@ module mk_two_level_hashmap
                 (old_keys: [n](key, int))
                 (old_ishape: [w](int, int))
                 (old_dest: *[m]int)
-                (old_consts: [q][key.m]uint) : ( rng
+                (old_consts: [q][key.c]uint) : ( rng
                                                , int
                                                , [](key, int)
                                                , [](int, int)
                                                , *[m]int
-                                               , [][key.m]uint
+                                               , [][key.c]uint
                                                ) =
-    let (new_rng, consts) = generate_consts key.m old_rng
+    let (new_rng, consts) = generate_consts key.c old_rng
     let (_, old_shape) = unzip old_ishape
     let (flat_size, old_shape_offsets) = old_shape |> exscan (I.+) zero
     let is =
@@ -443,7 +443,7 @@ module mk_two_level_hashmap
     let keys = map (.0) key_values
     let r = engine.rng_from_seed [123, i32.i64 n]
     -- The level one hash function is determined here.
-    let (r, level_one_consts) = generate_consts key.m r
+    let (r, level_one_consts) = generate_consts key.c r
     -- The indices to the subarray the keys will land in.
     let is = map U.(to_i64 <-< (%% max (i64 1) (i64 n)) <-< key.hash ctx level_one_consts) keys
     -- The number of keys in a given subarray.
@@ -847,7 +847,7 @@ module mk_open_addressing_hashmap
 
   type map 'ctx [n] [f] 'v =
     { ctx: ctx
-    , consts: [key.m]u64
+    , consts: [key.c]u64
     , keys: [n]key
     , values: [n]v
     , lookup_keys: [f](bool, key)
@@ -873,7 +873,7 @@ module mk_open_addressing_hashmap
                      (keys: [u]key)
                      (ne: v) : ?[n][f].map ctx [n] [f] v =
     let r = engine.rng_from_seed [123, i32.i64 u]
-    let (r, consts) = generate_consts K.m r
+    let (r, consts) = generate_consts K.c r
     let filler = (false, keys[0])
     let keq a b = (ctx, a) K.== (ctx, b)
     let hash = K.hash ctx consts

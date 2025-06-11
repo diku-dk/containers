@@ -33,10 +33,10 @@ module mk_int_key
   type ctx = ()
   type uint = u64
 
-  def m : i64 = 6
+  def c : i64 = 6
 
   -- https://lemire.me/blog/2018/08/15/fast-strongly-universal-64-bit-hashing-everywhere/
-  def hash _ (a: [m]uint) (x: key) : uint =
+  def hash _ (a: [c]uint) (x: key) : uint =
     let x' = u64.i64 (P.to_i64 x)
     let low = x'
     let high = x' >> 32
@@ -72,7 +72,7 @@ module mk_int_key_u32
   type ctx = ()
   type uint = u32
 
-  def m : i64 = 4
+  def c : i64 = 4
 
   -- 2^61 - 1
   def prime : u64 = 0x1FFFFFFFFFFFFFFF
@@ -87,7 +87,7 @@ module mk_int_key_u32
     , concat arr[2] arr[3]
     )
 
-  def hash _ (a: [m]uint) (x: key) : uint =
+  def hash _ (a: [c]uint) (x: key) : uint =
     let (a', b') = constants a
     let y = (u64.max 1 a') * u64.i64 (P.to_i64 x) + b'
     in u32.u64 (mod_prime y)

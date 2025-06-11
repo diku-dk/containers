@@ -20,7 +20,7 @@ entry replicate_i64 (n: i64) (m: i64) : [n]i64 =
 local
 entry mod_i64 (n: i64) (m: i64) : [n]i64 =
   iota n
-  |> map ((% m) <-< i64.u64 <-< i64key.hash () ([1] :> [i64key.m]u64))
+  |> map ((% m) <-< i64.u64 <-< i64key.hash () ([1] :> [i64key.c]u64))
 
 local
 def sort_dedup [n] (arr: [n]i64) : []i64 =
