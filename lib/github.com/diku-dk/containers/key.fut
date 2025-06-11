@@ -62,12 +62,15 @@ local
 module u128 = {
   type u128 = {high: u64, low: u64}
 
+  #[inline]
   def (&) (a: u128) (b: u128) =
     {high = a.high & b.high, low = a.low & b.low}
 
+  #[inline]
   def (|) (a: u128) (b: u128) =
     {high = a.high | b.high, low = a.low | b.low}
 
+  #[inline]
   def (<<) (a: u128) (b: u128) =
     if b.high != 0 || b.low >= 128
     then {high = 0, low = 0}
@@ -77,6 +80,7 @@ module u128 = {
          , low = a.low << b.low
          }
 
+  #[inline]
   def (>>) (a: u128) (b: u128) =
     if b.high != 0 || b.low >= 128
     then {high = 0, low = 0}
@@ -86,44 +90,55 @@ module u128 = {
          , low = (a.low u64.>> b.low) u64.| (a.high u64.<< (64 - b.low))
          }
 
+  #[inline]
   def (+) (a: u128) (b: u128) =
     let low = a.low + b.low
     in { high = a.high + b.high + u64.bool (low < a.low)
        , low = low
        }
 
+  #[inline]
   def (-) (a: u128) (b: u128) =
     let low = a.low - b.low
     in { high = a.high - b.high - u64.bool (low > a.low)
        , low = low
        }
 
+  #[inline]
   def (<=) (a: u128) (b: u128) : bool =
     a.high < b.high || (a.high == b.high && a.low <= b.low)
 
+  #[inline]
   def (>=) (a: u128) (b: u128) : bool =
     a.high > b.high || (a.high == b.high && a.low >= b.low)
 
+  #[inline]
   def (>) (a: u128) (b: u128) : bool =
     a.high > b.high || (a.high == b.high && a.low > b.low)
 
+  #[inline]
   def (<) (a: u128) (b: u128) : bool =
     a.high < b.high || (a.high == b.high && a.low < b.low)
 
+  #[inline]
   def (==) (a: u128) (b: u128) : bool =
     a.high == b.high && a.low == b.low
 
+  #[inline]
   def from_u64 (a: u64) : u128 =
     {high = 0, low = a}
 
+  #[inline]
   def from_2_u64 (high: u64) (low: u64) : u128 =
     {high = high, low = low}
 
+  #[inline]
   def from_4_u32 (high0: u32) (high1: u32) (low0: u32) (low1: u32) : u128 =
     u64.({ high = (u32 high0) << 32 | u32 high1
          , low = (u32 low0) << 32 | u32 low1
          })
 
+  #[inline]
   def mod_2p_minus_1 (n: u128) (p: u128) : u128 =
     let modulus = (from_u64 1u64 << p) - from_u64 1
     let n_final =
@@ -132,18 +147,22 @@ module u128 = {
        then from_u64 0u64
        else n_final
 
+  #[inline]
   def (*) (a: u128) (b: u128) : u128 =
     let low = a.low * b.low
     let high = u64.(mul_hi a.low b.low + a.high * b.low + a.low * b.high)
     in {high = high, low = low}
 
+  #[inline]
   def to_u32 (n: u128) : u32 =
     let result = mod_2p_minus_1 n (from_u64 32)
     in u32.u64 result.low
 
+  #[inline]
   def max (a: u128) (b: u128) : u128 =
     if a > b then a else b
 
+  #[inline]
   def min (a: u128) (b: u128) : u128 =
     if a < b then a else b
 }
@@ -165,8 +184,11 @@ module mk_int_key_u32
   def c : i64 = 8
 
   -- 2^61 - 1
+
+  #[inline]
   def prime : u128.u128 = u128.from_u64 0x1FFFFFFFFFFFFFFF
 
+  #[inline]
   def hash _ (a: [c]uint) (x: key) : uint =
     let a' = prime u128.& u128.from_4_u32 a[0] a[1] a[2] a[3]
     let b' = prime u128.& u128.from_4_u32 a[4] a[5] a[6] a[7]
