@@ -59,12 +59,101 @@ module i32key : key with ctx = () with key = i32 with uint = u64 = mk_int_key i3
 module i64key : key with ctx = () with key = i64 with uint = u64 = mk_int_key i64
 
 local
+module u128 = {
+  type u128 = {high: u64, low: u64}
+
+  def (&) (a: u128) (b: u128) =
+    {high = a.high & b.high, low = a.low & b.low}
+
+  def (|) (a: u128) (b: u128) =
+    {high = a.high | b.high, low = a.low | b.low}
+
+  def (<<) (a: u128) (b: u128) =
+    if b.high != 0 || b.low >= 128
+    then {high = 0, low = 0}
+    else if b.low >= 64
+    then {high = a.low << (b.low - 64), low = 0}
+    else { high = (a.high u64.<< b.low) u64.| (a.low >> (64 - b.low))
+         , low = a.low << b.low
+         }
+
+  def (>>) (a: u128) (b: u128) =
+    if b.high != 0 || b.low >= 128
+    then {high = 0, low = 0}
+    else if b.low >= 64
+    then {high = 0, low = a.high >> (b.low - 64)}
+    else { high = a.high >> b.low
+         , low = (a.low u64.>> b.low) u64.| (a.high u64.<< (64 - b.low))
+         }
+
+  def (+) (a: u128) (b: u128) =
+    let low = a.low + b.low
+    in { high = a.high + b.high + u64.bool (low < a.low)
+       , low = low
+       }
+
+  def (-) (a: u128) (b: u128) =
+    let low = a.low - b.low
+    in { high = a.high - b.high - u64.bool (low > a.low)
+       , low = low
+       }
+
+  def (<=) (a: u128) (b: u128) : bool =
+    a.high < b.high || (a.high == b.high && a.low <= b.low)
+
+  def (>=) (a: u128) (b: u128) : bool =
+    a.high > b.high || (a.high == b.high && a.low >= b.low)
+
+  def (>) (a: u128) (b: u128) : bool =
+    a.high > b.high || (a.high == b.high && a.low > b.low)
+
+  def (<) (a: u128) (b: u128) : bool =
+    a.high < b.high || (a.high == b.high && a.low < b.low)
+
+  def (==) (a: u128) (b: u128) : bool =
+    a.high == b.high && a.low == b.low
+
+  def from_u64 (a: u64) : u128 =
+    {high = 0, low = a}
+
+  def from_2_u64 (high: u64) (low: u64) : u128 =
+    {high = high, low = low}
+
+  def from_4_u32 (high0: u32) (high1: u32) (low0: u32) (low1: u32) : u128 =
+    u64.({ high = (u32 high0) << 32 | u32 high1
+         , low = (u32 low0) << 32 | u32 low1
+         })
+
+  def mod_2p_minus_1 (n: u128) (p: u128) : u128 =
+    let modulus = (from_u64 1u64 << p) - from_u64 1
+    let n_final =
+      loop n while n > modulus do (n >> p) + (n & modulus)
+    in if n_final == modulus
+       then from_u64 0u64
+       else n_final
+
+  def (*) (a: u128) (b: u128) : u128 =
+    let low = a.low * b.low
+    let high = u64.(mul_hi a.low b.low + a.high * b.low + a.low * b.high)
+    in {high = high, low = low}
+
+  def to_u32 (n: u128) : u32 =
+    let result = mod_2p_minus_1 n (from_u64 32)
+    in u32.u64 result.low
+
+  def max (a: u128) (b: u128) : u128 =
+    if a > b then a else b
+
+  def min (a: u128) (b: u128) : u128 =
+    if a < b then a else b
+}
+
+local
 module mk_int_key_u32
   (P: {
     type t
 
     val to_i64 : t -> i64
-    val num_bits : i32
     val (==) : t -> t -> bool
     val (<=) : t -> t -> bool
   })
@@ -73,25 +162,17 @@ module mk_int_key_u32
   type ctx = ()
   type uint = u32
 
-  def c : i64 = 4
+  def c : i64 = 8
 
   -- 2^61 - 1
-  def prime : u64 = 0x1FFFFFFFFFFFFFFF
-
-  def mod_prime a = a %% prime
-
-  def concat a b =
-    mod_prime ((u64.u32 a << 32) + u64.u32 b)
-
-  def constants arr =
-    ( concat arr[0] arr[1]
-    , concat arr[2] arr[3]
-    )
+  def prime : u128.u128 = u128.from_u64 0x1FFFFFFFFFFFFFFF
 
   def hash _ (a: [c]uint) (x: key) : uint =
-    let (a', b') = constants a
-    let y = (u64.max 1 a') * u64.i64 (P.to_i64 x) + b'
-    in u32.u64 (mod_prime y)
+    let a' = prime u128.& u128.from_4_u32 a[0] a[1] a[2] a[3]
+    let b' = prime u128.& u128.from_4_u32 a[4] a[5] a[6] a[7]
+    let x' = u128.from_u64 (u64.i64 (P.to_i64 x))
+    let y = (u128.max (u128.from_u64 1u64) a') u128.* x' u128.+ b'
+    in u128.to_u32 (u128.mod_2p_minus_1 y prime)
 
   def (==) (_, x) (_, y) = x P.== y
   def (<=) (_, x) (_, y) = x P.<= y

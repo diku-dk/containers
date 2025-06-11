@@ -42,7 +42,7 @@ module slice : slice = {
 module type encoder = {
   type t
   type uint
-  val encode : t -> uint
+  val encode [n] : [n]t -> ?[m].[m]uint
 }
 
 module mk_encoder_params
@@ -51,7 +51,7 @@ module mk_encoder_params
   : encoder with t = I.t with uint = U.t = {
   type t = I.t
   type uint = U.t
-  def encode = U.i64 <-< I.to_i64
+  def encode = map (U.i64 <-< I.to_i64)
 }
 
 module mk_encoder = mk_encoder_params u64
@@ -80,7 +80,7 @@ module mk_slice_key
     array.eq (\x y -> ((), x) K.== ((), y)) (slice.get x xctx) (slice.get y yctx)
 
   def hash (ctx: []K.key) (a: [c]uint) (x: key) : uint =
-    let data = map E.encode (slice.get x ctx)
+    let data = E.encode (slice.get x ctx)
     in loop h = a[0]
        for (x', i) in zip data (indices data) do
          h + x' * a[1 + i % 32]
@@ -106,7 +106,7 @@ module mk_slice_key_u32
     array.eq (\x y -> ((), x) K.== ((), y)) (slice.get x xctx) (slice.get y yctx)
 
   def hash (ctx: []K.key) (a: [c]uint) (x: key) : uint =
-    let data = map E.encode (slice.get x ctx)
+    let data = E.encode (slice.get x ctx)
     in loop h = a[0]
        for (x', i) in zip data (indices data) do
          h + x' * a[1 + i % 32]
