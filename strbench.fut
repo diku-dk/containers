@@ -10,7 +10,8 @@ import "lib/github.com/diku-dk/containers/slice"
 
 module engine = xorshift128plus
 
-module slice_key = mk_slice_key u8key
+module encoder = mk_encoder u8
+module slice_key = mk_slice_key u8key encoder
 
 module array_key = mk_array_key slice_key engine
 module hashset = mk_hashset slice_key engine

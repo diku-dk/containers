@@ -39,30 +39,75 @@ module slice : slice = {
   def get {i, n} xs = xs[i:i + n]
 }
 
+module type encoder = {
+  type t
+  type uint
+  val encode : t -> uint
+}
+
+module mk_encoder_params
+  (U: integral)
+  (I: integral)
+  : encoder with t = I.t with uint = U.t = {
+  type t = I.t
+  type uint = U.t
+  def encode = U.i64 <-< I.to_i64
+}
+
+module mk_encoder = mk_encoder_params u64
+module mk_encoder_u32 = mk_encoder_params u32
+
 -- | Create a `key`@mtype@"key" for slices of some specific element type. The
 -- element type must also be provided with a `key`@mtype module for which the
 -- context is unit.
-module mk_slice_key (E: key with ctx = () with uint = u64)
+module mk_slice_key
+  (K: ordkey with ctx = ())
+  (E: encoder with t = K.key with uint = u64)
   : key
-    with ctx = []E.key
-    with key = slice.slice E.key
+    with ctx = []K.key
+    with key = slice.slice K.key
     with uint = u64 = {
-  type i = u64
-  type key = slice.slice E.key
-  type~ ctx = ?[l].[l]E.key
+  type key = slice.slice K.key
+  type~ ctx = ?[l].[l]K.key
   type uint = u64
 
-  def c : i64 = E.c
+  def c : i64 = 33
 
   def (<=) (xctx: ctx, x: key) (yctx: ctx, y: key) =
-    array.le (\x y -> ((), x) E.<= ((), y)) (slice.get x xctx) (slice.get y yctx)
+    array.le (\x y -> ((), x) K.<= ((), y)) (slice.get x xctx) (slice.get y yctx)
 
   def (==) (xctx: ctx, x: key) (yctx: ctx, y: key) =
-    array.eq (\x y -> ((), x) E.== ((), y)) (slice.get x xctx) (slice.get y yctx)
+    array.eq (\x y -> ((), x) K.== ((), y)) (slice.get x xctx) (slice.get y yctx)
 
-  def hash (ctx: []E.key) (a: [c]uint) (x: key) : uint =
-    -- Fowler–Noll–Vo (FNV) style hash combining
-    loop h = 2166136261
-    for x' in slice.get x ctx do
-      (h * 16777619) ^ E.hash () (sized E.c a) x'
+  def hash (ctx: []K.key) (a: [c]uint) (x: key) : uint =
+    let data = map E.encode (slice.get x ctx)
+    in loop h = a[0]
+       for (x', i) in zip data (indices data) do
+         h + x' * a[1 + i % 32]
+}
+
+module mk_slice_key_u32
+  (K: ordkey with ctx = ())
+  (E: encoder with t = K.key with uint = u32)
+  : key
+    with ctx = []K.key
+    with key = slice.slice K.key
+    with uint = u32 = {
+  type key = slice.slice K.key
+  type~ ctx = ?[l].[l]K.key
+  type uint = u32
+
+  def c : i64 = 33
+
+  def (<=) (xctx: ctx, x: key) (yctx: ctx, y: key) =
+    array.le (\x y -> ((), x) K.<= ((), y)) (slice.get x xctx) (slice.get y yctx)
+
+  def (==) (xctx: ctx, x: key) (yctx: ctx, y: key) =
+    array.eq (\x y -> ((), x) K.== ((), y)) (slice.get x xctx) (slice.get y yctx)
+
+  def hash (ctx: []K.key) (a: [c]uint) (x: key) : uint =
+    let data = map E.encode (slice.get x ctx)
+    in loop h = a[0]
+       for (x', i) in zip data (indices data) do
+         h + x' * a[1 + i % 32]
 }
