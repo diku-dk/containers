@@ -64,6 +64,7 @@ module mk_int_key_u32
     type t
 
     val to_i64 : t -> i64
+    val num_bits : i32
     val (==) : t -> t -> bool
     val (<=) : t -> t -> bool
   })
