@@ -80,10 +80,10 @@ module mk_slice_key
     array.eq (\x y -> ((), x) K.== ((), y)) (slice.get x xctx) (slice.get y yctx)
 
   def hash (ctx: []K.key) (a: [c]uint) (x: key) : uint =
-    let data = map E.encode (slice.get x ctx)
+    let data = slice.get x ctx
     in loop h = a[0]
        for (x', i) in zip data (indices data) do
-         (x' + h * a[1 + i % 32]) %% ((1 << 61) - 1)
+         (E.encode x' + h * a[1 + i % 32]) %% ((1 << 61) - 1)
 }
 
 module mk_slice_key_u32
@@ -106,8 +106,8 @@ module mk_slice_key_u32
     array.eq (\x y -> ((), x) K.== ((), y)) (slice.get x xctx) (slice.get y yctx)
 
   def hash (ctx: []K.key) (a: [c]uint) (x: key) : uint =
-    let data = map E.encode (slice.get x ctx)
+    let data = slice.get x ctx
     in loop h = a[0]
        for (x', i) in zip data (indices data) do
-         h + x' * a[1 + i % 32]
+         h + E.encode x' * a[1 + i % 32]
 }
