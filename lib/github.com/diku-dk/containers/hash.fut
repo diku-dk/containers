@@ -127,7 +127,8 @@ module u128 : uint = {
     u32.u64 n.low
 
   #[inline]
-  def to_u64 
+  def to_u64 (a: t) : [n]u64 =
+    sized n [a.high, a.low]
 }
 
 module mk_universal_hash (I: uint) = {
@@ -136,7 +137,7 @@ module mk_universal_hash (I: uint) = {
 
   -- | https://arxiv.org/pdf/2008.08654
   #[inline]
-  def universal_hash_u32 (a: t) (b: t) (x: u) : u =
+  def universal_hash (a: t) (b: t) (x: u) : u =
     -- Let b = 61 and u = 32, here 2**u - 1 is the largest u32 number
     -- and 2**b - 1 is the largest a value and the prime number.
     I.(-- y < 2p(u - 1) + (p - 1) < (2u - 1)p <= p^2
@@ -150,7 +151,7 @@ module mk_universal_hash (I: uint) = {
 
   -- | test https://arxiv.org/pdf/1504.06804
   #[inline]
-  def universal_hash_string_u32 [n] (a: t) (b: t) (c: t) (xs: [n]u) : u =
+  def universal_hash_string [n] (a: t) (b: t) (c: t) (xs: [n]u) : u =
     -- Let b = 61 and u = 32, here 2**u - 1 is the largest u32 number
     -- and 2**b - 1 is the largest a value and the prime number.
     I.(let p = prime
@@ -164,7 +165,7 @@ module mk_universal_hash (I: uint) = {
            in (y & p) + shift_prime y
        -- y < p
        let y = if y >= p then y - p else y
-       -- Use universal_hash_u32
+       -- Use universal_hash
        -- y < p**2 + p
        let y = a * y + b
        -- y < p + (p**2 + p) / 2**b < 2p
@@ -234,6 +235,31 @@ module u192 : uint = {
     {high = 0u64, mid = 0u64, low = a}
 
   #[inline]
+  def mul_small (a: t) (b: u) : t =
+    let lo = (low a) * b
+    let mi' = (mid a) * b
+    let mi = mi' + u64.mul_hi (low a) b
+    let carry = u64.bool (mi < mi')
+    let hi = (high a) * b + u64.mul_hi (mid a) b + carry
+    in {high = hi, mid = mi, low = lo}
+
+  #[inline]
+  def (*) (a: t) (b: t) : t =
+    let lo = (low a) * (low b)
+    let mi'' = (mid a) * (low b)
+    let mi' = mi'' + (mid b) * (low a)
+    let mi = mi' + u64.mul_hi (low a) (low b)
+    let carry = u64.bool (mi' < mi'') + u64.bool (mi < mi')
+    let hi =
+      (high a) * (low b)
+      + (high b) * (low a)
+      + (mid a) * (mid b)
+      + u64.mul_hi (mid a) (low b)
+      + u64.mul_hi (mid b) (low a)
+      + carry
+    in {high = hi, mid = mi, low = lo}
+
+  #[inline]
   def (+) (a: t) (b: t) =
     let lo = (low a) + (low b)
     let mi = (mid a) + (mid b) + u64.bool (lo < low a)
@@ -242,24 +268,6 @@ module u192 : uint = {
        , mid = mi
        , low = lo
        }
-
-  #[inline]
-  def mul_small (a: t) (b: u) : t =
-    let a' =
-      { low = (low a) * b
-      , mid = (mid a) * b
-      , high = (high a) * b
-      }
-    let b' =
-      { low = 0
-      , mid = u64.mul_hi (low a) b
-      , high = u64.mul_hi (mid a) b
-      }
-    in a' + b'
-
-  #[inline]
-  def (*) (a: t) (b: t) : t =
-    a
 
   #[inline]
   def (-) (a: t) (b: t) =
@@ -276,4 +284,8 @@ module u192 : uint = {
   #[inline]
   def to_u (n: t) : u =
     n.low
+
+  #[inline]
+  def to_u64 (a: t) : [n]u64 =
+    sized n [a.high, a.mid, a.low]
 }
