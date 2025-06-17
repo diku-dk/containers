@@ -1,3 +1,5 @@
+import "../cpprandom/random"
+
 module type uint = {
   -- | Unsigned integral type.
   type t
@@ -98,6 +100,10 @@ module u128 : uint = {
   def (>=) (a: t) (b: t) : bool =
     (high a) > (high b) || ((high a) == (high b) && (low a) >= (low b))
 
+  #[inline]
+  def (>) (a: t) (b: t) : bool =
+    (high a) > (high b) || ((high a) == (high b) && (low a) > (low b))
+
   def n : i64 = 2
 
   #[inline]
@@ -120,59 +126,44 @@ module u128 : uint = {
     let hi = u64.(mul_hi (low a) (low b) + (high a) * (low b) + (low a) * (high b))
     in {high = hi, low = lo}
 
-  -- | Converts a u128 to u32
-  -- precondition: n < 2**64 - 1
   #[inline]
   def to_u (n: t) : u =
-    u32.u64 n.low
+    let y =
+      loop x = n
+      while n.high != 0 do
+        let lo = x.high u64.+ x.low
+        in x with high = u64.bool (lo < x.high)
+             with low = lo
+    in u32.u64 y.low
 
   #[inline]
   def to_u64 (a: t) : [n]u64 =
     sized n [a.high, a.low]
 }
 
-module mk_universal_hash (I: uint) = {
-  type t = I.t
-  type u = I.u
+type u128 = u128.t
 
-  -- | https://arxiv.org/pdf/2008.08654
-  #[inline]
-  def universal_hash (a: t) (b: t) (x: u) : u =
-    -- Let b = 61 and u = 32, here 2**u - 1 is the largest u32 number
-    -- and 2**b - 1 is the largest a value and the prime number.
-    I.(-- y < 2p(u - 1) + (p - 1) < (2u - 1)p <= p^2
-       let p = prime
-       let y = a * from_u x + b
-       -- y < p + p^2/2^b < 2p
-       let y = (y & p) + shift_prime y
-       -- y < p
-       let y = if y >= p then y - p else y
-       in to_u y)
+module u32engine : rng_engine with t = u128 = {
+  type t = u128
+  module engine = xorshift128plus
+  type rng = engine.rng
 
-  -- | test https://arxiv.org/pdf/1504.06804
-  #[inline]
-  def universal_hash_string [n] (a: t) (b: t) (c: t) (xs: [n]u) : u =
-    -- Let b = 61 and u = 32, here 2**u - 1 is the largest u32 number
-    -- and 2**b - 1 is the largest a value and the prime number.
-    I.(let p = prime
-       let y =
-         -- Invariant y < 2p
-         loop y = zero
-         for x in xs do
-           -- y < p**2 + 2**u - 1
-           let y = y * c + (from_u x)
-           -- y < p + (p**2 + 2**u - 1) / 2**b = p + p^2 / 2**b < 2p
-           in (y & p) + shift_prime y
-       -- y < p
-       let y = if y >= p then y - p else y
-       -- Use universal_hash
-       -- y < p**2 + p
-       let y = a * y + b
-       -- y < p + (p**2 + p) / 2**b < 2p
-       let y = (y & p) + shift_prime y
-       -- y < p
-       let y = if y >= p then y - p else y
-       in to_u y)
+  def rand (x: rng) : (rng, u128) =
+    let (x', a) = engine.rand x
+    let (x'', b) = engine.rand x'
+    in (x'', u128.(prime & from_u64 (sized n [a, b])))
+
+  def rng_from_seed [n] (seed: [n]i32) =
+    engine.rng_from_seed seed
+
+  def split_rng (n: i64) (x: rng) : [n]rng =
+    engine.split_rng n x
+
+  def join_rng [n] (xs: [n]rng) : rng =
+    engine.join_rng xs
+
+  def min = u128.zero
+  def max = u128.prime
 }
 
 module u192 : uint = {
@@ -279,13 +270,92 @@ module u192 : uint = {
        , low = lo
        }
 
-  -- | Converts a u192 to u64
-  -- precondition: n < 2**64 - 1
   #[inline]
   def to_u (n: t) : u =
-    n.low
+    let y =
+      loop x = n
+      while n.high != 0 && n.mid != 0 do
+        let lo = x.mid u64.+ x.low
+        in x with high = 0u64
+             with mid = x.high u64.+ u64.bool (lo < x.mid)
+             with low = lo
+    in y.low
 
   #[inline]
   def to_u64 (a: t) : [n]u64 =
     sized n [a.high, a.mid, a.low]
 }
+
+type u192 = u192.t
+
+module u64engine : rng_engine with t = u192 = {
+  type t = u192
+  module engine = xorshift128plus
+  type rng = engine.rng
+
+  def rand (x: rng) : (rng, u192) =
+    let (x', a) = engine.rand x
+    let (x'', b) = engine.rand x'
+    let (x''', c) = engine.rand x''
+    in (x''', u192.(prime & from_u64 (sized n [a, b, c])))
+
+  def rng_from_seed [n] (seed: [n]i32) =
+    engine.rng_from_seed seed
+
+  def split_rng (n: i64) (x: rng) : [n]rng =
+    engine.split_rng n x
+
+  def join_rng [n] (xs: [n]rng) : rng =
+    engine.join_rng xs
+
+  def min = u192.zero
+  def max = u192.prime
+}
+
+module mk_universal_hashing (I: uint) = {
+  type t = I.t
+  type u = I.u
+
+  -- | https://arxiv.org/pdf/2008.08654
+  #[inline]
+  def universal_hash (a: t) (b: t) (x: u) : u =
+    -- Let b = 61 and u = 32, here 2**u - 1 is the largest u32 number
+    -- and 2**b - 1 is the largest a value and the prime number.
+    I.(let p = prime
+       -- y < 2p(u - 1) + (p - 1) < (2u - 1)p <= p^2
+
+       let y = a * from_u x + b
+       -- y < p + p^2/2^b < 2p
+       let y = (y & p) + shift_prime y
+       -- y < p
+       let y = if y >= p then y - p else y
+       in to_u y)
+
+  -- | test https://arxiv.org/pdf/1504.06804
+  #[inline]
+  def universal_hash_string [n] (a: t) (b: t) (c: t) (xs: [n]u) : u =
+    -- Let b = 61 and u = 32, here 2**u - 1 is the largest u32 number
+    -- and 2**b - 1 is the largest a value and the prime number.
+    I.(let p = prime
+       let y =
+         -- Invariant y < 2p
+         loop y = zero
+         for x in xs do
+           -- y < p**2 + 2**u - 1
+           let y = y * c + (from_u x)
+           -- y < p + (p**2 + 2**u - 1) / 2**b = p + p^2 / 2**b < 2p
+           in (y & p) + shift_prime y
+       -- y < p
+       let y = if y >= p then y - p else y
+       -- Use universal_hash
+       -- y < p**2 + p
+       let y = a * y + b
+       -- y < p + (p**2 + p) / 2**b < 2p
+       let y = (y & p) + shift_prime y
+       -- y < p
+       let y = if y >= p then y - p else y
+       in to_u y)
+}
+
+module universal_hashing_u32 = mk_universal_hashing u128
+module universal_hashing = mk_universal_hashing u192

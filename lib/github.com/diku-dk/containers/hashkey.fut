@@ -12,15 +12,18 @@ module type hashkey = {
   -- | Key type.
   type key
 
-  -- | The hash type
-  type uint
+  -- | The constant type for the hash function.
+  type const
 
-  -- | Number constants the hash function is depended on.
+  -- | The hash type.
+  type hash
+
+  -- | The number of constants
   val c : i64
 
   -- | Equality definition for the key.
   val (==) : (ctx, key) -> (ctx, key) -> bool
 
   -- | A given hash function use.
-  val hash : ctx -> [c]uint -> key -> uint
+  val hash : ctx -> [c]const -> key -> hash
 }
