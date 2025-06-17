@@ -3,8 +3,9 @@
 import "../cpprandom/random"
 import "hashset"
 import "key"
+import "hash"
 
-module engine = xorshift128plus
+module engine = u64engine
 module hashset = mk_hashset i64key engine
 
 -- ==

@@ -2,6 +2,7 @@
 
 import "map"
 import "opt"
+import "hash"
 
 module mk_map_test (M: map with ctx = () with key = i64)
   : {
@@ -103,7 +104,7 @@ import "eytzinger"
 import "arraymap"
 import "opt"
 
-module engine = xorshift128plus
+module engine = u64engine
 
 module hashmap = mk_hashmap i64key engine
 module hashmap_tests = mk_map_test hashmap

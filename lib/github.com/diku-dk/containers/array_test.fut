@@ -5,8 +5,9 @@ import "../segmented/segmented"
 import "../cpprandom/random"
 import "array"
 import "key"
+import "hash"
 
-module engine = xorshift128plus
+module engine = u64engine
 module array = mk_array_key i64key engine
 def seed = engine.rng_from_seed [1]
 
