@@ -323,7 +323,7 @@ module mk_universal_hashing (I: uint) = {
     -- and 2**b - 1 is the largest a value and the prime number.
     I.(let p = prime
        -- y < 2p(u - 1) + (p - 1) < (2u - 1)p <= p^2
-       let y = a * from_u x + b
+       let y = mul_small a x + b
        -- y < p + p^2/2^b < 2p
        let y = (y & p) + shift_prime y
        -- y < p
