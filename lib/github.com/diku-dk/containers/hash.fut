@@ -50,7 +50,7 @@ module type uint = {
   val to_u64 : t -> [n]u64
 }
 
-module u128 : uint = {
+module u128 : uint with u = u32 = {
   type t = {high: u64, low: u64}
   type u = u32
 
@@ -166,7 +166,7 @@ module u32engine : rng_engine with t = u128 = {
   def max = u128.prime
 }
 
-module u192 : uint = {
+module u192 : uint with u = u64 = {
   type t = {high: u64, mid: u64, low: u64}
   type u = u64
 
@@ -323,7 +323,6 @@ module mk_universal_hashing (I: uint) = {
     -- and 2**b - 1 is the largest a value and the prime number.
     I.(let p = prime
        -- y < 2p(u - 1) + (p - 1) < (2u - 1)p <= p^2
-
        let y = a * from_u x + b
        -- y < p + p^2/2^b < 2p
        let y = (y & p) + shift_prime y
@@ -333,16 +332,22 @@ module mk_universal_hashing (I: uint) = {
 
   -- | test https://arxiv.org/pdf/1504.06804
   #[inline]
-  def universal_hash_string [n] (a: t) (b: t) (c: t) (xs: [n]u) : u =
+  def universal_hash_string 'x
+                            (a: t)
+                            (b: t)
+                            (c: t)
+                            (get: i64 -> x -> u)
+                            (num: i64)
+                            (x: x) : u =
     -- Let b = 61 and u = 32, here 2**u - 1 is the largest u32 number
     -- and 2**b - 1 is the largest a value and the prime number.
     I.(let p = prime
        let y =
          -- Invariant y < 2p
          loop y = zero
-         for x in xs do
+         for i in 0..<num do
            -- y < p**2 + 2**u - 1
-           let y = y * c + (from_u x)
+           let y = y * c + from_u (get i x)
            -- y < p + (p**2 + 2**u - 1) / 2**b = p + p^2 / 2**b < 2p
            in (y & p) + shift_prime y
        -- y < p

@@ -5,8 +5,9 @@ import "lib/github.com/diku-dk/containers/hashset"
 import "lib/github.com/diku-dk/containers/array"
 import "lib/github.com/diku-dk/containers/hashmap"
 import "lib/github.com/diku-dk/containers/key"
+import "lib/github.com/diku-dk/containers/hash"
 
-module engine = xorshift128plus
+module engine = u64engine
 module array_key = mk_array_key i64key engine
 module hashset = mk_hashset i64key engine
 module hashmap = mk_hashmap i64key engine
@@ -20,7 +21,7 @@ entry replicate_i64 (n: i64) (m: i64) : [n]i64 =
 local
 entry mod_i64 (n: i64) (m: i64) : [n]i64 =
   iota n
-  |> map ((% m) <-< i64.u64 <-< i64key.hash () ([1] :> [i64key.c]u64))
+  |> map ((% m) <-< i64.u64 <-< i64key.hash () ([u192.from_u 1u64, u192.from_u 1u64] :> [i64key.c]i64key.const))
 
 local
 def sort_dedup [n] (arr: [n]i64) : []i64 =
