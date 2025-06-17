@@ -86,8 +86,8 @@ module type two_level_hashset = {
 module mk_two_level_hashset
   (I: integral)
   (U: integral)
-  (K: hashkey with uint = U.t)
-  (E: rng_engine with int.t = U.t)
+  (K: hashkey with hash = U.t)
+  (E: rng_engine with t = K.const)
   : two_level_hashset
     with key = K.key
     with ctx = K.ctx = {
@@ -165,8 +165,8 @@ module type hashset = {
 module mk_hashset_params
   (I: integral)
   (U: integral)
-  (K: hashkey with uint = U.t)
-  (E: rng_engine with int.t = U.t)
+  (K: hashkey with hash = U.t)
+  (E: rng_engine with t = K.const)
   : set
     with key = K.key
     with ctx = K.ctx = {

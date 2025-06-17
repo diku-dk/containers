@@ -82,8 +82,8 @@ module type array_key = {
 module mk_array_key_params
   (I: integral)
   (U: integral)
-  (K: hashkey with uint = U.t)
-  (E: rng_engine with int.t = U.t)
+  (K: hashkey with hash = U.t)
+  (E: rng_engine with t = K.const)
   : array_key
     with rng = E.rng
     with key = K.key
@@ -95,7 +95,6 @@ module mk_array_key_params
   type rng = engine.rng
   type key = key.key
   type~ ctx = K.ctx
-  module int = engine.int
 
   def to_int : uint -> int =
     I.i64 <-< U.to_i64
@@ -119,8 +118,7 @@ module mk_array_key_params
     then (rng, U.i64 0)
     else let sample_size = U.(max (i64 1) (i64 n / factor))
          let (rng, consts) = generate_consts key.c rng
-         let (rng, i) = engine.rand rng
-         let sample = (rotate (int.to_i64 i % n) keys)[:U.to_i64 sample_size]
+         let sample = keys[:U.to_i64 sample_size]
          let hs =
            map ((U.%% sample_size) <-< key.hash ctx consts) sample
            |> radix_sort (U.num_bits - U.clz sample_size) U.get_bit

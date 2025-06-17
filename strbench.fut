@@ -7,8 +7,9 @@ import "lib/github.com/diku-dk/cpprandom/random"
 import "lib/github.com/diku-dk/sorts/radix_sort"
 import "lib/github.com/diku-dk/containers/array"
 import "lib/github.com/diku-dk/containers/slice"
+import "lib/github.com/diku-dk/containers/hash"
 
-module engine = xorshift128plus
+module engine = u64engine
 
 module encoder = mk_encoder u8
 module slice_key = mk_slice_key u8key encoder
