@@ -3,16 +3,19 @@
 
 open import "hashkey"
 open import "ordkey"
+import "hash"
 
 module type key = {
   type ctx
   type key
-  type uint
+  type const
+  type hash
 
   include hashkey
   with ctx = ctx
   with key = key
-  with uint = uint
+  with const = const
+  with hash = hash
 
   include ordkey
   with ctx = ctx
@@ -28,21 +31,18 @@ module mk_int_key
     val (==) : t -> t -> bool
     val (<=) : t -> t -> bool
   })
-  : key with ctx = () with key = P.t with uint = u64 = {
+  : key with ctx = () with key = P.t with hash = u64 with const = u192 = {
   type key = P.t
   type ctx = ()
-  type uint = u64
+  type const = u192
+  type hash = u64
 
   def c : i64 = 6
 
   -- https://lemire.me/blog/2018/08/15/fast-strongly-universal-64-bit-hashing-everywhere/
-  def hash _ (a: [c]uint) (x: key) : uint =
+  def hash _ (a: [c]const) (x: key) : hash =
     let x' = u64.i64 (P.to_i64 x)
-    let low = x'
-    let high = x' >> 32
-    let low_hash = (a[0] * low + a[1] * high + a[2]) >> 32
-    let high_hash = (a[3] * low + a[4] * high + a[5]) & 0xFFFFFFFF00000000
-    in low_hash | high_hash
+    in universal_hashing.universal_hash a[0] a[1] x'
 
   def (==) (_, x) (_, y) = x P.== y
   def (<=) (_, x) (_, y) = x P.<= y
