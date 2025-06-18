@@ -10,6 +10,9 @@ module type uint = {
   -- | The number zero.
   val zero : t
 
+  -- | The number one.
+  val one : t
+
   -- | A mersenne prime.
   val prime : t
 
@@ -30,6 +33,9 @@ module type uint = {
 
   -- | Greater than or equal.
   val (>=) : t -> t -> bool
+
+  -- | Equality.
+  val (==) : t -> t -> bool
 
   -- | Bitwise right shift by mersenne prime
   val shift_prime : t -> t
@@ -57,6 +63,10 @@ module u128 : uint with u = u32 = {
   #[inline]
   def zero =
     {high = 0u64, low = 0u64}
+
+  #[inline]
+  def one =
+    {high = 0u64, low = 1u64}
 
   -- | 2 ** 61 - 1
   #[inline]
@@ -101,14 +111,14 @@ module u128 : uint with u = u32 = {
     (high a) > (high b) || ((high a) == (high b) && (low a) >= (low b))
 
   #[inline]
-  def (>) (a: t) (b: t) : bool =
-    (high a) > (high b) || ((high a) == (high b) && (low a) > (low b))
+  def (==) (a: t) (b: t) : bool =
+    (high a) == (high b) && (low a) == (low b)
 
   def n : i64 = 2
 
   #[inline]
   def from_u64 (as: [n]u64) : t =
-    {high = as[0], low = as[1]}
+    {high = as[1], low = as[0]}
 
   #[inline]
   def from_u (a: u) : t =
@@ -128,13 +138,7 @@ module u128 : uint with u = u32 = {
 
   #[inline]
   def to_u (n: t) : u =
-    let y =
-      loop x = n
-      while n.high != 0 do
-        let lo = x.high u64.+ x.low
-        in x with high = u64.bool (lo < x.high)
-             with low = lo
-    in u32.u64 y.low
+    u32.u64 n.low
 
   #[inline]
   def to_u64 (a: t) : [n]u64 =
@@ -143,27 +147,62 @@ module u128 : uint with u = u32 = {
 
 type u128 = u128.t
 
-module u32engine : rng_engine with t = u128 = {
-  type t = u128
-  module engine = xorshift128plus
-  type rng = engine.rng
+module u32engine : rng_engine with t = (u128, u128) = {
+  type t = (u128, u128)
+  type rng = t
+  def a0 = u128.from_u64 ([0u64, 1053660410015239352u64] :> [u128.n]u64)
+  def b0 = u128.from_u64 ([0u64, 1965853638043456871u64] :> [u128.n]u64)
+  def c0 = u128.from_u64 ([0u64, 1755517283453091814u64] :> [u128.n]u64)
+  def a1 = u128.from_u64 ([0u64, 1354651365168508861u64] :> [u128.n]u64)
+  def b1 = u128.from_u64 ([0u64, 90765576305010145u64] :> [u128.n]u64)
+  def c1 = u128.from_u64 ([0u64, 282284403620902480u64] :> [u128.n]u64)
 
-  def rand (x: rng) : (rng, u128) =
-    let (x', a) = engine.rand x
-    let (x'', b) = engine.rand x'
-    in (x'', u128.(prime & from_u64 (sized n [a, b])))
+  def auxiliary ((a, b, c): (u128, u128, u128)) ((x, y): (u128, u128)) =
+    u128.(-- y < p^2
+          let z = a * x
+          -- z < p + p^2 / 2^b < 2p
+          let z = (z & prime) + shift_prime z
+          -- z < p
+          let z = if z >= prime then z - prime else z
+          -- z < p^2 + p
+          let z' = b * y
+          -- z' < p + p^2 / 2^b < 2p
+          let z' = (z' & prime) + shift_prime z'
+          -- z' < p
+          let z' = if z' >= prime then z' - prime else z'
+          -- z'' < p + p = 2p
+          let z'' = z' + z
+          -- z'' < p
+          let z'' = if z'' >= prime then z'' - prime else z''
+          -- z''' < 2p
+          let z''' = z'' + c
+          -- z''' < p
+          in if z''' >= prime then z''' - prime else z''')
+
+  def rand ((x, y): rng) : (rng, (u128, u128)) =
+    u128.(let x' = auxiliary (a0, b0, c0) (x, y)
+          let y' = auxiliary (a1, b1, c1) (x, y)
+          let t = (x', y')
+          in (t, t))
 
   def rng_from_seed [n] (seed: [n]i32) =
-    engine.rng_from_seed seed
+    let x = u128.from_u (u32.sum (map (u32.i32) seed))
+    in loop t = (x, x)
+       for _i in 0..<10 do
+         (rand t).0
 
   def split_rng (n: i64) (x: rng) : [n]rng =
-    engine.split_rng n x
+    (.0)
+    <| loop (dest, y) = (replicate n (u128.from_u 0, u128.from_u 0), copy x)
+       for i in 0..<n do
+         let (y', _) = rand y
+         in (dest with [i] = y', y')
 
   def join_rng [n] (xs: [n]rng) : rng =
-    engine.join_rng xs
+    xs[0]
 
-  def min = u128.zero
-  def max = u128.prime
+  def min = (u128.zero, u128.zero)
+  def max = (u128.prime, u128.prime)
 }
 
 module u192 : uint with u = u64 = {
@@ -173,6 +212,10 @@ module u192 : uint with u = u64 = {
   #[inline]
   def zero =
     {high = 0u64, mid = 0u64, low = 0u64}
+
+  #[inline]
+  def one =
+    {high = 0u64, mid = 0u64, low = 1u64}
 
   -- | 2 ** 89 - 1
   #[inline]
@@ -215,11 +258,15 @@ module u192 : uint with u = u64 = {
     || ((high a) == (high b) && (mid a) > (mid b))
     || ((mid a) == (mid b) && (low a) >= (low b))
 
+  #[inline]
+  def (==) (a: t) (b: t) : bool =
+    (high a) == (high b) && (mid a) == (mid b) && (low a) == (low b)
+
   def n : i64 = 3
 
   #[inline]
   def from_u64 (as: [n]u64) : t =
-    {high = as[0], mid = as[1], low = as[2]}
+    {high = as[2], mid = as[1], low = as[0]}
 
   #[inline]
   def from_u (a: u) : t =
@@ -272,14 +319,7 @@ module u192 : uint with u = u64 = {
 
   #[inline]
   def to_u (n: t) : u =
-    let y =
-      loop x = n
-      while n.high != 0 && n.mid != 0 do
-        let lo = x.mid u64.+ x.low
-        in x with high = 0u64
-             with mid = x.high u64.+ u64.bool (lo < x.mid)
-             with low = lo
-    in y.low
+    n.low
 
   #[inline]
   def to_u64 (a: t) : [n]u64 =
@@ -348,7 +388,10 @@ module mk_universal_hashing (I: uint) = {
          for i in 0..<num do
            -- y < p**2 + 2**u - 1
            let y = y * c + from_u (get i x)
-           -- y < p + (p**2 + 2**u - 1) / 2**b = p + p^2 / 2**b < 2p
+           -- y < p + floor((p**2 + 2**u - 1) / 2**b)
+           --   = p + floor(p^2 / 2**b + (2**u - 1) / 2**b)
+           --   = p + floor(p^2 / 2**b)
+           --   < 2p
            in (y & p) + shift_prime y
        -- y < p
        let y = if y >= p then y - p else y
