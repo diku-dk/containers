@@ -9,15 +9,13 @@ import "lib/github.com/diku-dk/containers/array"
 import "lib/github.com/diku-dk/containers/slice"
 import "lib/github.com/diku-dk/containers/hash"
 
-module engine = u64engine
-
 module encoder = mk_encoder u8
 module slice_key = mk_slice_key u8key encoder
 
-module array_key = mk_array_key slice_key engine
-module hashset = mk_hashset slice_key engine
+module array_key = mk_array_key slice_key
+module hashset = mk_hashset slice_key
 
-def seed = engine.rng_from_seed [1]
+def seed = slice_key.rng_from_seed [1]
 
 type char = u8
 

@@ -1,12 +1,10 @@
 -- | ignore
 
-import "../cpprandom/random"
 import "hashset"
 import "key"
 import "hash"
 
-module engine = u64engine
-module hashset = mk_hashset i64key engine
+module hashset = mk_hashset i64key
 
 -- ==
 -- entry: test_find_all
