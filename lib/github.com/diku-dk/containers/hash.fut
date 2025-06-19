@@ -270,30 +270,6 @@ module u192 : uint with u = u64 = {
 
 type u192 = u192.t
 
-module u64engine : rng_engine with t = u192 = {
-  type t = u192
-  module engine = xorshift128plus
-  type rng = engine.rng
-
-  def rand (x: rng) : (rng, u192) =
-    let (x', a) = engine.rand x
-    let (x'', b) = engine.rand x'
-    let (x''', c) = engine.rand x''
-    in (x''', u192.(prime & from_u64 (sized n [a, b, c])))
-
-  def rng_from_seed [n] (seed: [n]i32) =
-    engine.rng_from_seed seed
-
-  def split_rng (n: i64) (x: rng) : [n]rng =
-    engine.split_rng n x
-
-  def join_rng [n] (xs: [n]rng) : rng =
-    engine.join_rng xs
-
-  def min = u192.zero
-  def max = u192.prime
-}
-
 -- | n-dimensional linear congruential generator
 module mk_ndimlcg
   (U: uint)
@@ -375,11 +351,11 @@ module mk_universal_hashing
   -- | https://arxiv.org/pdf/2008.08654
   #[inline]
   def hash (a: t) (b: t) (x: u) : u =
-    -- Let p = 2**b - 1 and p > 2**u - 1.
+    -- Let p = 2**b - 1 and p > u.
     I.(let p = prime
-       -- y < 2p(u - 1) + (p - 1) < (2u - 1)p <= p^2
+       -- y < 2p(u - 1) + (p - 1) < (2u - 1)p <= p**2
        let y = mul_small a x + b
-       -- y < p + p^2/2^b < 2p
+       -- y < p + p**2 / 2**b < 2p
        let y = (y & p) + shift_prime y
        -- y < p
        let y = if y >= p then y - p else y
@@ -400,17 +376,17 @@ module mk_universal_hashing
                   (get: i64 -> x -> u)
                   (num: i64)
                   (x: x) : u =
-    -- Let p = 2**b - 1 and p > 2**u - 1.
+    -- Let p = 2**b - 1 and p > u.
     I.(let p = prime
        let y =
          -- Invariant y < 2p
          loop y = zero
          for i in 0..<num do
-           -- y < p**2 + 2**u - 1
+           -- y < p**2 + u
            let y = y * c + from_u (get i x)
-           -- y < p + floor((p**2 + 2**u - 1) / 2**b)
-           --   = p + floor(p^2 / 2**b + (2**u - 1) / 2**b)
-           --   = p + floor(p^2 / 2**b)
+           -- y < p + floor((p**2 + u) / 2**b)
+           --   = p + floor(p**2 / 2**b + u / 2**b)
+           --   = p + floor(p**2 / 2**b)
            --   < 2p
            in (y & p) + shift_prime y
        -- y < p
