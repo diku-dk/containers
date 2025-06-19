@@ -147,64 +147,6 @@ module u128 : uint with u = u32 = {
 
 type u128 = u128.t
 
-module u32engine : rng_engine with t = (u128, u128) = {
-  type t = (u128, u128)
-  type rng = t
-  def a0 = u128.from_u64 ([0u64, 1053660410015239352u64] :> [u128.n]u64)
-  def b0 = u128.from_u64 ([0u64, 1965853638043456871u64] :> [u128.n]u64)
-  def c0 = u128.from_u64 ([0u64, 1755517283453091814u64] :> [u128.n]u64)
-  def a1 = u128.from_u64 ([0u64, 1354651365168508861u64] :> [u128.n]u64)
-  def b1 = u128.from_u64 ([0u64, 90765576305010145u64] :> [u128.n]u64)
-  def c1 = u128.from_u64 ([0u64, 282284403620902480u64] :> [u128.n]u64)
-
-  def auxiliary ((a, b, c): (u128, u128, u128)) ((x, y): (u128, u128)) =
-    u128.(-- y < p^2
-          let z = a * x
-          -- z < p + p^2 / 2^b < 2p
-          let z = (z & prime) + shift_prime z
-          -- z < p
-          let z = if z >= prime then z - prime else z
-          -- z < p^2 + p
-          let z' = b * y
-          -- z' < p + p^2 / 2^b < 2p
-          let z' = (z' & prime) + shift_prime z'
-          -- z' < p
-          let z' = if z' >= prime then z' - prime else z'
-          -- z'' < p + p = 2p
-          let z'' = z' + z
-          -- z'' < p
-          let z'' = if z'' >= prime then z'' - prime else z''
-          -- z''' < 2p
-          let z''' = z'' + c
-          -- z''' < p
-          in if z''' >= prime then z''' - prime else z''')
-
-  def rand ((x, y): rng) : (rng, (u128, u128)) =
-    u128.(let x' = auxiliary (a0, b0, c0) (x, y)
-          let y' = auxiliary (a1, b1, c1) (x, y)
-          let t = (x', y')
-          in (t, t))
-
-  def rng_from_seed [n] (seed: [n]i32) =
-    let x = u128.from_u (u32.sum (map (u32.i32) seed))
-    in loop t = (x, x)
-       for _i in 0..<10 do
-         (rand t).0
-
-  def split_rng (n: i64) (x: rng) : [n]rng =
-    (.0)
-    <| loop (dest, y) = (replicate n (u128.from_u 0, u128.from_u 0), copy x)
-       for i in 0..<n do
-         let (y', _) = rand y
-         in (dest with [i] = y', y')
-
-  def join_rng [n] (xs: [n]rng) : rng =
-    xs[0]
-
-  def min = (u128.zero, u128.zero)
-  def max = (u128.prime, u128.prime)
-}
-
 module u192 : uint with u = u64 = {
   type t = {high: u64, mid: u64, low: u64}
   type u = u64
@@ -352,15 +294,88 @@ module u64engine : rng_engine with t = u192 = {
   def max = u192.prime
 }
 
-module mk_universal_hashing (I: uint) = {
+-- | n-dimensional linear congruential generator
+module mk_ndimlcg
+  (U: uint)
+  (P: {
+    type t
+    val n : i64
+    val mat : [n][n + 1]t
+  }
+  with t = U.t)
+  : rng_engine with t = [P.n]U.t = {
+  type t = [P.n]U.t
+  type rng = [P.n]U.t
+
+  def add a b =
+    U.(-- y = a + b < 2p
+       let y = a + b
+       -- y < p
+       in if y >= prime then y - prime else y)
+
+  def auxiliary (as: [P.n + 1]U.t) (xs: t) : U.t =
+    U.(let z =
+         tabulate P.n (\i ->
+                         -- y' < p^2
+                         let y' = as[i] * xs[i]
+                         -- y' < p + floor(p^2 / 2^b) < 2p
+                         let y' = (y' & prime) + shift_prime y'
+                         -- y' < p
+                         in if y' >= prime then y' - prime else y')
+         |> reduce_comm add U.zero
+       -- z < 2p
+       let z = z + as[P.n]
+       -- z < p
+       in if z >= prime then z - prime else z)
+
+  def rand (x: rng) : (rng, t) =
+    let y = map2 auxiliary P.mat (rep x)
+    in (y, y)
+
+  def rng_from_seed [n] (seed: [n]i32) : rng =
+    let y =
+      (replicate U.n 0u64) with [0] = u64.sum (map u64.i32 seed)
+    let x = U.from_u64 y
+    in loop t = replicate P.n x
+       for _i in 0..<10 do
+         (rand t).0
+
+  def split_rng (n: i64) (x: rng) : [n]rng =
+    (.0)
+    <| loop (dest, y) = (replicate n (replicate P.n U.zero), copy x)
+       for i in 0..<n do
+         let (y', _) = rand y
+         in (dest with [i] = y', y')
+
+  def join_rng [n] (xs: [n]rng) : rng =
+    xs[0]
+
+  def min = replicate P.n U.zero
+  def max = replicate P.n U.(prime - one)
+}
+
+module type universal_hashing = {
+  type t
+  type u
+
+  val hash : t -> t -> u -> u
+
+  val hash_vector [n] : [n](t, t) -> [n]u -> u
+
+  val hash_string 'x : t -> t -> t -> (i64 -> x -> u) -> i64 -> x -> u
+}
+
+module mk_universal_hashing
+  (I: uint)
+  (U: integral with t = I.u)
+  : universal_hashing with t = I.t with u = I.u = {
   type t = I.t
   type u = I.u
 
   -- | https://arxiv.org/pdf/2008.08654
   #[inline]
-  def universal_hash (a: t) (b: t) (x: u) : u =
-    -- Let b = 61 and u = 32, here 2**u - 1 is the largest u32 number
-    -- and 2**b - 1 is the largest a value and the prime number.
+  def hash (a: t) (b: t) (x: u) : u =
+    -- Let p = 2**b - 1 and p > 2**u - 1.
     I.(let p = prime
        -- y < 2p(u - 1) + (p - 1) < (2u - 1)p <= p^2
        let y = mul_small a x + b
@@ -370,17 +385,22 @@ module mk_universal_hashing (I: uint) = {
        let y = if y >= p then y - p else y
        in to_u y)
 
+  #[inline]
+  def hash_vector [n] (cs: [n](t, t)) (xs: [n]u) : u =
+    loop y = U.i64 0
+    for i in 0..<n do
+      y U.+ hash cs[i].0 cs[i].1 xs[i]
+
   -- | test https://arxiv.org/pdf/1504.06804
   #[inline]
-  def universal_hash_string 'x
-                            (a: t)
-                            (b: t)
-                            (c: t)
-                            (get: i64 -> x -> u)
-                            (num: i64)
-                            (x: x) : u =
-    -- Let b = 61 and u = 32, here 2**u - 1 is the largest u32 number
-    -- and 2**b - 1 is the largest a value and the prime number.
+  def hash_string 'x
+                  (a: t)
+                  (b: t)
+                  (c: t)
+                  (get: i64 -> x -> u)
+                  (num: i64)
+                  (x: x) : u =
+    -- Let p = 2**b - 1 and p > 2**u - 1.
     I.(let p = prime
        let y =
          -- Invariant y < 2p
@@ -405,5 +425,5 @@ module mk_universal_hashing (I: uint) = {
        in to_u y)
 }
 
-module universal_hashing_u32 = mk_universal_hashing u128
-module universal_hashing = mk_universal_hashing u192
+module universal_u32 = mk_universal_hashing u128 u32
+module universal = mk_universal_hashing u192 u64

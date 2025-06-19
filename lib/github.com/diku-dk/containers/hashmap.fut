@@ -3,7 +3,6 @@
 -- Implementations of the `map`@mtype@"map" module type using hash-based data structures.
 
 import "../segmented/segmented"
-import "../cpprandom/random"
 import "opt"
 import "hash"
 import "hashkey"
@@ -198,19 +197,17 @@ module mk_two_level_hashmap
   (I: integral)
   (U: integral)
   (K: hashkey with hash = U.t)
-  (E: rng_engine with t = K.const)
   : two_level_hashmap
     with key = K.key
     with ctx = K.ctx = {
   module key = K
-  module engine = E
   type uint = U.t
   type int = I.t
-  type rng = engine.rng
+  type rng = key.rng
   type key = key.key
-  type const = engine.t
+  type const = key.const
   type~ ctx = key.ctx
-  module array = mk_array_key_params I U K E
+  module array = mk_array_key_params I U K
 
   def neg_one = I.i64 (-1)
   def zero = I.i64 0
@@ -225,32 +222,25 @@ module mk_two_level_hashmap
     , key_values: [n](key, v)
     , offsets: [f]int
     , lookup_keys: [f]key
-    , level_one_consts: [key.c]const
-    , level_two_consts: [m][key.c]const
+    , level_one_const: const
+    , level_two_consts: [m]const
     , level_two: [n][3]int
     , rng: rng
     }
 
   local
   def empty 'v ctx : ?[f][m].map ctx [0] [f] [m] v =
-    { ctx
-    , key_values = []
-    , offsets = []
-    , lookup_keys = []
-    , level_one_consts = rep E.min
-    , level_two_consts = []
-    , level_two = []
-    , rng = engine.rng_from_seed [123]
-    }
-
-  local
-  #[inline]
-  def generate_consts (n: i64) (r: rng) : (rng, [n]const) =
-    (\(a, b, _) -> (a, b))
-    <| loop (r', arr: *[n]K.const, i) = (r, replicate n E.min, 0)
-       while i < n do
-         let (r'', a) = engine.rand r'
-         in (r'', arr with [i] = a, i + 1)
+    let r = key.rng_from_seed [123]
+    let (r', c) = key.rand r
+    in { ctx
+       , key_values = []
+       , offsets = []
+       , lookup_keys = []
+       , level_one_const = c
+       , level_two_consts = []
+       , level_two = []
+       , rng = r'
+       }
 
   local
   def exscan [n] 'a (op: a -> a -> a) (ne: a) (as: [n]a) : (a, [n]a) =
@@ -265,15 +255,15 @@ module mk_two_level_hashmap
   #[inline]
   def lookup_flat_index [n] [m]
                         (ctx: ctx)
-                        (level_one_consts: [key.c]const)
-                        (level_two_consts: [m][key.c]const)
+                        (level_one_const: const)
+                        (level_two_consts: [m]const)
                         (level_two: [n][3]int)
                         (flat_size: int)
                         (k: key) : int =
     if n == 0
     then zero
     else -- The offset to get the level two hash function.
-         let o = U.((key.hash ctx level_one_consts k) %% i64 n)
+         let o = U.((key.hash ctx level_one_const k) %% i64 n)
          let arr = level_two[U.to_i64 o]
          -- The offset into the flat representation
          let o' = to_uint arr[0]
@@ -291,7 +281,7 @@ module mk_two_level_hashmap
     then false
     else let i =
            lookup_flat_index ctx
-                             hmap.level_one_consts
+                             hmap.level_one_const
                              hmap.level_two_consts
                              hmap.level_two
                              (I.i64 f)
@@ -314,7 +304,7 @@ module mk_two_level_hashmap
     then neg_one
     else let i =
            lookup_flat_index ctx
-                             hmap.level_one_consts
+                             hmap.level_one_const
                              hmap.level_two_consts
                              hmap.level_two
                              (I.i64 f)
@@ -331,7 +321,7 @@ module mk_two_level_hashmap
     then #none
     else let i =
            lookup_flat_index ctx
-                             hmap.level_one_consts
+                             hmap.level_one_const
                              hmap.level_two_consts
                              hmap.level_two
                              (I.i64 f)
@@ -358,14 +348,14 @@ module mk_two_level_hashmap
                 (old_keys: [n](key, int))
                 (old_ishape: [w](int, int))
                 (old_dest: *[m]int)
-                (old_consts: [q][key.c]const) : ( rng
-                                                , int
-                                                , [](key, int)
-                                                , [](int, int)
-                                                , *[m]int
-                                                , [][key.c]const
-                                                ) =
-    let (new_rng, consts) = generate_consts key.c old_rng
+                (old_consts: [q]const) : ( rng
+                                         , int
+                                         , [](key, int)
+                                         , [](int, int)
+                                         , *[m]int
+                                         , []const
+                                         ) =
+    let (new_rng, consts) = key.rand old_rng
     let (_, old_shape) = unzip old_ishape
     let (flat_size, old_shape_offsets) = old_shape |> exscan (I.+) zero
     let is =
@@ -424,11 +414,11 @@ module mk_two_level_hashmap
                        (ctx: ctx)
                        (key_values: [n](key, v)) : ?[f][m].map ctx [n] [f] [m] v =
     let keys = map (.0) key_values
-    let r = engine.rng_from_seed [123, i32.i64 n]
+    let r = key.rng_from_seed [123, i32.i64 n]
     -- The level one hash function is determined here.
-    let (r, level_one_consts) = generate_consts key.c r
+    let (r, level_one_const) = key.rand r
     -- The indices to the subarray the keys will land in.
-    let is = map U.(to_i64 <-< (%% max (i64 1) (i64 n)) <-< key.hash ctx level_one_consts) keys
+    let is = map U.(to_i64 <-< (%% max (i64 1) (i64 n)) <-< key.hash ctx level_one_const) keys
     -- The number of keys in a given subarray.
     let level_two_counts = hist (I.+) zero n is (rep one)
     -- The shape for each subarray.
@@ -480,7 +470,7 @@ module mk_two_level_hashmap
     let hash2 =
       I.to_i64
       <-< lookup_flat_index ctx
-                            level_one_consts
+                            level_one_const
                             level_two_consts
                             level_two
                             flat_size
@@ -507,7 +497,7 @@ module mk_two_level_hashmap
        , key_values = reordered
        , lookup_keys = lookup_keys
        , offsets = offsets
-       , level_one_consts = level_one_consts
+       , level_one_const = level_one_const
        , level_two_consts = level_two_consts
        , level_two = level_two
        , rng = final_r
@@ -534,7 +524,7 @@ module mk_two_level_hashmap
                      (ctx: ctx)
                      (keys: [u]key)
                      (ne: v) : ?[n][f][m].map ctx [n] [f] [m] v =
-    let (_rng, keys) = array.dedup ctx (engine.rng_from_seed [i32.i64 u]) keys
+    let (_rng, keys) = array.dedup ctx (key.rng_from_seed [i32.i64 u]) keys
     in from_array_rep_nodup ctx keys ne
 
   def from_array [u] 'v
@@ -621,7 +611,7 @@ module mk_two_level_hashmap
        , key_values = zip keys vs
        , lookup_keys = hmap.lookup_keys
        , offsets = hmap.offsets
-       , level_one_consts = hmap.level_one_consts
+       , level_one_const = hmap.level_one_const
        , level_two_consts = hmap.level_two_consts
        , level_two = hmap.level_two
        , rng = hmap.rng
@@ -638,11 +628,10 @@ module mk_hashmap_params
   (I: integral)
   (U: integral)
   (K: hashkey with hash = U.t)
-  (E: rng_engine with t = K.const)
   : map
     with key = K.key
     with ctx = K.ctx = {
-  module hashmap = mk_two_level_hashmap I U K E
+  module hashmap = mk_two_level_hashmap I U K
   type key = hashmap.key
   type ctx = hashmap.ctx
 
@@ -801,8 +790,7 @@ module type open_addressing_hashmap = {
 }
 
 module mk_open_addressing_hashmap
-  (K: hashkey with const = u192 with hash = u64)
-  (E: rng_engine with t = u192)
+  (K: hashkey with hash = u64)
   (P: {
     val hashmap_size : i64 -> i64
     val probe : u64 -> u64
@@ -811,27 +799,17 @@ module mk_open_addressing_hashmap
     with key = K.key
     with ctx = K.ctx = {
   module key = K
-  module engine = E
-  type const = K.const
-  type rng = engine.rng
+  type const = key.const
+  type rng = key.rng
   type key = key.key
   type~ ctx = key.ctx
 
   local def probe = P.probe
   local def hashmap_size = P.hashmap_size
 
-  local
-  #[inline]
-  def generate_consts (n: i64) (r: rng) : (rng, [n]const) =
-    (\(a, b, _) -> (a, b))
-    <| loop (r', arr: *[n]K.const, i) = (r, replicate n E.min, 0)
-       while i < n do
-         let (r'', a) = engine.rand r'
-         in (r'', arr with [i] = a, i + 1)
-
   type map 'ctx [n] [f] 'v =
     { ctx: ctx
-    , consts: [key.c]const
+    , const: const
     , keys: [n]key
     , values: [n]v
     , lookup_keys: [f](bool, key)
@@ -842,25 +820,27 @@ module mk_open_addressing_hashmap
 
   local
   def empty 'v ctx : ?[f].map ctx [0] [f] v =
-    { ctx
-    , consts = rep E.min
-    , keys = []
-    , values = []
-    , offsets = []
-    , lookup_keys = []
-    , max_iters = 0
-    , rng = engine.rng_from_seed [123]
-    }
+    let r = key.rng_from_seed [123]
+    let (r', c) = key.rand r
+    in { ctx
+       , const = c
+       , keys = []
+       , values = []
+       , offsets = []
+       , lookup_keys = []
+       , max_iters = 0
+       , rng = r'
+       }
 
   def from_array_rep [u] 'v
                      (ctx: ctx)
                      (keys: [u]key)
                      (ne: v) : ?[n][f].map ctx [n] [f] v =
-    let r = engine.rng_from_seed [123, i32.i64 u]
-    let (r, consts) = generate_consts K.c r
+    let r = key.rng_from_seed [123, i32.i64 u]
+    let (r, const) = key.rand r
     let filler = (false, keys[0])
-    let keq a b = (ctx, a) K.== (ctx, b)
-    let hash = K.hash ctx consts
+    let keq a b = (ctx, a) key.== (ctx, b)
+    let hash = key.hash ctx const
     let hashes' = map hash keys
     let size = P.hashmap_size u
     let (max_iters, lookup_keys, _) =
@@ -896,7 +876,7 @@ module mk_open_addressing_hashmap
     let s = length keys
     let keys = sized s keys
     in { rng = r
-       , consts = consts
+       , const = const
        , keys = keys
        , values = replicate s ne
        , max_iters = max_iters + 1
@@ -918,8 +898,8 @@ module mk_open_addressing_hashmap
                         (ctx: ctx)
                         (k: key)
                         (hmap: map ctx [n] [f] v) : i64 =
-    let h = K.hash ctx hmap.consts k
-    let keq a b = (hmap.ctx, a) K.== (ctx, b)
+    let h = key.hash ctx hmap.const k
+    let keq a b = (hmap.ctx, a) key.== (ctx, b)
     in (.2)
        <| loop (is_found, i, j) = (false, 0, -1)
           while i < hmap.max_iters || is_found do
@@ -1062,7 +1042,7 @@ module mk_open_addressing_hashmap
        , values = vs
        , max_iters = hmap.max_iters
        , offsets = hmap.offsets
-       , consts = hmap.consts
+       , const = hmap.const
        , rng = hmap.rng
        }
 
@@ -1072,11 +1052,11 @@ module mk_open_addressing_hashmap
     map_with_key (\_ v -> g v) hmap
 }
 
-module mk_linear_hashmap (K: hashkey with const = u192 with hash = u64) (E: rng_engine with t = u192)
+module mk_linear_hashmap (K: hashkey with hash = u64)
   : map
     with key = K.key
     with ctx = K.ctx = {
-  module hashmap = mk_open_addressing_hashmap K E {
+  module hashmap = mk_open_addressing_hashmap K {
     def hashmap_size = (4i64 *)
     def probe = id
   }
