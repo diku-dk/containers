@@ -100,13 +100,13 @@ module mk_int_key_u32
     def n : i64 = 2
 
     def mat =
-      [ [ u128.from_u64 ([4550289u64, 3114443612905851817u64] :> [u128.n]u64)
-        , u128.from_u64 ([31521294u64, 4677272142619895914u64] :> [u128.n]u64)
-        , u128.from_u64 ([4309077u64, 17725230307779815399u64] :> [u128.n]u64)
+      [ [ u128.from_u64 ([0u64, 2293423045107085747u64] :> [u128.n]u64)
+        , u128.from_u64 ([0u64, 800780595221070060u64] :> [u128.n]u64)
+        , u128.from_u64 ([0u64, 2091102638183227686u64] :> [u128.n]u64)
         ]
-      , [ u128.from_u64 ([32864941u64, 14067805869423985411u64] :> [u128.n]u64)
-        , u128.from_u64 ([7570401u64, 4379138438894234111u64] :> [u128.n]u64)
-        , u128.from_u64 ([31318884u64, 8032588423207853219u64] :> [u128.n]u64)
+      , [ u128.from_u64 ([0u64, 594268281314473874u64] :> [u128.n]u64)
+        , u128.from_u64 ([0u64, 122033425430844521u64] :> [u128.n]u64)
+        , u128.from_u64 ([0u64, 1566285142180431642u64] :> [u128.n]u64)
         ]
       ]
       :> [n][n + 1]u128
@@ -115,7 +115,7 @@ module mk_int_key_u32
   module engine = mk_ndimlcg u128 params
 
   type rng = engine.rng
-  type const = [params.n]u192
+  type const = [params.n]u128
 
   def rng_from_seed = engine.rng_from_seed
 
@@ -131,40 +131,79 @@ module mk_int_key_u32
 }
 
 local
-module u64key_u32
+module mk_int_key_u32_64bit
   (P: {
     type t
 
     val to_i64 : t -> i64
-    val num_bits : i32
     val (==) : t -> t -> bool
     val (<=) : t -> t -> bool
   })
-  : key with ctx = () with key = P.t with hash = u32 with const = (u128, u128) = {
+  : key with ctx = () with key = P.t with hash = u32 = {
   type key = P.t
   type ctx = ()
   type hash = u32
-  type const = (u128, u128)
 
-  def c : i64 = 1
+  module params = {
+    type t = u128
+    def n : i64 = 4
+
+    def mat =
+      [ [ u128.from_u64 ([0u64, 1889274433039334491u64] :> [u128.n]u64)
+        , u128.from_u64 ([0u64, 1558719663069797306u64] :> [u128.n]u64)
+        , u128.from_u64 ([0u64, 898800792483617031u64] :> [u128.n]u64)
+        , u128.from_u64 ([0u64, 182671347101262303u64] :> [u128.n]u64)
+        , u128.from_u64 ([0u64, 524728102339812979u64] :> [u128.n]u64)
+        ]
+      , [ u128.from_u64 ([0u64, 2138874755982552324u64] :> [u128.n]u64)
+        , u128.from_u64 ([0u64, 1027391227346557362u64] :> [u128.n]u64)
+        , u128.from_u64 ([0u64, 1385211329054194292u64] :> [u128.n]u64)
+        , u128.from_u64 ([0u64, 1624796925062206517u64] :> [u128.n]u64)
+        , u128.from_u64 ([0u64, 2225966430211402310u64] :> [u128.n]u64)
+        ]
+      , [ u128.from_u64 ([0u64, 420038697015483829u64] :> [u128.n]u64)
+        , u128.from_u64 ([0u64, 1470917168597411235u64] :> [u128.n]u64)
+        , u128.from_u64 ([0u64, 1730635935960627482u64] :> [u128.n]u64)
+        , u128.from_u64 ([0u64, 1913445897167741427u64] :> [u128.n]u64)
+        , u128.from_u64 ([0u64, 1958922128221574794u64] :> [u128.n]u64)
+        ]
+      , [ u128.from_u64 ([0u64, 49989825992718695u64] :> [u128.n]u64)
+        , u128.from_u64 ([0u64, 822540154684993876u64] :> [u128.n]u64)
+        , u128.from_u64 ([0u64, 2169992429208474226u64] :> [u128.n]u64)
+        , u128.from_u64 ([0u64, 269517618746531594u64] :> [u128.n]u64)
+        , u128.from_u64 ([0u64, 2206842482050090356u64] :> [u128.n]u64)
+        ]
+      ]
+      :> [n][n + 1]u128
+  }
+
+  module engine = mk_ndimlcg u128 params
+
+  type rng = engine.rng
+  type const = [params.n]u128
+
+  def rng_from_seed = engine.rng_from_seed
+
+  def rand = engine.rand
 
   #[inline]
-  def hash _ (a: [c]const) (x: key) : hash =
-    let x' = u32.i64 (P.to_i64 x)
-    in universal_hashing_u32.universal_hash a[0].0 a[0].1 x'
+  def hash _ (cs: const) (x: key) : hash =
+    let x' = u64.i64 (P.to_i64 x)
+    let lo = u32.u64 (x' & 0x00000000FFFFFFFF)
+    let hi = u32.u64 (x' >> 32)
+    in universal_u32.hash_vector [(cs[0], cs[1]), (cs[2], cs[3])]
+                                 [lo, hi]
 
   def (==) (_, x) (_, y) = x P.== y
   def (<=) (_, x) (_, y) = x P.<= y
 }
 
-module u8key_u32 : key with ctx = () with key = u8 with hash = u32 with const = (u128, u128) = mk_int_key_u32 u8
-module u16key_u32 : key with ctx = () with key = u16 with hash = u32 with const = (u128, u128) = mk_int_key_u32 u16
-module u32key_u32 : key with ctx = () with key = u32 with hash = u32 with const = (u128, u128) = mk_int_key_u32 u32
-module u64key_u32 : key with ctx = () with key = u64 with hash = u32 with const = (u128, u128) = mk_int_key_u32 u64
+module u8key_u32 : key with ctx = () with key = u8 with hash = u32 = mk_int_key_u32 u8
+module u16key_u32 : key with ctx = () with key = u16 with hash = u32 = mk_int_key_u32 u16
+module u32key_u32 : key with ctx = () with key = u32 with hash = u32 = mk_int_key_u32 u32
+module u64key_u32 : key with ctx = () with key = u64 with hash = u32 = mk_int_key_u32_64bit u64
 
--- This is the error, need a smarter way of handling this case.
-
-module i8key_u32 : key with ctx = () with key = i8 with hash = u32 with const = (u128, u128) = mk_int_key_u32 i8
-module i16key_u32 : key with ctx = () with key = i16 with hash = u32 with const = (u128, u128) = mk_int_key_u32 i16
-module i32key_u32 : key with ctx = () with key = i32 with hash = u32 with const = (u128, u128) = mk_int_key_u32 i32
-module i64key_u32 : key with ctx = () with key = i64 with hash = u32 with const = (u128, u128) = mk_int_key_u32 i64
+module i8key_u32 : key with ctx = () with key = i8 with hash = u32 = mk_int_key_u32 i8
+module i16key_u32 : key with ctx = () with key = i16 with hash = u32 = mk_int_key_u32 i16
+module i32key_u32 : key with ctx = () with key = i32 with hash = u32 = mk_int_key_u32 i32
+module i64key_u32 : key with ctx = () with key = i64 with hash = u32 = mk_int_key_u32_64bit i64

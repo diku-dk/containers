@@ -7,12 +7,13 @@ import "lib/github.com/diku-dk/containers/hashmap"
 import "lib/github.com/diku-dk/containers/key"
 import "lib/github.com/diku-dk/containers/hash"
 
-module engine = u64engine
-module array_key = mk_array_key i64key engine
-module hashset = mk_hashset i64key engine
-module hashmap = mk_hashmap i64key engine
+module array_key = mk_array_key i64key
+module hashset = mk_hashset i64key
+module hashmap = mk_hashmap i64key
 
-def seed = engine.rng_from_seed [1]
+def seed = i64key.rng_from_seed [1]
+
+def const = (i64key.rand seed).1
 
 local
 entry replicate_i64 (n: i64) (m: i64) : [n]i64 =
@@ -21,7 +22,7 @@ entry replicate_i64 (n: i64) (m: i64) : [n]i64 =
 local
 entry mod_i64 (n: i64) (m: i64) : [n]i64 =
   iota n
-  |> map ((% m) <-< i64.u64 <-< i64key.hash () ([u192.from_u 1u64, u192.from_u 1u64] :> [i64key.c]i64key.const))
+  |> map ((% m) <-< i64.u64 <-< i64key.hash () const)
 
 local
 def sort_dedup [n] (arr: [n]i64) : []i64 =
