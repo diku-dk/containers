@@ -97,14 +97,10 @@ module mk_slice_key
   : key
     with ctx = []K.key
     with key = slice.slice K.key
-    with hash = u64
-    with const = u192 = {
+    with hash = u64 = {
   type key = slice.slice K.key
-  type const = u192
   type hash = u64
   type~ ctx = ?[l].[l]K.key
-
-  def c : i64 = 3
 
   def (<=) (xctx: ctx, x: key) (yctx: ctx, y: key) =
     array.le (\x y -> ((), x) K.<= ((), y)) (slice.get x xctx) (slice.get y yctx)
@@ -112,10 +108,36 @@ module mk_slice_key
   def (==) (xctx: ctx, x: key) (yctx: ctx, y: key) =
     array.eq (\x y -> ((), x) K.== ((), y)) (slice.get x xctx) (slice.get y yctx)
 
-  def hash (ctx: []K.key) (a: [c]const) (x: key) : hash =
+  module params = {
+    type t = u192
+    def n : i64 = 3
+
+    def mat =
+      [ [ u192.from_u64 ([0u64, 4550289u64, 3114443612905851817u64] :> [u192.n]u64)
+        , u192.from_u64 ([0u64, 31521294u64, 4677272142619895914u64] :> [u192.n]u64)
+        , u192.from_u64 ([0u64, 4309077u64, 17725230307779815399u64] :> [u192.n]u64)
+        ]
+      , [ u192.from_u64 ([0u64, 32864941u64, 14067805869423985411u64] :> [u192.n]u64)
+        , u192.from_u64 ([0u64, 7570401u64, 4379138438894234111u64] :> [u192.n]u64)
+        , u192.from_u64 ([0u64, 31318884u64, 8032588423207853219u64] :> [u192.n]u64)
+        ]
+      ]
+      :> [n][n + 1]u192
+  }
+
+  module engine = mk_ndimlcg u192 params
+
+  type rng = engine.rng
+  type const = [params.n]u192
+
+  def rng_from_seed = engine.rng_from_seed
+
+  def rand = engine.rand
+
+  def hash (ctx: []K.key) (a: const) (x: key) : hash =
     let data = slice.get x ctx
     let n = E.num data
-    in universal_hashing.universal_hash_string a[0] a[1] a[2] E.get n data
+    in universal.hash_string a[0] a[1] a[2] E.get n data
 }
 
 module mk_slice_key_u32
@@ -143,5 +165,5 @@ module mk_slice_key_u32
   def hash (ctx: []K.key) (a: [c]const) (x: key) : hash =
     let data = slice.get x ctx
     let n = E.num data
-    in universal_hashing_u32.universal_hash_string a[0] a[1] a[2] E.get n data
+    in universal.hash_string a[0] a[1] a[2] E.get n data
 }

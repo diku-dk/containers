@@ -118,7 +118,7 @@ module u128 : uint with u = u32 = {
 
   #[inline]
   def from_u64 (as: [n]u64) : t =
-    {high = as[1], low = as[0]}
+    {high = as[0], low = as[1]}
 
   #[inline]
   def from_u (a: u) : t =
@@ -208,7 +208,7 @@ module u192 : uint with u = u64 = {
 
   #[inline]
   def from_u64 (as: [n]u64) : t =
-    {high = as[2], mid = as[1], low = as[0]}
+    {high = as[0], mid = as[1], low = as[2]}
 
   #[inline]
   def from_u (a: u) : t =
