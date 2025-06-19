@@ -113,13 +113,20 @@ module mk_slice_key
     def n : i64 = 3
 
     def mat =
-      [ [ u192.from_u64 ([0u64, 4550289u64, 3114443612905851817u64] :> [u192.n]u64)
-        , u192.from_u64 ([0u64, 31521294u64, 4677272142619895914u64] :> [u192.n]u64)
-        , u192.from_u64 ([0u64, 4309077u64, 17725230307779815399u64] :> [u192.n]u64)
+      [ [ u192.from_u64 ([0u64, 28754346u64, 11015437201764459397u64] :> [u192.n]u64)
+        , u192.from_u64 ([0u64, 33446050u64, 44765319426087909u64] :> [u192.n]u64)
+        , u192.from_u64 ([0u64, 5193344u64, 11774702713623250524u64] :> [u192.n]u64)
+        , u192.from_u64 ([0u64, 2000789u64, 2890036977250326397u64] :> [u192.n]u64)
         ]
-      , [ u192.from_u64 ([0u64, 32864941u64, 14067805869423985411u64] :> [u192.n]u64)
-        , u192.from_u64 ([0u64, 7570401u64, 4379138438894234111u64] :> [u192.n]u64)
-        , u192.from_u64 ([0u64, 31318884u64, 8032588423207853219u64] :> [u192.n]u64)
+      , [ u192.from_u64 ([0u64, 7039301u64, 3152774312296373500u64] :> [u192.n]u64)
+        , u192.from_u64 ([0u64, 6411676u64, 3833190130467790283u64] :> [u192.n]u64)
+        , u192.from_u64 ([0u64, 27067162u64, 9418817281394045152u64] :> [u192.n]u64)
+        , u192.from_u64 ([0u64, 22737421u64, 8745441487662595665u64] :> [u192.n]u64)
+        ]
+      , [ u192.from_u64 ([0u64, 23154442u64, 6850429895295465782u64] :> [u192.n]u64)
+        , u192.from_u64 ([0u64, 24350097u64, 16396793026104248044u64] :> [u192.n]u64)
+        , u192.from_u64 ([0u64, 9164704u64, 5882893599925425177u64] :> [u192.n]u64)
+        , u192.from_u64 ([0u64, 11265513u64, 3093699834540157620u64] :> [u192.n]u64)
         ]
       ]
       :> [n][n + 1]u192
@@ -146,15 +153,11 @@ module mk_slice_key_u32
   : key
     with ctx = []K.key
     with key = slice.slice K.key
-    with hash = u32
-    with const = u128 = {
+    with hash = u32 = {
   type key = slice.slice K.key
   type~ ctx = ?[l].[l]K.key
   type uint = u32
-  type const = u128
   type hash = u32
-
-  def c : i64 = 3
 
   def (<=) (xctx: ctx, x: key) (yctx: ctx, y: key) =
     array.le (\x y -> ((), x) K.<= ((), y)) (slice.get x xctx) (slice.get y yctx)
@@ -162,8 +165,41 @@ module mk_slice_key_u32
   def (==) (xctx: ctx, x: key) (yctx: ctx, y: key) =
     array.eq (\x y -> ((), x) K.== ((), y)) (slice.get x xctx) (slice.get y yctx)
 
-  def hash (ctx: []K.key) (a: [c]const) (x: key) : hash =
+  module params = {
+    type t = u128
+    def n : i64 = 3
+
+    def mat =
+      [ [ u128.from_u64 ([0u64, 130376333404382465u64] :> [u128.n]u64)
+        , u128.from_u64 ([0u64, 941437598877963704u64] :> [u128.n]u64)
+        , u128.from_u64 ([0u64, 983855883704868386u64] :> [u128.n]u64)
+        , u128.from_u64 ([0u64, 474909089031450842u64] :> [u128.n]u64)
+        ]
+      , [ u128.from_u64 ([0u64, 2291080586977276207u64] :> [u128.n]u64)
+        , u128.from_u64 ([0u64, 1774766946851307907u64] :> [u128.n]u64)
+        , u128.from_u64 ([0u64, 862284600868831119u64] :> [u128.n]u64)
+        , u128.from_u64 ([0u64, 1919656809696445781u64] :> [u128.n]u64)
+        ]
+      , [ u128.from_u64 ([0u64, 1560860746668876372u64] :> [u128.n]u64)
+        , u128.from_u64 ([0u64, 2065326635364188065u64] :> [u128.n]u64)
+        , u128.from_u64 ([0u64, 923420781333808644u64] :> [u128.n]u64)
+        , u128.from_u64 ([0u64, 1659270389580084573u64] :> [u128.n]u64)
+        ]
+      ]
+      :> [n][n + 1]u128
+  }
+
+  module engine = mk_ndimlcg u128 params
+
+  type rng = engine.rng
+  type const = [params.n]u128
+
+  def rng_from_seed = engine.rng_from_seed
+
+  def rand = engine.rand
+
+  def hash (ctx: []K.key) (a: const) (x: key) : hash =
     let data = slice.get x ctx
     let n = E.num data
-    in universal.hash_string a[0] a[1] a[2] E.get n data
+    in universal_u32.hash_string a[0] a[1] a[2] E.get n data
 }

@@ -104,12 +104,10 @@ import "eytzinger"
 import "arraymap"
 import "opt"
 
-module engine = u64engine
-
-module hashmap = mk_hashmap i64key engine
+module hashmap = mk_hashmap i64key
 module hashmap_tests = mk_map_test hashmap
 
-module linhashmap = mk_linear_hashmap i64key engine
+module linhashmap = mk_linear_hashmap i64key
 module linhashmap_tests = mk_map_test linhashmap
 
 module arraymap = mk_arraymap i64key
