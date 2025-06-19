@@ -3,7 +3,6 @@
 -- This module contains modules and functions for manipulating arrays. Which
 -- might be something like deduplication or a generalized reduction by a key.
 
-import "../cpprandom/random"
 import "../sorts/radix_sort"
 import "../segmented/segmented"
 import "hashkey"
@@ -83,30 +82,19 @@ module mk_array_key_params
   (I: integral)
   (U: integral)
   (K: hashkey with hash = U.t)
-  (E: rng_engine with t = K.const)
   : array_key
-    with rng = E.rng
+    with rng = K.rng
     with key = K.key
     with ctx = K.ctx = {
   module key = K
-  module engine = E
   type int = I.t
   type uint = U.t
-  type rng = engine.rng
+  type rng = K.rng
   type key = key.key
   type~ ctx = K.ctx
 
   def to_int : uint -> int =
     I.i64 <-< U.to_i64
-
-  local
-  #[inline]
-  def generate_consts (n: i64) (r: rng) =
-    #[sequential]
-    engine.split_rng n r
-    |> map engine.rand
-    |> unzip
-    |> (\(a, b) -> (engine.join_rng a, b))
 
   local
   def estimate_distinct [n]
@@ -117,10 +105,10 @@ module mk_array_key_params
     if n == 0
     then (rng, U.i64 0)
     else let sample_size = U.(max (i64 1) (i64 n / factor))
-         let (rng, consts) = generate_consts key.c rng
+         let (rng, const) = K.rand rng
          let sample = keys[:U.to_i64 sample_size]
          let hs =
-           map ((U.%% sample_size) <-< key.hash ctx consts) sample
+           map ((U.%% sample_size) <-< key.hash ctx const) sample
            |> radix_sort (U.num_bits - U.clz sample_size) U.get_bit
          let est =
            iota (U.to_i64 sample_size)
@@ -142,7 +130,7 @@ module mk_array_key_params
          let (uniques, _, _, final_size, final_rng) =
            loop (uniques, elems, size, old_size, old_rng) = (dest, copy arr, copy est, 0, r)
            while length elems != 0 do
-             let (new_rng, consts) = generate_consts key.c old_rng
+             let (new_rng, consts) = K.rand old_rng
              let alloc_size = U.(size + size / i64 2)
              let h = to_int <-< (U.%% alloc_size) <-< key.hash ctx consts
              let hashes = map h elems
@@ -188,7 +176,7 @@ module mk_array_key_params
            -- Expected number of iterations is O(log n).
            loop (reduced, not_reduced, size, old_size, old_rng) = (dest, arr, copy est, 0, r)
            while length not_reduced != 0 do
-             let (new_rng, consts) = generate_consts key.c old_rng
+             let (new_rng, consts) = K.rand old_rng
              let keys = map (.0) not_reduced
              let alloc_size = U.(size + size / i64 2)
              let h = to_int <-< (U.%% alloc_size) <-< key.hash ctx consts

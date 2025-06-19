@@ -1,10 +1,11 @@
+-- A module type for keys that can be hashed.
+
 -- | Key module.
 --
 -- | This module specifies what key needs to be defined for it to be used in
 -- data structures which use hash functions, such as
 -- `mk_hashmap`@term@"hashmap"..
 
--- A module type for keys that can be hashed.
 module type hashkey = {
   -- | Context type.
   type~ ctx
@@ -18,12 +19,18 @@ module type hashkey = {
   -- | The hash type.
   type hash
 
-  -- | The number of constants
-  val c : i64
+  -- | The number generator state.
+  type rng
+
+  -- | Initialise an RNG state from a seed.
+  val rng_from_seed [n] : [n]i32 -> rng
+
+  -- | Generate random constants for hash function.
+  val rand : rng -> (rng, const)
 
   -- | Equality definition for the key.
   val (==) : (ctx, key) -> (ctx, key) -> bool
 
   -- | A given hash function use.
-  val hash : ctx -> [c]const -> key -> hash
+  val hash : ctx -> const -> key -> hash
 }
