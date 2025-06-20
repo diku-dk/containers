@@ -10,6 +10,7 @@ import "hashmap"
 import "hashkey"
 
 -- | An implementation of sets built on two level hashsets.
+-- The key used must have have a universal hash function.
 module type two_level_hashset = {
   -- | The key type.
   type key
@@ -82,6 +83,7 @@ module type two_level_hashset = {
 }
 
 -- | Build a set that internally uses `mk_two_level_hashmap@term`.
+-- The key used must have have a universal hash function.
 module mk_two_level_hashset
   (I: integral)
   (U: integral)

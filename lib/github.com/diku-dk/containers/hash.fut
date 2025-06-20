@@ -1,5 +1,6 @@
 import "../cpprandom/random"
 
+-- | Unsigned integral type to use for hashing of built in integers.
 module type uint = {
   -- | Unsigned integral type.
   type t
@@ -13,7 +14,8 @@ module type uint = {
   -- | The number one.
   val one : t
 
-  -- | A mersenne prime.
+  -- | A mersenne prime that is greater than the maximum u value and
+  -- can fit in t.
   val prime : t
 
   -- | Bitwise and.
@@ -56,6 +58,8 @@ module type uint = {
   val to_u64 : t -> [n]u64
 }
 
+-- | Unsigned 128-bit integer meant for hashing to unsigned 32-bit
+-- integers.
 module u128 : uint with u = u32 = {
   type t = {high: u64, low: u64}
   type u = u32
@@ -147,6 +151,8 @@ module u128 : uint with u = u32 = {
 
 type u128 = u128.t
 
+-- | Unsigned 192-bit integer meant for hashing to unsigned 64-bit
+-- integers.
 module u192 : uint with u = u64 = {
   type t = {high: u64, mid: u64, low: u64}
   type u = u64
@@ -270,12 +276,24 @@ module u192 : uint with u = u64 = {
 
 type u192 = u192.t
 
--- | n-dimensional linear congruential generator
+-- | n-dimensional linear congruential generator. You can give it a
+-- list of non-zero integers to generate an n-array of n random
+-- numbers that will go in a full cycle such that every n-array of
+-- will be hit. The number size is limited by the uint implementation
+-- so the numbers will be betwen zero and less than the mersenne
+-- prime. The purpose of the random number generator is mainly meant
+-- for generating numbers for a universal hash function has constants.
 module mk_ndimlcg
   (U: uint)
   (P: {
+    -- | The type of random numbers to use.
     type t
+
+    -- | Number of random numbers to generate.
     val n : i64
+
+    -- | Choose some non-zero constants to use for random number
+    -- generation.
     val mat : [n][n + 1]t
   }
   with t = U.t)
@@ -316,6 +334,7 @@ module mk_ndimlcg
        for _i in 0..<10 do
          (rand t).0
 
+  -- FIXME: Should allow for parallel creation.
   def split_rng (n: i64) (x: rng) : [n]rng =
     (.0)
     <| loop (dest, y) = (replicate n (replicate P.n U.zero), copy x)
@@ -323,6 +342,7 @@ module mk_ndimlcg
          let (y', _) = rand y
          in (dest with [i] = y', y')
 
+  -- FIXME: This seems bad.
   def join_rng [n] (xs: [n]rng) : rng =
     xs[0]
 
@@ -330,15 +350,29 @@ module mk_ndimlcg
   def max = replicate P.n U.(prime - one)
 }
 
+-- | A module which contains universal hash functions. This module is
+-- mainly meant for multiply modulo prime hash functions.
 module type universal_hashing = {
+  -- | The type of constants to be used in the universal hash
+  -- function.
   type t
+
+  -- | Type that is hashed to and from.
   type u
 
+  -- | Hash a single value, where the first constant may not be zero.
   val hash : t -> t -> u -> u
 
+  -- | Hash a fixed length vector of values, where all the first
+  -- constants in the tuple may not be zero.
   val hash_vector [n] : [n](t, t) -> [n]u -> u
 
-  val hash_string 'x : t -> t -> t -> (i64 -> x -> u) -> i64 -> x -> u
+  -- | Hash a variable length string. It is given 3 constants, the
+  -- first and third may not be zero. The function gets a an index and
+  -- and the value that is being hashed, extracts the ith encoding of
+  -- x as type u. Furthermore, the number of u that that encodes x
+  -- is also given.
+  val hash_string 'x : t -> t -> t -> (get: i64 -> x -> u) -> (num: i64) -> x -> u
 }
 
 module mk_universal_hashing
@@ -348,9 +382,10 @@ module mk_universal_hashing
   type t = I.t
   type u = I.u
 
-  -- | https://arxiv.org/pdf/2008.08654
   #[inline]
   def hash (a: t) (b: t) (x: u) : u =
+    -- See this for further explanation:
+    -- https://arxiv.org/pdf/2008.08654
     -- Let p = 2**b - 1 and p > u.
     I.(let p = prime
        -- y < 2p(u - 1) + (p - 1) < (2u - 1)p <= p**2
@@ -363,11 +398,12 @@ module mk_universal_hashing
 
   #[inline]
   def hash_vector [n] (cs: [n](t, t)) (xs: [n]u) : u =
+    -- Further reading:
+    -- https://en.wikipedia.org/wiki/Universal_hashing#Hashing_vectors
     loop y = U.i64 0
     for i in 0..<n do
       y U.+ hash cs[i].0 cs[i].1 xs[i]
 
-  -- | test https://arxiv.org/pdf/1504.06804
   #[inline]
   def hash_string 'x
                   (a: t)
@@ -376,19 +412,22 @@ module mk_universal_hashing
                   (get: i64 -> x -> u)
                   (num: i64)
                   (x: x) : u =
+    -- Further reading:
+    -- https://en.wikipedia.org/wiki/Universal_hashing#Hashing_strings
     -- Let p = 2**b - 1 and p > u.
     I.(let p = prime
        let y =
          -- Invariant y < 2p
          loop y = zero
          for i in 0..<num do
-           -- y < p**2 + u
-           let y = y * c + from_u (get i x)
-           -- y < p + floor((p**2 + u) / 2**b)
-           --   = p + floor(p**2 / 2**b + u / 2**b)
-           --   = p + floor(p**2 / 2**b)
-           --   < 2p
-           in (y & p) + shift_prime y
+           -- y < p**2
+           let y = y * c
+           -- y < p + p**2 / 2**b < 2p
+           let y = (y & p) + shift_prime y
+           -- y < 2p + u
+           let y = y + from_u (get i x)
+           -- y < p + u < 2p
+           in if y >= p then y - p else y
        -- y < p
        let y = if y >= p then y - p else y
        -- Use universal_hash

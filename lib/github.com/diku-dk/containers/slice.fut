@@ -40,10 +40,18 @@ module slice : slice = {
   def get {i, n} xs = xs[i:i + n]
 }
 
+-- | Encoder that can encode a type to a sequence of other types.
 module type encoder = {
+  -- | The type that will be encoded.
   type t
+
+  -- | The type that will be encoded to
   type u
+
+  -- | Get the ith value in the encoding.
   val get : i64 -> t -> u
+
+  -- | The number of values in the final encoding.
   val num : t -> i64
 }
 
@@ -90,7 +98,8 @@ module mk_encoder_u32 = mk_encoder_params u32
 
 -- | Create a `key`@mtype@"key" for slices of some specific element type. The
 -- element type must also be provided with a `key`@mtype module for which the
--- context is unit.
+-- context is unit. You will also need to give an encoder module which can
+-- encode the slice to the hash type.
 module mk_slice_key
   (K: ordkey with ctx = ())
   (E: encoder with t = []K.key with u = u64)
