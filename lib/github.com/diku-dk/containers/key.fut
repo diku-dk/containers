@@ -61,7 +61,10 @@ module mk_int_key
 
   def rng_from_seed = engine.rng_from_seed
 
-  def rand = engine.rand
+  def rand r =
+    u192.(let (r, t) = engine.rand r
+          let t0 = if t[0] == zero then one else t[0]
+          in (r, sized params.n [t0, t[1]]))
 
   def hash _ (cs: const) (x: key) : hash =
     let x' = u64.i64 (P.to_i64 x)
@@ -119,7 +122,10 @@ module mk_int_key_u32
 
   def rng_from_seed = engine.rng_from_seed
 
-  def rand = engine.rand
+  def rand r =
+    u128.(let (r, t) = engine.rand r
+          let t0 = if t[0] == zero then one else t[0]
+          in (r, sized params.n [t0, t[1]]))
 
   #[inline]
   def hash _ (cs: const) (x: key) : hash =
@@ -184,12 +190,16 @@ module mk_int_key_u32_64bit
 
   def rng_from_seed = engine.rng_from_seed
 
-  def rand = engine.rand
+  def rand r =
+    u128.(let (r, t) = engine.rand r
+          let t0 = if t[0] == zero then one else t[0]
+          let t2 = if t[2] == zero then one else t[2]
+          in (r, sized params.n [t0, t[1], t2, t[3]]))
 
   #[inline]
   def hash _ (cs: const) (x: key) : hash =
     let x' = u64.i64 (P.to_i64 x)
-    let lo = u32.u64 (x' & 0x00000000FFFFFFFF)
+    let lo = u32.u64 x'
     let hi = u32.u64 (x' >> 32)
     in universal_u32.hash_vector [(cs[0], cs[1]), (cs[2], cs[3])]
                                  [lo, hi]

@@ -148,7 +148,11 @@ module mk_slice_key
 
   def rng_from_seed = engine.rng_from_seed
 
-  def rand = engine.rand
+  def rand r =
+    u192.(let (r, t) = engine.rand r
+          let t0 = if t[0] == zero then one else t[0]
+          let t2 = if t[2] == zero then one else t[2]
+          in (r, sized params.n [t0, t[1], t2]))
 
   def hash (ctx: []K.key) (a: const) (x: key) : hash =
     let data = slice.get x ctx
@@ -205,7 +209,11 @@ module mk_slice_key_u32
 
   def rng_from_seed = engine.rng_from_seed
 
-  def rand = engine.rand
+  def rand r =
+    u128.(let (r, t) = engine.rand r
+          let t0 = if t[0] == zero then one else t[0]
+          let t2 = if t[2] == zero then one else t[2]
+          in (r, sized params.n [t0, t[1], t2]))
 
   def hash (ctx: []K.key) (a: const) (x: key) : hash =
     let data = slice.get x ctx
