@@ -192,7 +192,7 @@ module type two_level_hashmap = {
 -- | This is an implementation of a static hash table using [two level
 -- hashing](https://en.wikipedia.org/wiki/Double_hashing). The modules time
 -- complexities assumes only unique keys but the modules does work with
--- duplicate keys. The key used must have have a universal hash function.
+-- duplicate keys. The key used must have a universal hash function.
 module mk_two_level_hashmap
   (I: integral)
   (U: integral)
