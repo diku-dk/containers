@@ -10,7 +10,7 @@ import "hashmap"
 import "hashkey"
 
 -- | An implementation of sets built on two level hashsets.
--- The key used must have have a universal hash function.
+-- The key used must have a universal hash function.
 module type two_level_hashset = {
   -- | The key type.
   type key
