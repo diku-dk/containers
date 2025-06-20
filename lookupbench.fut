@@ -2,10 +2,13 @@ import "lib/github.com/diku-dk/sorts/radix_sort"
 import "lib/github.com/diku-dk/containers/hashset"
 import "lib/github.com/diku-dk/containers/key"
 import "lib/github.com/diku-dk/cpprandom/random"
+import "lib/github.com/diku-dk/containers/hash"
 
-module engine = minstd_rand
-module hashset = mk_hashset_u32 i64key_u32 engine
-def seed = engine.rng_from_seed [1]
+module hashset = mk_hashset_u32 i64key_u32
+
+def seed = i64key.rng_from_seed [1]
+
+def const = (i64key.rand seed).1
 
 def clamp a min max =
   i64.max min (i64.min a max)
@@ -54,7 +57,7 @@ entry replicate_i64 (n: i64) (m: i64) : [n]i64 =
 local
 entry mod_i64 (n: i64) (m: i64) : [n]i64 =
   iota n
-  |> map ((% m) <-< i64.u64 <-< i64key.hash () ([1, 2, 3, 4, 5, 6] :> [i64key.c]u64))
+  |> map ((% m) <-< i64.u64 <-< i64key.hash () const)
 
 def construct_hashset arr =
   hashset.from_array () arr
@@ -95,7 +98,7 @@ entry bench_hashset_construct [n] (arr: [n]i64) =
 local
 entry random_array_i64 (n: i64) : []i64 =
   iota n
-  |> map (i64.u64 <-< i64key.hash () ([1, 2, 3, 4, 5, 6] :> [i64key.c]u64))
+  |> map (i64.u64 <-< i64key.hash () const)
 
 local
 entry construct_random_sort n =
