@@ -418,7 +418,7 @@ module mk_universal_hashing
     I.(let p = prime
        let y =
          -- Invariant y < 2p
-         loop y = zero
+         loop y = one
          for i in 0..<num do
            -- y < p**2
            let y = y * c
