@@ -66,11 +66,15 @@ module mk_int_key
           let t0 = if t[0] == zero then one else t[0]
           in (r, sized params.n [t0, t[1]]))
 
+  #[inline]
   def hash _ (cs: const) (x: key) : hash =
     let x' = u64.i64 (P.to_i64 x)
     in universal.hash cs[0] cs[1] x'
 
+  #[inline]
   def (==) (_, x) (_, y) = x P.== y
+
+  #[inline]
   def (<=) (_, x) (_, y) = x P.<= y
 }
 
@@ -132,7 +136,10 @@ module mk_int_key_u32
     let x' = u32.i64 (P.to_i64 x)
     in universal_u32.hash cs[0] cs[1] x'
 
+  #[inline]
   def (==) (_, x) (_, y) = x P.== y
+
+  #[inline]
   def (<=) (_, x) (_, y) = x P.<= y
 }
 
@@ -204,7 +211,10 @@ module mk_int_key_u32_64bit
     in universal_u32.hash_vector [(cs[0], cs[1]), (cs[2], cs[3])]
                                  [lo, hi]
 
+  #[inline]
   def (==) (_, x) (_, y) = x P.== y
+
+  #[inline]
   def (<=) (_, x) (_, y) = x P.<= y
 }
 
