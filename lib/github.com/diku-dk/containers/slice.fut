@@ -35,8 +35,14 @@ module type slice = {
 
 module slice : slice = {
   type slice 'a = {i: i64, n: i64}
+
+  #[inline]
   def mk i n = {i, n}
+
+  #[inline]
   def unmk {i, n} = (i, n)
+
+  #[inline]
   def get {i, n} xs = xs[i:i + n]
 }
 
@@ -62,17 +68,22 @@ module mk_encoder_params
   type~ t = ?[n].[n]I.t
   type u = U.t
 
+  #[inline]
   def to_u = U.i64 <-< I.to_i64
 
+  #[inline]
   def num_i_per_u : i64 = i64.i32 (U.num_bits / I.num_bits)
 
+  #[inline]
   def num_u_per_i : i64 = i64.i32 (I.num_bits / U.num_bits)
 
+  #[inline]
   def num (ts: t) : i64 =
     if U.num_bits != I.num_bits
     then (length ts + num_i_per_u - 1) / num_i_per_u
     else length ts * num_u_per_i
 
+  #[inline]
   def get (i: i64) (ts: t) : u =
     if num_i_per_u != 0
     then #[unroll]
@@ -111,9 +122,11 @@ module mk_slice_key
   type hash = u64
   type~ ctx = ?[l].[l]K.key
 
+  #[inline]
   def (<=) (xctx: ctx, x: key) (yctx: ctx, y: key) =
     array.le (\x y -> ((), x) K.<= ((), y)) (slice.get x xctx) (slice.get y yctx)
 
+  #[inline]
   def (==) (xctx: ctx, x: key) (yctx: ctx, y: key) =
     array.eq (\x y -> ((), x) K.== ((), y)) (slice.get x xctx) (slice.get y yctx)
 
@@ -154,6 +167,7 @@ module mk_slice_key
           let t2 = if t[2] == zero then one else t[2]
           in (r, sized params.n [t0, t[1], t2]))
 
+  #[inline]
   def hash (ctx: []K.key) (a: const) (x: key) : hash =
     let data = slice.get x ctx
     let n = E.num data
@@ -172,9 +186,11 @@ module mk_slice_key_u32
   type uint = u32
   type hash = u32
 
+  #[inline]
   def (<=) (xctx: ctx, x: key) (yctx: ctx, y: key) =
     array.le (\x y -> ((), x) K.<= ((), y)) (slice.get x xctx) (slice.get y yctx)
 
+  #[inline]
   def (==) (xctx: ctx, x: key) (yctx: ctx, y: key) =
     array.eq (\x y -> ((), x) K.== ((), y)) (slice.get x xctx) (slice.get y yctx)
 
@@ -215,6 +231,7 @@ module mk_slice_key_u32
           let t2 = if t[2] == zero then one else t[2]
           in (r, sized params.n [t0, t[1], t2]))
 
+  #[inline]
   def hash (ctx: []K.key) (a: const) (x: key) : hash =
     let data = slice.get x ctx
     let n = E.num data

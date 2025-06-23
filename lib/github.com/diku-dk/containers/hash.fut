@@ -301,12 +301,14 @@ module mk_ndimlcg
   type t = [P.n]U.t
   type rng = [P.n]U.t
 
+  #[inline]
   def add a b =
     U.(-- y = a + b < 2p
        let y = a + b
        -- y < p
        in if y >= prime then y - prime else y)
 
+  #[inline]
   def auxiliary (as: [P.n + 1]U.t) (xs: t) : U.t =
     U.(let z =
          tabulate P.n (\i ->
