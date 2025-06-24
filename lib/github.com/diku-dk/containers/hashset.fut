@@ -5,12 +5,12 @@
 -- complexities assumes only unique keys but the modules does work with
 -- duplicate keys.
 
-import "../cpprandom/random"
 import "set"
 import "hashmap"
 import "hashkey"
 
 -- | An implementation of sets built on two level hashsets.
+-- The key used must have a universal hash function.
 module type two_level_hashset = {
   -- | The key type.
   type key
@@ -83,15 +83,15 @@ module type two_level_hashset = {
 }
 
 -- | Build a set that internally uses `mk_two_level_hashmap@term`.
+-- The key used must have have a universal hash function.
 module mk_two_level_hashset
   (I: integral)
   (U: integral)
-  (K: hashkey with uint = U.t)
-  (E: rng_engine with int.t = U.t)
+  (K: hashkey with hash = U.t)
   : two_level_hashset
     with key = K.key
     with ctx = K.ctx = {
-  module hashmap = mk_two_level_hashmap I U K E
+  module hashmap = mk_two_level_hashmap I U K
   type key = hashmap.key
   type ctx = hashmap.ctx
 
@@ -165,12 +165,11 @@ module type hashset = {
 module mk_hashset_params
   (I: integral)
   (U: integral)
-  (K: hashkey with uint = U.t)
-  (E: rng_engine with int.t = U.t)
+  (K: hashkey with hash = U.t)
   : set
     with key = K.key
     with ctx = K.ctx = {
-  module hashset = mk_two_level_hashset I U K E
+  module hashset = mk_two_level_hashset I U K
   type key = hashset.key
   type ctx = hashset.ctx
 

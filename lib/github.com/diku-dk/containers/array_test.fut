@@ -2,13 +2,12 @@
 
 import "../sorts/radix_sort"
 import "../segmented/segmented"
-import "../cpprandom/random"
 import "array"
 import "key"
+import "hash"
 
-module engine = xorshift128plus
-module array = mk_array_key i64key engine
-def seed = engine.rng_from_seed [1]
+module array = mk_array_key i64key
+def seed = i64key.rng_from_seed [1]
 
 local
 def count_occourences_sort [n] (arr: [n]i64) : [](i64, i64) =
