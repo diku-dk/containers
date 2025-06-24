@@ -187,6 +187,18 @@ module type two_level_hashmap = {
     -> map ctx [n] [f] [m] v
     -> [u](key, v)
     -> ?[n'][f'][m'].map ctx [n'] [f'] [m'] v
+
+  -- | Reduce values into a single value by an associative and
+  -- commutative operator.
+  --
+  -- **Work:** *O(n ✕ W(op))*
+  --
+  -- **Span:** *O(log(n) ✕ W(op))*
+  val reduce [n] [f] [m] 'v :
+    (v -> v -> v)
+    -> v
+    -> map ctx [n] [f] [m] v
+    -> v
 }
 
 -- | This is an implementation of a static hash table using [two level
@@ -602,6 +614,9 @@ module mk_two_level_hashmap
     let hmap' = from_array_rep_nodup ctx keys'' ne
     in adjust op ne hmap' (key_values ++ key_values') with rng = rng
 
+  def reduce [n] [f] [m] 'v (op: v -> v -> v) (ne: v) (hmap: map ctx [n] [f] [m] v) : v =
+    reduce_comm op ne (map (.1) hmap.key_values)
+
   def map_with_key [n] [f] [m] 'v 't
                    (g: key -> v -> t)
                    (hmap: map ctx [n] [f] [m] v) : map ctx [n] [f] [m] t =
@@ -664,6 +679,9 @@ module mk_hashmap_params
 
   def from_array_rep_nodup [n] 'v (ctx: ctx) (keys: [n]key) (ne: v) : map [n] v =
     hashmap.from_array_rep_nodup ctx keys ne
+
+  def reduce [n] 'v (op: v -> v -> v) (ne: v) (hmap: map [n] v) : v =
+    hashmap.reduce op ne hmap
 
   def map [n] 'v 't (g: v -> t) (hmap: map [n] v) : map [n] t =
     hashmap.map g hmap
@@ -788,6 +806,12 @@ module type open_addressing_hashmap = {
     -> map ctx [n] [f] v
     -> [u](key, v)
     -> ?[n'][f'].map ctx [n'] [f'] v
+
+  val reduce [n] [f] 'v :
+    (v -> v -> v)
+    -> v
+    -> map ctx [n] [f] v
+    -> v
 }
 
 module mk_open_addressing_hashmap
@@ -1047,6 +1071,9 @@ module mk_open_addressing_hashmap
        , rng = hmap.rng
        }
 
+  def reduce [n] [f] 'v (op: v -> v -> v) (ne: v) (hmap: map ctx [n] [f] v) : v =
+    reduce_comm op ne hmap.values
+
   def map [n] [f] 'v 't
           (g: v -> t)
           (hmap: map ctx [n] [f] v) : map ctx [n] [f] t =
@@ -1093,6 +1120,9 @@ module mk_linear_hashmap (K: hashkey with hash = u64)
 
   def from_array_rep_nodup [n] 'v (ctx: ctx) (keys: [n]key) (ne: v) : map [n] v =
     hashmap.from_array_rep_nodup ctx keys ne
+
+  def reduce [n] 'v (op: v -> v -> v) (ne: v) (hmap: map [n] v) : v =
+    hashmap.reduce op ne hmap
 
   def map [n] 'v 't (g: v -> t) (hmap: map [n] v) : map [n] t =
     hashmap.map g hmap

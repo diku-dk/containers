@@ -129,4 +129,8 @@ module type map = {
     -> map [n] v
     -> [u](key, v)
     -> ?[m].map [m] v
+
+  -- | Reduce values into a single value by an associative and
+  -- commutative operator.
+  val reduce [n] 'v : (v -> v -> v) -> v -> map [n] v -> v
 }
