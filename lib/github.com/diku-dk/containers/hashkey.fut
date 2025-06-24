@@ -1,11 +1,10 @@
--- A module type for keys that can be hashed.
+-- | A module type for keys that can be hashed.
 
 -- | Key module.
 --
 -- | This module specifies what key needs to be defined for it to be used in
 -- data structures which use hash functions, such as
 -- `mk_hashmap`@term@"hashmap".
-
 module type hashkey = {
   -- | Context type.
   type~ ctx
