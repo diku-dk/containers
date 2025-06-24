@@ -261,7 +261,7 @@ module mk_two_level_hashmap
                         (flat_size: int)
                         (k: key) : int =
     if n == 0
-    then zero
+    then neg_one
     else -- The offset to get the level two hash function.
          let o = U.((key.hash ctx level_one_const k) %% i64 n)
          let arr = level_two[U.to_i64 o]
@@ -277,17 +277,17 @@ module mk_two_level_hashmap
              (ctx: ctx)
              (k: key)
              (hmap: map ctx [n] [f] [m] v) : bool =
-    if length hmap.key_values == 0
-    then false
-    else let i =
-           lookup_flat_index ctx
-                             hmap.level_one_const
-                             hmap.level_two_consts
-                             hmap.level_two
-                             (I.i64 f)
-                             k
-         let k' = hmap.lookup_keys[I.to_i64 i]
-         in (hmap.ctx, k') key.== (ctx, k)
+    let i =
+      lookup_flat_index ctx
+                        hmap.level_one_const
+                        hmap.level_two_consts
+                        hmap.level_two
+                        (I.i64 f)
+                        k
+    in if neg_one I.== i
+       then false
+       else let k' = hmap.lookup_keys[I.to_i64 i]
+            in (hmap.ctx, k') key.== (ctx, k)
 
   def not_member [n] [f] [m] 'v
                  (ctx: ctx)
@@ -300,37 +300,37 @@ module mk_two_level_hashmap
                    (ctx: ctx)
                    (hmap: map ctx [n] [f] [m] v)
                    (k: key) : int =
-    if length hmap.key_values == 0
-    then neg_one
-    else let i =
-           lookup_flat_index ctx
-                             hmap.level_one_const
-                             hmap.level_two_consts
-                             hmap.level_two
-                             (I.i64 f)
-                             k
-         let o = hmap.offsets[I.to_i64 i]
-         let (k', _) = hmap.key_values[I.to_i64 o]
-         in if (hmap.ctx, k') key.== (ctx, k) then o else neg_one
+    let i =
+      lookup_flat_index ctx
+                        hmap.level_one_const
+                        hmap.level_two_consts
+                        hmap.level_two
+                        (I.i64 f)
+                        k
+    in if i I.== neg_one
+       then neg_one
+       else let o = hmap.offsets[I.to_i64 i]
+            let (k', _) = hmap.key_values[I.to_i64 o]
+            in if (hmap.ctx, k') key.== (ctx, k) then o else neg_one
 
   def lookup [n] [f] [m] 'v
              (ctx: ctx)
              (k: key)
              (hmap: map ctx [n] [f] [m] v) : opt v =
-    if length hmap.key_values == 0
-    then #none
-    else let i =
-           lookup_flat_index ctx
-                             hmap.level_one_const
-                             hmap.level_two_consts
-                             hmap.level_two
-                             (I.i64 f)
-                             k
-         let o = I.(min (i64 n - one) hmap.offsets[to_i64 i])
-         let (k', v) = hmap.key_values[I.to_i64 o]
-         in if (hmap.ctx, k') key.== (ctx, k)
-            then some v
-            else #none
+    let i =
+      lookup_flat_index ctx
+                        hmap.level_one_const
+                        hmap.level_two_consts
+                        hmap.level_two
+                        (I.i64 f)
+                        k
+    in if i I.== neg_one
+       then #none
+       else let o = hmap.offsets[I.to_i64 i]
+            let (k', v) = hmap.key_values[I.to_i64 o]
+            in if (hmap.ctx, k') key.== (ctx, k)
+               then some v
+               else #none
 
   -- | Given an array of keys with index into an irregular array
   -- (old_keys). And an array of tuples with an index which
@@ -485,7 +485,7 @@ module mk_two_level_hashmap
       |> sized n
     let offsets =
       -- The offsets into the keys array.
-      scatter (replicate (I.to_i64 flat_size) neg_one)
+      scatter (replicate (I.to_i64 flat_size) zero)
               (map (hash2 <-< (.0)) reordered)
               (map (I.i64) (iota n))
     let lookup_keys_dest =
