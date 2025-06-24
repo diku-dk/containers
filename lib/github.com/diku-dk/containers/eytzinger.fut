@@ -86,6 +86,12 @@ module type eytzinger_unlifted = {
     -> map ctx [n] [f] v
     -> [u](key, v)
     -> ?[n'][f'].map ctx [n'] [f'] v
+
+  val reduce [n] [f] 'v :
+    (v -> v -> v)
+    -> v
+    -> map ctx [n] [f] v
+    -> v
 }
 
 -- | A map that uses a eytzinger tree to represent the mapping.
@@ -267,6 +273,12 @@ module mk_eytzinger_unlifted (K: ordkey) : eytzinger_unlifted with key = K.key w
                   (kvs: [u](key, v)) : ?[m][k].map ctx [m] [k] v =
     from_array_hist ctx op ne (to_array m ++ kvs)
 
+  def reduce [n] [f] 'v
+             (op: v -> v -> v)
+             (ne: v)
+             (m: map ctx [n] [f] v) : v =
+    reduce_comm op ne m.vals
+
   def map [n] [f] 'a 'b (g: a -> b) ({ctx, keys, vals, offsets, lookup_keys}: map ctx [n] [f] a) : map ctx [n] [f] b =
     {ctx, keys, vals = map g vals, offsets, lookup_keys}
 
@@ -312,6 +324,12 @@ module mk_eytzinger (K: ordkey)
 
   def from_array_rep_nodup [n] 'v (ctx: ctx) (keys: [n]key) (ne: v) : map [n] v =
     eytzinger.from_array_rep_nodup ctx keys ne
+
+  def reduce [n] 'v
+             (op: v -> v -> v)
+             (ne: v)
+             (m: map [n] v) : v =
+    eytzinger.reduce op ne m
 
   def map [n] 'v 't (g: v -> t) (hmap: map [n] v) : map [n] t =
     eytzinger.map g hmap

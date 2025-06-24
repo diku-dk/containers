@@ -20,23 +20,28 @@ module type uint = {
   -- can fit in t.
   val prime : t
 
-  -- | Bitwise and.
-  val (&) : t -> t -> t
+  -- | Bitwise and with prime.
+  val and_prime : t -> t
 
   -- | Addition.
   val (+) : t -> t -> t
 
-  -- | Multiplication.
+  -- | Addition between t and u.
+  val add_small : t -> u -> t
+
+  -- | Multiplication with the precondition that t is less than the
+  -- mersenne prime.
   val (*) : t -> t -> t
 
-  -- | Multiplication between t and u.
+  -- | Multiplication between t and u with the precondition that t is
+  -- less than the mersenne prime.
   val mul_small : t -> u -> t
 
   -- | Subtraction.
   val (-) : t -> t -> t
 
-  -- | Greater than or equal.
-  val (>=) : t -> t -> bool
+  -- | Greater than or equal to the mersenne prime.
+  val geq_prime : t -> bool
 
   -- | Equality.
   val (==) : t -> t -> bool
@@ -88,8 +93,8 @@ module u128 : uint with u = u32 = {
     a.high
 
   #[inline]
-  def (&) (a: t) (b: t) =
-    {high = high a & high b, low = low a & low b}
+  def and_prime (a: t) =
+    {high = 0u64, low = low a & low prime}
 
   -- | Shift by 61.
   #[inline]
@@ -97,6 +102,13 @@ module u128 : uint with u = u32 = {
     { high = high a >> 61
     , low = (low a u64.>> 61) u64.| (high a u64.<< 3)
     }
+
+  #[inline]
+  def add_small (a: t) (b: u) =
+    let lo = (low a) + u64.u32 b
+    in { high = (high a) + u64.bool (lo < low a)
+       , low = lo
+       }
 
   #[inline]
   def (+) (a: t) (b: t) =
@@ -113,8 +125,8 @@ module u128 : uint with u = u32 = {
        }
 
   #[inline]
-  def (>=) (a: t) (b: t) : bool =
-    (high a) > (high b) || ((high a) == (high b) && (low a) >= (low b))
+  def geq_prime (a: t) : bool =
+    (high a) != 0 || (low a) >= (low prime)
 
   #[inline]
   def (==) (a: t) (b: t) : bool =
@@ -133,13 +145,13 @@ module u128 : uint with u = u32 = {
   #[inline]
   def mul_small (a: t) (b: u) : t =
     let lo = u64.((low a) * (u32 b))
-    let hi = u64.(mul_hi (low a) (u32 b) + (high a) * (u32 b))
+    let hi = u64.(mul_hi (low a) (u32 b))
     in {high = hi, low = lo}
 
   #[inline]
   def (*) (a: t) (b: t) : t =
     let lo = (low a) * (low b)
-    let hi = u64.(mul_hi (low a) (low b) + (high a) * (low b) + (low a) * (high b))
+    let hi = u64.(mul_hi (low a) (low b))
     in {high = hi, low = lo}
 
   #[inline]
@@ -188,11 +200,8 @@ module u192 : uint with u = u64 = {
     a.high
 
   #[inline]
-  def (&) (a: t) (b: t) : t =
-    { high = high a & high b
-    , mid = mid a & mid b
-    , low = low a & low b
-    }
+  def and_prime (a: t) : t =
+    {high = 0u64, mid = mid a & mid prime, low = low a & low prime}
 
   -- | Shift by 89
   #[inline]
@@ -203,10 +212,10 @@ module u192 : uint with u = u64 = {
     }
 
   #[inline]
-  def (>=) (a: t) (b: t) : bool =
-    (high a) > (high b)
-    || ((high a) == (high b) && (mid a) > (mid b))
-    || ((high a) == (high b) && (mid a) == (mid b) && (low a) >= (low b))
+  def geq_prime (a: t) : bool =
+    (high a) != 0
+    || ((mid a) > (mid prime))
+    || ((mid a) == (mid prime) && (low a) == (low prime))
 
   #[inline]
   def (==) (a: t) (b: t) : bool =
@@ -228,7 +237,7 @@ module u192 : uint with u = u64 = {
     let mi' = (mid a) * b
     let mi = mi' + u64.mul_hi (low a) b
     let carry = u64.bool (mi < mi')
-    let hi = (high a) * b + u64.mul_hi (mid a) b + carry
+    let hi = u64.mul_hi (mid a) b + carry
     in {high = hi, mid = mi, low = lo}
 
   #[inline]
@@ -239,13 +248,19 @@ module u192 : uint with u = u64 = {
     let mi = mi' + u64.mul_hi (low a) (low b)
     let carry = u64.bool (mi' < mi'') + u64.bool (mi < mi')
     let hi =
-      (high a) * (low b)
-      + (high b) * (low a)
-      + (mid a) * (mid b)
+      (mid a) * (mid b)
       + u64.mul_hi (mid a) (low b)
       + u64.mul_hi (mid b) (low a)
       + carry
     in {high = hi, mid = mi, low = lo}
+
+  #[inline]
+  def add_small (a: t) (b: u) =
+    let lo = (low a) + b
+    in { high = high a
+       , mid = (mid a) + u64.bool (lo < low a)
+       , low = lo
+       }
 
   #[inline]
   def (+) (a: t) (b: t) =
@@ -313,7 +328,7 @@ module mk_ndimlcg
     U.(-- y = a + b < 2p
        let y = a + b
        -- y < p
-       in if y >= prime then y - prime else y)
+       in if geq_prime y then y - prime else y)
 
   #[inline]
   def auxiliary (as: [P.n + 1]U.t) (xs: t) : U.t =
@@ -322,14 +337,14 @@ module mk_ndimlcg
                          -- y < p^2
                          let y = as[i] * xs[i]
                          -- y < p + p^2 / 2^b < 2p
-                         let y = (y & prime) + shift_prime y
+                         let y = and_prime y + shift_prime y
                          -- y < p
-                         in if y >= prime then y - prime else y)
+                         in if geq_prime y then y - prime else y)
          |> reduce_comm add U.zero
        -- z < 2p
        let z = z + as[P.n]
        -- z < p
-       in if z >= prime then z - prime else z)
+       in if geq_prime z then z - prime else z)
 
   def rand (x: rng) : (rng, t) =
     let y = map2 auxiliary P.mat (rep x)
@@ -400,9 +415,9 @@ module mk_universal_hashing
        -- y < 2p(u - 1) + (p - 1) < (2u - 1)p <= p**2
        let y = mul_small a x + b
        -- y < p + p**2 / 2**b < 2p
-       let y = (y & p) + shift_prime y
+       let y = and_prime y + shift_prime y
        -- y < p
-       let y = if y >= p then y - p else y
+       let y = if geq_prime y then y - p else y
        in to_u y)
 
   #[inline]
@@ -431,21 +446,25 @@ module mk_universal_hashing
          for i in 1..<i64.max 1 num do
            -- y < 2p*p = 2p**2
            let y = y * c
-           -- y < p + (2p**2) / 2**b < 3p
-           let y = (y & p) + shift_prime y
-           -- y < p + (3p) / 2**b < p + 3
-           let y = (y & p) + shift_prime y
+           -- y < p + 2p**2 / 2**b < 3p
+           let y = and_prime y + shift_prime y
+           -- y < p + 3p / 2**b < p + 3
+           let y = and_prime y + shift_prime y
            -- y < p + 3 + u < 2p
-           in y + from_u (get i x)
+           in add_small y (get i x)
        -- y < p
-       let y = if y >= p then y - p else y
+       let y = if geq_prime y then y - p else y
        -- Use universal_hash
-       -- y < p**2 + p
-       let y = a * y + b
-       -- y < p + (p**2 + p) / 2**b < 2p
-       let y = (y & p) + shift_prime y
+       -- y < p**2
+       let y = a * y
+       -- y < p + p**2 / 2**b < 2p
+       let y = and_prime y + shift_prime y
        -- y < p
-       let y = if y >= p then y - p else y
+       let y = if geq_prime y then y - p else y
+       -- y < 2p
+       let y = y + b
+       -- y < p
+       let y = if geq_prime y then y - p else y
        in to_u y)
 }
 
