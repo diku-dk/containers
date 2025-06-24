@@ -278,20 +278,22 @@ module u192 : uint with u = u64 = {
 
 type u192 = u192.t
 
--- | n-dimensional linear congruential generator. You can give it a
--- list of non-zero integers to generate an n-array of n random
+-- | n-dimensional linear congruential generator. You can give it an
+-- array of non-zero integers to generate an n-array of n random
 -- numbers that will go in a full cycle such that every n-array of
--- will be hit. The number size is limited by the uint implementation
--- so the numbers will be betwen zero and less than the mersenne
--- prime. The purpose of the random number generator is mainly meant
--- for generating numbers for a universal hash function has constants.
+-- numbers will be hit. The integer size is limited by the uint
+-- implementation so the numbers will be betwen zero and less than the
+-- mersenne prime. The purpose of the random number generator is
+-- mainly meant for generating numbers for a universal hash function
+-- as constants.
 module mk_ndimlcg
   (U: uint)
   (P: {
-    -- | The type of random numbers to use.
+    -- | The type of random numbers to generate and use for
+    -- generation.
     type t
 
-    -- | Number of random numbers to generate.
+    -- | The dimension of the n-array to generate.
     val n : i64
 
     -- | Choose some non-zero constants to use for random number
@@ -314,12 +316,12 @@ module mk_ndimlcg
   def auxiliary (as: [P.n + 1]U.t) (xs: t) : U.t =
     U.(let z =
          tabulate P.n (\i ->
-                         -- y' < p^2
-                         let y' = as[i] * xs[i]
-                         -- y' < p + floor(p^2 / 2^b) < 2p
-                         let y' = (y' & prime) + shift_prime y'
-                         -- y' < p
-                         in if y' >= prime then y' - prime else y')
+                         -- y < p^2
+                         let y = as[i] * xs[i]
+                         -- y < p + p^2 / 2^b < 2p
+                         let y = (y & prime) + shift_prime y
+                         -- y < p
+                         in if y >= prime then y - prime else y)
          |> reduce_comm add U.zero
        -- z < 2p
        let z = z + as[P.n]
