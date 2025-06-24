@@ -1,3 +1,5 @@
+-- | Internal library used for universal hashing.
+
 import "../cpprandom/random"
 
 -- | Unsigned integral type to use for hashing of built in integers.
@@ -297,7 +299,8 @@ module mk_ndimlcg
     val n : i64
 
     -- | Choose some non-zero constants to use for random number
-    -- generation.
+    -- generation that must be less than the mersenne prime given in
+    -- the module U.
     val mat : [n][n + 1]t
   }
   with t = U.t)
