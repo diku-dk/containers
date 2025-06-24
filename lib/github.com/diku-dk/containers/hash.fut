@@ -197,14 +197,14 @@ module u192 : uint with u = u64 = {
   def shift_prime (a: t) =
     { high = 0u64
     , mid = high a >> 25
-    , low = (low a u64.>> 25) u64.| (high a u64.<< 39)
+    , low = (mid a u64.>> 25) u64.| (high a u64.<< 39)
     }
 
   #[inline]
   def (>=) (a: t) (b: t) : bool =
     (high a) > (high b)
     || ((high a) == (high b) && (mid a) > (mid b))
-    || ((mid a) == (mid b) && (low a) >= (low b))
+    || ((high a) == (high b) && (mid a) == (mid b) && (low a) >= (low b))
 
   #[inline]
   def (==) (a: t) (b: t) : bool =
@@ -248,8 +248,9 @@ module u192 : uint with u = u64 = {
   #[inline]
   def (+) (a: t) (b: t) =
     let lo = (low a) + (low b)
-    let mi = (mid a) + (mid b) + u64.bool (lo < low a)
-    let hi = (high a) + (high b) + u64.bool (mi < mid a)
+    let mi' = (mid a) + (mid b)
+    let mi = mi' + u64.bool (lo < low a)
+    let hi = (high a) + (high b) + u64.bool (mi' < mid a) + u64.bool (mi < mi')
     in { high = hi
        , mid = mi
        , low = lo
@@ -258,8 +259,9 @@ module u192 : uint with u = u64 = {
   #[inline]
   def (-) (a: t) (b: t) =
     let lo = (low a) - (low b)
-    let mi = (mid a) - (mid b) - u64.bool (lo > low a)
-    let hi = (high a) - (high b) - u64.bool (mi > mid a)
+    let mi' = (mid a) - (mid b)
+    let mi = mi' - u64.bool (lo > low a)
+    let hi = (high a) - (high b) - u64.bool (mi' > mid a) - u64.bool (mi > mi')
     in { high = hi
        , mid = mi
        , low = lo
