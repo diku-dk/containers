@@ -7,16 +7,15 @@ import "lib/github.com/diku-dk/cpprandom/random"
 import "lib/github.com/diku-dk/sorts/radix_sort"
 import "lib/github.com/diku-dk/containers/array"
 import "lib/github.com/diku-dk/containers/slice"
-
-module engine = xorshift128plus
+import "lib/github.com/diku-dk/containers/hash"
 
 module encoder = mk_encoder u8
 module slice_key = mk_slice_key u8key encoder
 
-module array_key = mk_array_key slice_key engine
-module hashset = mk_hashset slice_key engine
+module array_key = mk_array_key slice_key
+module hashset = mk_hashset slice_key
 
-def seed = engine.rng_from_seed [1]
+def seed = slice_key.rng_from_seed [1]
 
 type char = u8
 
@@ -36,7 +35,7 @@ def words [n] (s: [n]char) =
 entry mkinput (s: []char) = (s, words s)
 
 entry bench_hashset_dedup [l] [k] (ctx: [l]u8) (words: [k](i64, i64)) =
-  hashset.from_array ctx (map (uncurry slice.mk) words)
+  hashset.from_array_nodup ctx (map (uncurry slice.mk) words)
   |> hashset.to_array
   |> map slice.unmk
   |> map (.0)

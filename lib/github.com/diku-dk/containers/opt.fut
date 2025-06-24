@@ -24,7 +24,7 @@ def from_opt 'a (ne: a) (a: opt a) : a =
 
 -- | Maps a function inside `opt`.
 --
--- Applies the function `f`@term to the value `'a`.
+-- Applies the function `f` to the value `'a`.
 def map_opt 'a 'b (f: a -> b) (x: opt a) : opt b =
   match x
   case #none -> (#none : opt b)

@@ -3,7 +3,6 @@
 -- This module contains modules and functions for manipulating arrays. Which
 -- might be something like deduplication or a generalized reduction by a key.
 
-import "../cpprandom/random"
 import "../sorts/radix_sort"
 import "../segmented/segmented"
 import "hashkey"
@@ -82,32 +81,20 @@ module type array_key = {
 module mk_array_key_params
   (I: integral)
   (U: integral)
-  (K: hashkey with uint = U.t)
-  (E: rng_engine with int.t = U.t)
+  (K: hashkey with hash = U.t)
   : array_key
-    with rng = E.rng
+    with rng = K.rng
     with key = K.key
     with ctx = K.ctx = {
   module key = K
-  module engine = E
   type int = I.t
   type uint = U.t
-  type rng = engine.rng
+  type rng = K.rng
   type key = key.key
   type~ ctx = K.ctx
-  module int = engine.int
 
   def to_int : uint -> int =
     I.i64 <-< U.to_i64
-
-  local
-  #[inline]
-  def generate_consts (n: i64) (r: rng) =
-    #[sequential]
-    engine.split_rng n r
-    |> map engine.rand
-    |> unzip
-    |> (\(a, b) -> (engine.join_rng a, b))
 
   local
   def estimate_distinct [n]
@@ -118,11 +105,10 @@ module mk_array_key_params
     if n == 0
     then (rng, U.i64 0)
     else let sample_size = U.(max (i64 1) (i64 n / factor))
-         let (rng, consts) = generate_consts key.c rng
-         let (rng, i) = engine.rand rng
-         let sample = (rotate (int.to_i64 i % n) keys)[:U.to_i64 sample_size]
+         let (rng, const) = K.rand rng
+         let sample = keys[:U.to_i64 sample_size]
          let hs =
-           map ((U.%% sample_size) <-< key.hash ctx consts) sample
+           map ((U.%% sample_size) <-< key.hash ctx const) sample
            |> radix_sort (U.num_bits - U.clz sample_size) U.get_bit
          let est =
            iota (U.to_i64 sample_size)
@@ -140,11 +126,11 @@ module mk_array_key_params
     then (r, [])
     else let keq a b = (ctx, a) key.== (ctx, b)
          let dest = replicate n arr[0]
-         let (r, est) = estimate_distinct ctx r (U.i64 128) arr
-         let (uniques, _, _, final_size, final_rng) =
-           loop (uniques, elems, size, old_size, old_rng) = (dest, copy arr, copy est, 0, r)
+         let (uniques, _, final_size, final_rng) =
+           loop (uniques, elems, old_size, old_rng) = (dest, copy arr, 0, r)
            while length elems != 0 do
-             let (new_rng, consts) = generate_consts key.c old_rng
+             let (new_rng, consts) = K.rand old_rng
+             let (new_rng, size) = estimate_distinct ctx new_rng (U.i64 128) arr
              let alloc_size = U.(size + size / i64 2)
              let h = to_int <-< (U.%% alloc_size) <-< key.hash ctx consts
              let hashes = map h elems
@@ -157,7 +143,6 @@ module mk_array_key_params
              let new_uniques =
                filter (I.!= I.highest) collision_idxs
                |> map (\i -> #[unsafe] elems[I.to_i64 i])
-             let new_size = U.(max (i64 1024) (size - i64 (length new_uniques)))
              let new_elems =
                elems
                |> zip hashes
@@ -169,7 +154,6 @@ module mk_array_key_params
              let is = map (+ old_size) (indices new_uniques)
              in ( scatter uniques is new_uniques
                 , new_elems
-                , new_size
                 , old_size + length new_uniques
                 , new_rng
                 )
@@ -185,12 +169,12 @@ module mk_array_key_params
     then (r, [])
     else let keq a b = (ctx, a) key.== (ctx, b)
          let dest = replicate n arr[0]
-         let (r, est) = map (.0) arr |> estimate_distinct ctx r (U.i64 128)
-         let (reduction, _, _, final_size, final_rng) =
+         let (reduction, _, final_size, final_rng) =
            -- Expected number of iterations is O(log n).
-           loop (reduced, not_reduced, size, old_size, old_rng) = (dest, arr, copy est, 0, r)
+           loop (reduced, not_reduced, old_size, old_rng) = (dest, arr, 0, r)
            while length not_reduced != 0 do
-             let (new_rng, consts) = generate_consts key.c old_rng
+             let (new_rng, consts) = K.rand old_rng
+             let (new_rng, size) = map (.0) arr |> estimate_distinct ctx new_rng (U.i64 128)
              let keys = map (.0) not_reduced
              let alloc_size = U.(size + size / i64 2)
              let h = to_int <-< (U.%% alloc_size) <-< key.hash ctx consts
@@ -208,7 +192,6 @@ module mk_array_key_params
                             I.(collision_idxs[to_i64 h'] != highest)
                             && I.(not_reduced[to_i64 collision_idxs[to_i64 h']].0 `keq` elem.0))
                          (zip hashes not_reduced)
-             let new_size = U.(max (i64 1024) (size - i64 (length new_reduced)))
              let (hashes, elems) = unzip new_reduced
              let values = map (.1) elems
              let new_reduced =
@@ -221,7 +204,6 @@ module mk_array_key_params
              let is = map (+ old_size) (indices new_reduced)
              in ( scatter reduced is new_reduced
                 , new_not_reduced
-                , new_size
                 , old_size + length new_reduced
                 , new_rng
                 )

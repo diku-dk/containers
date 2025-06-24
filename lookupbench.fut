@@ -2,10 +2,15 @@ import "lib/github.com/diku-dk/sorts/radix_sort"
 import "lib/github.com/diku-dk/containers/hashset"
 import "lib/github.com/diku-dk/containers/key"
 import "lib/github.com/diku-dk/cpprandom/random"
+import "lib/github.com/diku-dk/containers/hash"
 
-module engine = minstd_rand
-module hashset = mk_hashset_u32 i64key_u32 engine
-def seed = engine.rng_from_seed [1]
+module hashset = mk_hashset i64key
+
+module hashset_u32 = mk_hashset_u32 i64key_u32
+
+def seed = i64key.rng_from_seed [1]
+
+def const = (i64key.rand seed).1
 
 def clamp a min max =
   i64.max min (i64.min a max)
@@ -54,10 +59,13 @@ entry replicate_i64 (n: i64) (m: i64) : [n]i64 =
 local
 entry mod_i64 (n: i64) (m: i64) : [n]i64 =
   iota n
-  |> map ((% m) <-< i64.u64 <-< i64key.hash () ([1, 2, 3, 4, 5, 6] :> [i64key.c]u64))
+  |> map ((% m) <-< i64.u64 <-< i64key.hash () const)
 
 def construct_hashset arr =
   hashset.from_array () arr
+
+def construct_hashset_u32 arr =
+  hashset_u32.from_array () arr
 
 def construct_eytzinger arr =
   blocked_radix_sort_int 256 i64.num_bits i64.get_bit arr
@@ -78,7 +86,7 @@ entry bench_eytzinger_construct [n] (arr: [n]i64) =
   construct_eytzinger arr
 
 -- ==
--- entry: bench_hashset_construct
+-- entry: bench_hashset_construct bench_hashset_u32_construct
 -- compiled random input { [100000]i64 }
 -- compiled random input { [1000000]i64 }
 -- compiled random input { [10000000]i64 }
@@ -92,10 +100,14 @@ entry bench_hashset_construct [n] (arr: [n]i64) =
   construct_hashset arr
   |> hashset.to_array
 
+entry bench_hashset_u32_construct [n] (arr: [n]i64) =
+  construct_hashset_u32 arr
+  |> hashset_u32.to_array
+
 local
 entry random_array_i64 (n: i64) : []i64 =
   iota n
-  |> map (i64.u64 <-< i64key.hash () ([1, 2, 3, 4, 5, 6] :> [i64key.c]u64))
+  |> map (i64.u64 <-< i64key.hash () const)
 
 local
 entry construct_random_sort n =
@@ -111,6 +123,11 @@ local
 entry construct_random_hashset (n: i64) : ([]i64, hashset.set []) =
   let arr = random_array_i64 n
   in (arr, construct_hashset arr)
+
+local
+entry construct_random_hashset_u32 (n: i64) : ([]i64, hashset_u32.set []) =
+  let arr = random_array_i64 n
+  in (arr, construct_hashset_u32 arr)
 
 -- ==
 -- entry: bench_sort_lookup
@@ -135,3 +152,11 @@ entry bench_eytzinger_lookup (arr: []i64) (arr_tree: []i64) =
 -- script input { construct_random_hashset 10000000i64 }
 entry bench_hashset_lookup (arr: []i64) (set: hashset.set []) =
   map (\k -> hashset.member () k set) arr
+
+-- ==
+-- entry: bench_hashset_u32_lookup
+-- script input { construct_random_hashset_u32 100000i64 }
+-- script input { construct_random_hashset_u32 1000000i64 }
+-- script input { construct_random_hashset_u32 10000000i64 }
+entry bench_hashset_u32_lookup (arr: []i64) (set: hashset_u32.set []) =
+  map (\k -> hashset_u32.member () k set) arr
