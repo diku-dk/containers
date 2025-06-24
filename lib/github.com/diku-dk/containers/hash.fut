@@ -420,16 +420,16 @@ module mk_universal_hashing
     I.(let p = prime
        let y =
          -- Invariant y < 2p
-         loop y = one
-         for i in 0..<num do
-           -- y < p**2
+         loop y = from_u (get 0 x)
+         for i in 1..<i64.max 1 num do
+           -- y < 2p*p = 2p**2
            let y = y * c
-           -- y < p + p**2 / 2**b < 2p
+           -- y < p + (2p**2) / 2**b < 3p
            let y = (y & p) + shift_prime y
-           -- y < 2p + u
-           let y = y + from_u (get i x)
-           -- y < p + u < 2p
-           in if y >= p then y - p else y
+           -- y < p + (3p) / 2**b < p + 3
+           let y = (y & p) + shift_prime y
+           -- y < p + 3 + u < 2p
+           in y + from_u (get i x)
        -- y < p
        let y = if y >= p then y - p else y
        -- Use universal_hash
