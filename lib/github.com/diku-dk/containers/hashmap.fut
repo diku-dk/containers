@@ -326,7 +326,7 @@ module mk_two_level_hashmap
                              hmap.level_two
                              (I.i64 f)
                              k
-         let o = hmap.offsets[I.to_i64 i]
+         let o = I.(min (i64 n - one) hmap.offsets[to_i64 i])
          let (k', v) = hmap.key_values[I.to_i64 o]
          in if (hmap.ctx, k') key.== (ctx, k)
             then some v
