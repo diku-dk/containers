@@ -125,13 +125,19 @@ module mk_array_key_params
     if n == 0
     then (r, [])
     else let keq a b = (ctx, a) key.== (ctx, b)
+         let add2 (a0, a1) (b0, b1) = (a0 + b0, a1 + b1)
          let dest = replicate n arr[0]
          let (uniques, _, final_size, final_rng) =
-           loop (uniques, elems, old_size, old_rng) = (dest, copy arr, 0, r)
+           loop ( uniques: *[n]key
+                , elems: *[]key
+                , old_size
+                , old_rng
+                ) =
+                  (dest, arr, 0, r)
            while length elems != 0 do
              let (new_rng, consts) = K.rand old_rng
-             let (new_rng, size) = estimate_distinct ctx new_rng (U.i64 128) arr
-             let alloc_size = U.(size + size / i64 2)
+             let size = i64.max 4096 (length elems)
+             let alloc_size = U.i64 (size + size / 2)
              let h = to_int <-< (U.%% alloc_size) <-< key.hash ctx consts
              let hashes = map h elems
              let collision_idxs =
@@ -140,21 +146,38 @@ module mk_array_key_params
                     (U.to_i64 alloc_size)
                     (map I.to_i64 hashes)
                     (map I.i64 (indices hashes))
-             let new_uniques =
-               filter (I.!= I.highest) collision_idxs
-               |> map (\i -> #[unsafe] elems[I.to_i64 i])
-             let new_elems =
-               elems
-               |> zip hashes
-               |> filter (\(h', v) ->
-                            #[unsafe]
-                            I.(collision_idxs[to_i64 h'] == highest)
-                            || not I.(elems[to_i64 collision_idxs[to_i64 h']] `keq` v))
-               |> map (.1)
-             let is = map (+ old_size) (indices new_uniques)
-             in ( scatter uniques is new_uniques
-                , new_elems
-                , old_size + length new_uniques
+             let flags =
+               zip3 (indices elems) hashes elems
+               |> map (\(i, h', v) ->
+                         #[unsafe]
+                         let idx = collision_idxs[I.to_i64 h']
+                         let idx' = I.to_i64 idx
+                         let is_chosen = idx' == i
+                         let is_duplicate =
+                           idx I.!= I.highest && not (elems[idx'] `keq` v)
+                         in ( is_chosen
+                            , is_duplicate
+                            ))
+             let scan_res =
+               flags
+               |> map (\(a, b) -> (i64.bool a, i64.bool b))
+               |> scan add2 (0, 0)
+             let (unique_size, continue_size) = scan_res[length elems - 1]
+             let (unique_is, continue_is) =
+               scan_res
+               |> map2 (\(f0, f1) (i0, i1) ->
+                          if f0
+                          then (old_size + i0 - 1, -1)
+                          else if f1
+                          then (-1, i1 - 1)
+                          else (-1, -1))
+                       flags
+               |> unzip
+             let new_uniques = scatter uniques unique_is elems
+             let new_elems = scatter (copy elems) continue_is elems
+             in ( new_uniques
+                , new_elems[:continue_size]
+                , old_size + unique_size
                 , new_rng
                 )
          in (final_rng, take final_size uniques)
@@ -168,46 +191,96 @@ module mk_array_key_params
     if n == 0
     then (r, [])
     else let keq a b = (ctx, a) key.== (ctx, b)
-         let dest = replicate n arr[0]
-         let (reduction, _, final_size, final_rng) =
+         let add2 (a0, a1) (b0, b1) = (a0 + b0, a1 + b1)
+         let reduced_keys_dest = replicate n arr[0].0
+         let reduced_values_dest = replicate n ne
+         let ( not_reduced_keys_init
+             , not_reduced_values_init
+             ) =
+           unzip arr
+         let (reduced_keys, reduced_values, _, _, final_size, final_rng) =
            -- Expected number of iterations is O(log n).
-           loop (reduced, not_reduced, old_size, old_rng) = (dest, arr, 0, r)
-           while length not_reduced != 0 do
+           loop ( reduced_keys: *[n]key
+                , reduced_values: *[n]v
+                , not_reduced_keys: *[]key
+                , not_reduced_values: *[]v
+                , old_size
+                , old_rng
+                ) =
+                  ( reduced_keys_dest
+                  , reduced_values_dest
+                  , copy not_reduced_keys_init
+                  , copy not_reduced_values_init
+                  , 0
+                  , r
+                  )
+           while length not_reduced_keys != 0 do
              let (new_rng, consts) = K.rand old_rng
-             let (new_rng, size) = map (.0) arr |> estimate_distinct ctx new_rng (U.i64 128)
-             let keys = map (.0) not_reduced
-             let alloc_size = U.(size + size / i64 2)
+             let size = i64.max 4096 (length not_reduced_keys)
+             let alloc_size = U.i64 (size + size / 2)
              let h = to_int <-< (U.%% alloc_size) <-< key.hash ctx consts
-             let hashes = map h keys
+             let hashes = map h not_reduced_keys
              let collision_idxs =
-               -- Find the smallest indices in regards to each hash to resolve collisions.
                hist I.min
                     I.highest
                     (U.to_i64 alloc_size)
                     (map I.to_i64 hashes)
                     (map I.i64 (indices hashes))
-             let (new_reduced, new_not_reduced) =
-               -- Elements with the same hash as the element at the smallest index will be reduced.
-               partition (\(h', elem) ->
-                            I.(collision_idxs[to_i64 h'] != highest)
-                            && I.(not_reduced[to_i64 collision_idxs[to_i64 h']].0 `keq` elem.0))
-                         (zip hashes not_reduced)
-             let (hashes, elems) = unzip new_reduced
-             let values = map (.1) elems
-             let new_reduced =
-               -- Reduce all elements which had the same key and was resolved.
-               hist op ne (U.to_i64 alloc_size) (map I.to_i64 hashes) values
-               |> zip collision_idxs
-               |> filter ((I.!= I.highest) <-< (.0))
-               |> map (\(i, v) -> (not_reduced[I.to_i64 i].0, v))
-             let new_not_reduced = unzip new_not_reduced |> (.1)
-             let is = map (+ old_size) (indices new_reduced)
-             in ( scatter reduced is new_reduced
-                , new_not_reduced
-                , old_size + length new_reduced
+             let (flags, reduce_hashes) =
+               zip3 (indices not_reduced_keys) hashes not_reduced_keys
+               |> map (\(i, h', k) ->
+                         #[unsafe]
+                         let idx = collision_idxs[I.to_i64 h']
+                         let idx' = I.to_i64 idx
+                         let is_chosen = idx' == i
+                         let is_duplicate =
+                           idx I.!= I.highest && not (not_reduced_keys[idx'] `keq` k)
+                         let is_equal =
+                           idx I.!= I.highest && (not_reduced_keys[idx'] `keq` k)
+                         let i = if is_equal then h' else I.i64 (-1)
+                         in ((is_chosen, is_duplicate), i))
+               |> unzip
+             let reduced_by_hash =
+               hist op
+                    ne
+                    (U.to_i64 alloc_size)
+                    (map I.to_i64 reduce_hashes)
+                    not_reduced_values
+             let temp_reduced_values =
+               map2 (\(f, _) h ->
+                       #[unsafe]
+                       if f
+                       then reduced_by_hash[I.to_i64 h]
+                       else ne)
+                    flags
+                    hashes
+             let scan_res =
+               flags
+               |> map (\(a, b) -> (i64.bool a, i64.bool b))
+               |> scan add2 (0, 0)
+             let (unique_size, continue_size) = scan_res[length not_reduced_keys - 1]
+             let (unique_is, continue_is) =
+               scan_res
+               |> map2 (\(f0, f1) (i0, i1) ->
+                          if f0
+                          then (old_size + i0 - 1, -1)
+                          else if f1
+                          then (-1, i1 - 1)
+                          else (-1, -1))
+                       flags
+               |> unzip
+             let new_reduced_keys = scatter reduced_keys unique_is not_reduced_keys
+             let new_reduced_values = scatter reduced_values unique_is temp_reduced_values
+             let new_not_reduced_keys = scatter (copy not_reduced_keys) continue_is not_reduced_keys
+             let new_not_reduced_values = scatter (copy not_reduced_values) continue_is not_reduced_values
+             in ( new_reduced_keys
+                , new_reduced_values
+                , new_not_reduced_keys[:continue_size]
+                , new_not_reduced_values[:continue_size]
+                , old_size + unique_size
                 , new_rng
                 )
-         in (final_rng, take final_size reduction)
+         in (final_rng, take final_size (zip reduced_keys reduced_values))
 }
 
 module mk_array_key = mk_array_key_params i64 u64
