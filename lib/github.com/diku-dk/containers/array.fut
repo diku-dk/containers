@@ -136,8 +136,8 @@ module mk_array_key_params
                   (dest, arr, 0, r)
            while length elems != 0 do
              let (new_rng, consts) = K.rand old_rng
-             let size = i64.max 4096 (length elems)
-             let alloc_size = U.i64 (size + size / 2)
+             let (new_rng, size) = estimate_distinct ctx new_rng (U.i64 128) arr
+             let alloc_size = U.(size + size / i64 2)
              let h = to_int <-< (U.%% alloc_size) <-< key.hash ctx consts
              let hashes = map h elems
              let collision_idxs =
@@ -216,8 +216,8 @@ module mk_array_key_params
                   )
            while length not_reduced_keys != 0 do
              let (new_rng, consts) = K.rand old_rng
-             let size = i64.max 4096 (length not_reduced_keys)
-             let alloc_size = U.i64 (size + size / 2)
+             let (new_rng, size) = estimate_distinct ctx new_rng (U.i64 128) not_reduced_keys
+             let alloc_size = U.(size + size / i64 2)
              let h = to_int <-< (U.%% alloc_size) <-< key.hash ctx consts
              let hashes = map h not_reduced_keys
              let collision_idxs =
