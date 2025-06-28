@@ -35,7 +35,7 @@ def words [n] (s: [n]char) =
 entry mkinput (s: []char) = (s, words s)
 
 entry bench_hashset_dedup [l] [k] (ctx: [l]u8) (words: [k](i64, i64)) =
-  hashset.from_array_nodup ctx (map (uncurry slice.mk) words)
+  hashset.from_array ctx (map (uncurry slice.mk) words)
   |> hashset.to_array
   |> map slice.unmk
   |> map (.0)
