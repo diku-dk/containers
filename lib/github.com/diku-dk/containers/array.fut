@@ -96,31 +96,6 @@ module mk_array_key_params
   def to_int : uint -> int =
     I.i64 <-< U.to_i64
 
-  local
-  def estimate_distinct [n]
-                        (ctx: ctx)
-                        (rng: rng)
-                        (factor: uint)
-                        (keys: [n]key) : (rng, uint) =
-    if n == 0
-    then (rng, U.i64 0)
-    else let sample_size = U.(max (i64 1) (i64 n / factor))
-         let (rng, const) = K.rand rng
-         let sample = keys[:U.to_i64 sample_size]
-         let hs =
-           map ((U.%% sample_size) <-< key.hash ctx const) sample
-           |> radix_sort (U.num_bits - U.clz sample_size) U.get_bit
-         let est =
-           iota (U.to_i64 sample_size)
-           |> map U.i64
-           |> map (\i -> U.bool (U.(i == i64 0 || (hs[to_i64 (i - i64 1)] != hs[to_i64 i]))))
-           |> U.sum
-           |> (U.* factor)
-           |> (U.i64 2 U.*)
-           |> (U.i64 1 U.+)
-         let size = U.(max (i64 1024) est)
-         in (rng, U.(min (i64 n) size))
-
   def dedup [n] (ctx: ctx) (r: rng) (arr: [n]key) : ?[m].(rng, [m]key) =
     if n == 0
     then (r, [])
@@ -136,8 +111,8 @@ module mk_array_key_params
                   (dest, arr, 0, r)
            while length elems != 0 do
              let (new_rng, consts) = K.rand old_rng
-             let (new_rng, size) = estimate_distinct ctx new_rng (U.i64 128) arr
-             let alloc_size = U.(size + size / i64 2)
+             let size = i64.max 4096 (length elems)
+             let alloc_size = U.i64 (size + size / 2)
              let h = to_int <-< (U.%% alloc_size) <-< key.hash ctx consts
              let hashes = map h elems
              let collision_idxs =
@@ -216,8 +191,8 @@ module mk_array_key_params
                   )
            while length not_reduced_keys != 0 do
              let (new_rng, consts) = K.rand old_rng
-             let (new_rng, size) = estimate_distinct ctx new_rng (U.i64 128) not_reduced_keys
-             let alloc_size = U.(size + size / i64 2)
+             let size = i64.max 4096 (length not_reduced_keys)
+             let alloc_size = U.i64 (size + size / 2)
              let h = to_int <-< (U.%% alloc_size) <-< key.hash ctx consts
              let hashes = map h not_reduced_keys
              let collision_idxs =
