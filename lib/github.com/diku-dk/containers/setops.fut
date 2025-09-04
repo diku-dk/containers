@@ -58,12 +58,12 @@ module setops : setops = {
 
   def unsome 'a f (x:opt a) : a =
     match x case #some x -> x
-	    case #none -> f()
+            case #none -> f()
 
   def merge_opt 'a (f:a->a->a) (x:opt a) (y:opt a) : opt a =
     match (x,y) case (#some x,#some y) -> #some(f x y)
-		case (#none,_) -> y
-		case (_,#none) -> x
+                case (#none,_) -> y
+                case (_,#none) -> x
 
   def setop [m][n] 'a (p:i64->bool) (f: a -> i64) (mrg:a->a->a) (A:[m]a) (B:[n]a) : ?[k].[k]a =
     let c : [m+n]a = A++B
@@ -71,8 +71,8 @@ module setops : setops = {
        |> radix_sort_by_key (\(x,_) -> f x) i64.num_bits i64.get_bit
        |> map (\(x,n) -> (#some x, n))
        |> scan (\(x,n) (y,m) ->
-		  if equal_opt (\a b -> f a == f b) x y then (merge_opt mrg x y,n+m)
-		  else (y,m)) (#none,0)
+                  if equal_opt (\a b -> f a == f b) x y then (merge_opt mrg x y,n+m)
+                  else (y,m)) (#none,0)
        |> filter (\(_,n) -> p n)
        |> map (\(x,_) -> unsome (\_ -> c[0]) x)
 
@@ -89,16 +89,16 @@ module setops : setops = {
 
   def diff_by_key 't [m][n] (key:t->i64) (a:[m]t) (b:[n]t) : ?[k].[k]t =
     let xs = map (\x -> (x,1)) (elimdubs_by_key key (\x _ -> x) a) ++
-  		 map (\x -> (x,2)) (elimdubs_by_key key (\x _ -> x) b)
-	     |> radix_sort_by_key (\(x,_) -> key x) i64.num_bits i64.get_bit
+                 map (\x -> (x,2)) (elimdubs_by_key key (\x _ -> x) b)
+             |> radix_sort_by_key (\(x,_) -> key x) i64.num_bits i64.get_bit
     let sz = length xs
     let ks : [](opt t) =
       map (\i -> if i < sz-1
-		 then if key(xs[i].0) == key(xs[i+1]).0 then #none
-		      else if xs[i].1 == 1 then #some(xs[i].0)
-		      else #none
-		 else if xs[i].1 == 1 then #some(xs[i].0)
-		 else #none) (indices xs)
+                 then if key(xs[i].0) == key(xs[i+1]).0 then #none
+                      else if xs[i].1 == 1 then #some(xs[i].0)
+                      else #none
+                 else if xs[i].1 == 1 then #some(xs[i].0)
+                 else #none) (indices xs)
     in ks |> filter is_some
           |> map (unsome (\_ -> a[0]))
 
@@ -118,19 +118,19 @@ module setops : setops = {
 
   def keyb 'a 'b (key1:a->i64) (key2:b->i64) (x:beither a b) : i64 =
     match x case #left a -> key1 a
-	    case #right b -> key2 b
-	    case #both a _ -> key1 a
-	    case #noone -> -1
+            case #right b -> key2 b
+            case #both a _ -> key1 a
+            case #noone -> -1
 
   def merge 'a 'b (key1:a->i64) (key2:b->i64) (x:beither a b) (y: beither a b) : beither a b =
     match (x,y) case (#left x', #right y') -> if key1 x' == key2 y' then #both x' y'
-					      else y
-		case (_,#noone) -> x
-		case (#noone,_) -> y
-		case (_, #both _ _) -> y
-		case (#both _ _, _) -> y
-		case (#right _, _) -> y
-		case (_, #left _) -> y
+                                              else y
+                case (_,#noone) -> x
+                case (#noone,_) -> y
+                case (_, #both _ _) -> y
+                case (#both _ _, _) -> y
+                case (#right _, _) -> y
+                case (_, #left _) -> y
 
   def join_by_key [m][n] 'a 'b (key1:a->i64) (key2:b->i64) (A:[m]a) (B:[n]b) : ?[k].[k](a,b) =
     map (\x -> #left x) A ++ map (\y -> #right y) B
