@@ -1,7 +1,7 @@
+-- | Set-like operations on arrays of values interpreted as sets
+
 import "../sorts/radix_sort"
 import "opt"
-
--- | Set-like operations on arrays of values interpreted as sets
 
 local
 -- | The setops module type.  This module type is declared `local`, which means
@@ -10,47 +10,50 @@ local
 -- in future minor versions.
 
 module type setops = {
-  -- | [union a b] returns the set of elements that appear in both a and b with
-  -- dublicates removed. Work: O(n+m), span: O(1).
+  -- | `union a b` returns the set of elements that appear in both `a` and `b`
+  -- with duplicates removed. Work: O(`n`+`m`), span: O(1).
   val union               [m][n] : [m]i64 -> [n]i64 -> ?[k].[k]i64
 
-  -- | [intersect a b] returns those elements in a that also appears in b with
-  -- dublicates removed. Work: O(n+m), span: O(1).
+  -- | `intersect a b` returns those elements in `a` that also appears in `b` with
+  -- duplicates removed. Work: O(`n`+`m`), span: O(1).
   val intersect           [m][n] : [m]i64 -> [n]i64 -> ?[k].[k]i64
 
-  -- | [diff a b] returns a with dublicates and elements from b removed. Work:
-  -- O(n+m), span: O(1).
+  -- | `diff a b` returns `a` with duplicates and elements from `b`
+  -- removed. Work: O(`n`+`m`), span: O(1).
   val diff                [m][n] : [m]i64 -> [n]i64 -> ?[k].[k]i64
 
-  -- | [elimdubs a] returns a with dublicates removed. Work: O(n), span: O(1).
-  val elimdubs               [m] : [m]i64 -> ?[k].[k]i64
+  -- | `elimdups a` returns `a` with duplicates removed. Work: O(`n`), span:
+  -- O(1).
+  val elimdups               [m] : [m]i64 -> ?[k].[k]i64
 
-  -- | [union_by_key key f a b] returns the set of elements that appear in both
-  -- a and b, identified using the function key, with dublicates removed, and
-  -- with the function f applied to elements that occur in both a and b. Work:
-  -- O(n+m), span: O(1), assuming key and f have work complexity O(1).
+  -- | `union_by_key key f a b` returns the set of elements that appear in both
+  -- `a` and `b`, identified using the function key, with duplicates removed,
+  -- and with the function `f` applied to elements that occur in both `a` and
+  -- `b`. Work: O(`n`+`m`), span: O(1), assuming `key` and `f` have work
+  -- complexity O(1).
   val union_by_key     't [m][n] : (t->i64) -> (t->t->t) -> [m]t -> [n]t -> ?[k].[k]t
 
-  -- | [intersect_by_key key f a b] returns those elements in a that also
-  -- appears in b, identified using the function key, with dublicates removed,
-  -- and with the function f applied to the intersecting objects. Work: O(n+m),
-  -- span: O(1), assuming key and f have work complexity O(1).
+  -- | `intersect_by_key key f a b` returns those elements in `a` that also
+  -- appears in `b`, identified using the function `key`, with duplicates
+  -- removed, and with the function `f` applied to the intersecting
+  -- objects. Work: O(`n`+`m`), span: O(1), assuming `key` and `f` have work
+  -- complexity O(1).
   val intersect_by_key 't [m][n] : (t->i64) -> (t->t->t) -> [m]t -> [n]t -> ?[k].[k]t
 
-  -- | [diff_by_key key a b] returns a with dublicates and elements from b
-  -- removed, where the function key is used for identifying objects. Work:
-  -- O(n+m), span: O(1), assuming key has work complexity O(1).
+  -- | `diff_by_key key a b` returns `a` with duplicates and elements from `b`
+  -- removed, where the function `key` is used for identifying objects. Work:
+  -- O(`n`+`m`), span: O(1), assuming key has work complexity O(1).
   val diff_by_key      't [m][n] : (t->i64) -> [m]t -> [n]t -> ?[k].[k]t
 
-  -- | [join_by_key key1 key2 a b] returns pairs of objects in a and b that
-  -- agrees on keys obtained with the key1 and key2 functions.
+  -- | `join_by_key key1 key2 a b` returns pairs of objects in `a` and `b` that
+  -- agree on keys obtained with the `key1` and `key2` functions.
   val join_by_key   'a 'b [m][n] : (a->i64) -> (b->i64) -> [m]a -> [n]b -> ?[k].[k](a,b)
 
-  -- | [elimdubs_by_key key f a] returns a with dublicates removed, identified
-  -- using the function key, and with dublicates merged using the function f,
-  -- which is assumed to be associative. Work: O(n), span: O(1), assuming key
-  -- and f have work complexity O(1).
-  val elimdubs_by_key     't [m] : (t->i64) -> (t->t->t) -> [m]t -> ?[k].[k]t
+  -- | `elimdups_by_key key f a` returns `a` with duplicates removed, identified
+  -- using the function `key`, and with duplicates merged using the function
+  -- `f`, which is assumed to be associative. Work: O(`n`), span: O(1), assuming
+  -- `key` and `f` have work complexity O(1).
+  val elimdups_by_key     't [m] : (t->i64) -> (t->t->t) -> [m]t -> ?[k].[k]t
 }
 
 
@@ -79,17 +82,17 @@ module setops : setops = {
   def union_by_key [m][n] 't (key:t -> i64) (mrg:t->t->t) (a:[m]t) (b:[n]t) : ?[k].[k]t =
     setop (<= 1) key mrg a b
 
-  def elimdubs_by_key [m] 't (key:t -> i64) (mrg:t->t->t) (a:[m]t) : ?[k].[k]t =
+  def elimdups_by_key [m] 't (key:t -> i64) (mrg:t->t->t) (a:[m]t) : ?[k].[k]t =
     union_by_key key mrg [] a
 
   def intersect_by_key [m][n] 't (key:t -> i64) (mrg:t->t->t) (a:[m]t) (b:[n]t) : ?[k].[k]t =
-    let a = elimdubs_by_key key mrg a
-    let b = elimdubs_by_key key mrg b
+    let a = elimdups_by_key key mrg a
+    let b = elimdups_by_key key mrg b
     in setop (> 1) key mrg a b
 
   def diff_by_key 't [m][n] (key:t->i64) (a:[m]t) (b:[n]t) : ?[k].[k]t =
-    let xs = map (\x -> (x,1)) (elimdubs_by_key key (\x _ -> x) a) ++
-                 map (\x -> (x,2)) (elimdubs_by_key key (\x _ -> x) b)
+    let xs = map (\x -> (x,1)) (elimdups_by_key key (\x _ -> x) a) ++
+                 map (\x -> (x,2)) (elimdups_by_key key (\x _ -> x) b)
              |> radix_sort_by_key (\(x,_) -> key x) i64.num_bits i64.get_bit
     let sz = length xs
     let ks : [](opt t) =
@@ -105,8 +108,8 @@ module setops : setops = {
   def union [m][n] (a:[m]i64) (b:[n]i64) : ?[k].[k]i64 =
     union_by_key (\x -> x) (\x _ -> x) a b
 
-  def elimdubs [m] (a:[m]i64) : ?[k].[k]i64 =
-    elimdubs_by_key (\x -> x) (\x _ -> x) a
+  def elimdups [m] (a:[m]i64) : ?[k].[k]i64 =
+    elimdups_by_key (\x -> x) (\x _ -> x) a
 
   def intersect [m][n] (a:[m]i64) (b:[n]i64) : ?[k].[k]i64 =
     intersect_by_key (\x -> x) (\x _ -> x) a b

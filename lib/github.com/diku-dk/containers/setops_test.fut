@@ -27,9 +27,9 @@ entry test_diff (a:[]i64) (b:[]i64) : []i64 =
   setops.diff a b
 
 -- ==
--- entry: test_elimdubs
+-- entry: test_elimdups
 -- input { [2i64,4i64,3i64,4i64] } output { [2i64,3i64,4i64] }
 -- input { [2i64,4i64,2i64] } output { [2i64,4i64] }
 -- input { empty([0]i64) } output { empty([0]i64) }
-entry test_elimdubs (a:[]i64) : []i64 =
-  setops.elimdubs a
+entry test_elimdups (a:[]i64) : []i64 =
+  setops.elimdups a
