@@ -32,6 +32,12 @@ module mk_unionfind (K: hashkey with hash = u64 with ctx = ()) = {
     in {elems = es, mapping = hs}
 
   def find [n] (uf: unionfind [n]) (t: t) : opt t =
-    let idx =
-      match hashmap.lookup t 
+    let j = from_opt (-1) (hashmap.lookup () t uf.mapping)
+    in if 0 <= j && j < n
+       then let idx =
+              loop i = j
+              while uf.elems[i].parent != -1 do
+                uf.elems[i].parent
+            in #some uf.elems[idx].elem
+       else #none
 }
