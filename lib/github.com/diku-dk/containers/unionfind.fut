@@ -27,10 +27,11 @@ module mk_unionfind (K: hashkey with hash = u64 with ctx = ()) = {
 
   def from_array [n] (ts: [n]t) : unionfind [n] =
     let es = map (\t -> {parent = -1i64, elem = t}) ts
-    let kvs = zip ts (iota n) :> [n](t, i64)
-    let hs = hashmap.from_array_nodup () kvs :> hashmap.map [n] i64
+    let kvs = zip ts (iota n)
+    let hs = hashmap.from_array_nodup () kvs
     in {elems = es, mapping = hs}
 
-  def find [n] (uf: unionfind [n]) (t: t) : t =
-    uf.elems
+  def find [n] (uf: unionfind [n]) (t: t) : opt t =
+    let idx =
+      match hashmap.lookup t 
 }
