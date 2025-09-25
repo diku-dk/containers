@@ -66,15 +66,15 @@ module type map = {
     -> ?[n].map [n] v
 
   -- | Given a key-value array construct a map, assuming no duplicate keys.
-  val from_array_nodup [u] 'v :
-    ctx -> [u](key, v) -> ?[n].map [n] v
+  val from_array_nodup [n] 'v :
+    ctx -> [n](key, v) -> map [n] v
 
   -- | Create map with default value, assuming no duplicate keys.
-  val from_array_rep_nodup [u] 'v :
+  val from_array_rep_nodup [n] 'v :
     ctx
-    -> [u]key
+    -> [n]key
     -> v
-    -> ?[n].map [n] v
+    -> map [n] v
 
   -- | Combine key-value pairs into a map using the provided
   -- associative and commutative operation. Keys that are not present
