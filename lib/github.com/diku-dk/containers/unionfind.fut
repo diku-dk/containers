@@ -44,6 +44,17 @@ module mk_unionfind (K: hashkey with hash = u64) = {
        then #some uf.elems[i].1
        else #none
 
+  def loop_body [n] [u] (uf: unionfind [n]) (eqs: [u](t, t)) : ?[m].(unionfind [n], [m](t, t)) =
+    let (ps, is) =
+      map (\(t, t') ->
+             let (i, _) = find_idx uf t
+             let (_, j) = find_idx uf t'
+             in (i, j))
+          eqs
+      |> unzip
+    let parents' = hist i64.min i64.highest u is (indices ps)
+    in (uf with elems = zip parents' ts, [])
+
   def union [n] (uf: unionfind [n]) (eqs: [n](t, t)) : unionfind [n] =
     let (ps, is) =
       map (\(t, t') ->
