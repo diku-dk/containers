@@ -52,8 +52,8 @@ module mk_unionfind (K: hashkey with hash = u64) = {
              in (i, j))
           eqs
       |> unzip
-    let parents' = hist i64.min i64.highest u is (indices ps)
-    in (uf with elems = zip parents' ts, [])
+    let parents' = hist i64.min i64.highest n is (indices ps)
+    in (uf, [])
 
   def union [n] (uf: unionfind [n]) (eqs: [n](t, t)) : unionfind [n] =
     let (ps, is) =
@@ -66,4 +66,50 @@ module mk_unionfind (K: hashkey with hash = u64) = {
     let (parents, ts) = unzip uf.elems
     let parents' = scatter (copy parents) is ps
     in uf with elems = zip parents' ts
+}
+
+module mk_unionfind_sequential (K: hashkey with hash = u64) = {
+  module hashmap = mk_hashmap K
+
+  type t = K.key
+  type~ ctx = K.ctx
+
+  type~ unionfind [n] =
+    { elems: [n](i64, t)
+    , mapping: hashmap.map [n] i64
+    }
+
+  def from_array [n] (ctx: ctx) (ts: [n]t) : unionfind [n] =
+    let es = zip (rep (-1i64)) ts
+    let kvs = zip ts (iota n)
+    let hs = hashmap.from_array_nodup ctx kvs
+    in {elems = es, mapping = hs}
+
+  def find_index [n] (uf: unionfind [n]) (t: t) : i64 =
+    let ctx = hashmap.context uf.mapping
+    in hashmap.lookup ctx t uf.mapping |> from_opt (-1)
+
+  def find_parent [n] (uf: unionfind [n]) (t: t) : i64 =
+    let j = find_index uf t
+    in loop i = j
+       while uf.elems[i].0 != -1 do
+         uf.elems[i].0
+
+  def find [n] (uf: unionfind [n]) (t: t) : opt t =
+    let i = find_index uf t
+    in if 0 <= i && i < n
+       then #some uf.elems[i].1
+       else #none
+
+  def union [n] (uf: unionfind [n]) (eqs: [n](t, t)) : unionfind [n] =
+    loop uf' = uf
+    for (t, t') in eqs do
+      let i = find_index uf' t
+      let p = find_parent uf' t'
+      let elems' = uf'.elems
+      let (_, t) = elems'[i]
+      let elems'[i] = (p, t)
+      in { mapping = uf'.mapping
+         , elems = elems' with [i] = (elems'[i] = )
+         }
 }
