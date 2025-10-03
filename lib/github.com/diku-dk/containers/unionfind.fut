@@ -4,47 +4,36 @@ import "opt"
 
 module type unionfind = {
   type t
+  type h
   type~ unionfind [n]
   type~ ctx
-  val from_array [n] : ctx -> [n]t -> unionfind [n]
-  val union [n] [u] : *unionfind [n] -> [u](t, t) -> *unionfind [n]
-  val find [n] : unionfind [n] -> t -> opt t
+  val from_array [n] : ctx -> [n]t -> (unionfind [n], [n]h)
+  val union [n] [u] : *unionfind [n] -> [u](h, h) -> *unionfind [n]
+  val find [n] : unionfind [n] -> h -> opt h
 }
 
-module mk_unionfind (K: hashkey with hash = u64)
-  : unionfind
-    with ctx = K.ctx
-    with t = K.key = {
-  module hashmap = mk_hashmap K
-
-  type t = K.key
-  type~ ctx = K.ctx
+module mk_unionfind : unionfind = {
+  type h = i64
 
   type~ unionfind [n] =
     { parents: [n]i64
-    , elems: [n]t
-    , mapping: hashmap.map [n] i64
+    , handlers: [n]i64
     }
 
-  def from_array [n] (ctx: ctx) (ts: [n]t) : unionfind [n] =
-    let kvs = zip ts (iota n)
-    let hs = hashmap.from_array_nodup ctx kvs
-    in { parents = rep (-1)
-       , elems = ts
-       , mapping = hs
-       }
+  def from_array (n: i64) : (unionfind [n], [n]h) =
+    let hs = iota n
+    in ( { parents = rep (-1)
+         , handlers = hs
+         }
+       , hs
+       )
 
-  def find_index [n] (uf: unionfind [n]) (t: t) : i64 =
-    let ctx = hashmap.context uf.mapping
-    in hashmap.lookup ctx t uf.mapping |> from_opt (-1)
+  def find_parent [n] (uf: unionfind [n]) (h: h) : i64 =
+    loop i = h
+    while uf.parents[i] != -1 do
+      uf.parents[i]
 
-  def find_parent [n] (uf: unionfind [n]) (t: t) : i64 =
-    let j = find_index uf t
-    in loop i = j
-       while uf.parents[i] != -1 do
-         uf.parents[i]
-
-  def find [n] (uf: unionfind [n]) (t: t) : opt t =
+  def find [n] (uf: unionfind [n]) (t: h) : opt t =
     let i = find_index uf t
     in if 0 <= i && i < n
        then #some uf.elems[i]
