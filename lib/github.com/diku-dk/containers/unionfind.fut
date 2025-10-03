@@ -3,102 +3,108 @@ import "hashmap"
 import "opt"
 
 module type unionfind = {
-  type t
-  type h
-  type~ unionfind [n]
-  type~ ctx
-  val from_array [n] : ctx -> [n]t -> (unionfind [n], [n]h)
-  val union [n] [u] : *unionfind [n] -> [u](h, h) -> *unionfind [n]
-  val find [n] : unionfind [n] -> h -> opt h
+  type handle
+  type unionfind [n]
+  val 
+  val create : (n: i64) -> (unionfind [n], [n]handle)
+  val union [n] [u] : *unionfind [n] -> [u](handle, handle) -> *unionfind [n]
+  val find [n] : unionfind [n] -> handle -> handle
 }
 
-module mk_unionfind : unionfind = {
-  type h = i64
+def binary_search [n] 't (lte: t -> t -> bool) (xs: [n]t) (x: t) : i64 =
+  let (l, _) =
+    loop (l, r) = (0, n - 1)
+    while l < r do
+      let t = l + (r - l) / 2
+      in if x `lte` xs[t]
+         then (l, t)
+         else (t + 1, r)
+  in l
 
-  type~ unionfind [n] =
-    { parents: [n]i64
-    , handlers: [n]i64
+module mk_unionfind : unionfind with handle = i64 = {
+  type handle = i64
+
+  type unionfind [n] =
+    { parents: [n]handle
+    , handlers: [n]handle
     }
 
-  def from_array (n: i64) : (unionfind [n], [n]h) =
+  def root : handle = -1
+
+  def create (n: i64) : (unionfind [n], [n]handle) =
     let hs = iota n
-    in ( { parents = rep (-1)
-         , handlers = hs
-         }
-       , hs
-       )
+    in ({parents = rep root, handlers = hs}, hs)
 
-  def find_parent [n] (uf: unionfind [n]) (h: h) : i64 =
+  def find_root [n] (parents: [n]handle) (h: handle) : handle =
     loop i = h
-    while uf.parents[i] != -1 do
-      uf.parents[i]
+    while parents[i] != root do
+      parents[i]
 
-  def find [n] (uf: unionfind [n]) (t: h) : opt t =
-    let i = find_index uf t
-    in if 0 <= i && i < n
-       then #some uf.elems[i]
-       else #none
+  def find [n] (uf: unionfind [n]) (h: handle) : handle =
+    let h' = find_root uf.parents h
+    in if 0 <= h' && h' < n
+       then h'
+       else root
 
-  def loop_body [n] [u] (ps: *[n]i64) (eqs: [u](i64, i64)) : ?[m].(*[n]i64, [m](i64, i64)) =
-    let ps' = reduce_by_index ps i64.min i64.highest (map (.0) eqs) (map (.1) eqs)
+  def both f (a, b) = (f a, f b)
+
+  def swap (a, b) : (handle, handle) =
+    if a < b then (a, b) else (b, a)
+
+  def loop_body [n] [u]
+                (parents: *[n]handle)
+                (eqs: [u](handle, handle)) : ?[m].(*[n]handle, [m](handle, handle)) =
+    let eqs = map (swap <-< both (find_root parents)) eqs
+    let (l, r) = unzip eqs
+    let parents' = reduce_by_index parents i64.min i64.highest l r
     let eqs' =
       zip (iota u) eqs
-      |> filter (\(i, (_, p)) -> ps'[i] != p)
+      |> filter (\(i, (_, p)) -> parents'[i] != p)
       |> map (.1)
-    in (ps', copy eqs')
+    in (parents', copy eqs')
 
-  def union [n] [u] ({parents, elems, mapping}: *unionfind [n]) (eqs: [u](t, t)) : *unionfind [n] =
-    let both f (a, b) = (f a, f b)
-    let eqs' = map (both (find_index {parents, elems, mapping})) eqs
+  def union [n] [u]
+            ({parents, handlers}: *unionfind [n])
+            (eqs: [u](handle, handle)) : *unionfind [n] =
     let ps = parents
     let (ps', _) =
-      loop (ps', eqs') = (ps, eqs')
+      loop (ps', eqs') = (ps, eqs)
       while length eqs' != 0 do
         loop_body ps' eqs'
-    in {parents = ps', elems, mapping}
+    in {parents = ps', handlers}
 }
 
-module mk_unionfind_sequential (K: hashkey with hash = u64)
-  : unionfind
-    with ctx = K.ctx
-    with t = K.key = {
-  module hashmap = mk_hashmap K
+module mk_unionfind_sequential : unionfind with handle = i64 = {
+  type handle = i64
 
-  type t = K.key
-  type~ ctx = K.ctx
-
-  type~ unionfind [n] =
-    { elems: [n](i64, t)
-    , mapping: hashmap.map [n] i64
+  type unionfind [n] =
+    { parents: [n]handle
+    , handlers: [n]handle
     }
 
-  def from_array [n] (ctx: ctx) (ts: [n]t) : unionfind [n] =
-    let es = zip (rep (-1i64)) ts
-    let kvs = zip ts (iota n)
-    let hs = hashmap.from_array_nodup ctx kvs
-    in {elems = es, mapping = hs}
+  def root : handle = -1
 
-  def find_index [n] (uf: unionfind [n]) (t: t) : i64 =
-    let ctx = hashmap.context uf.mapping
-    in hashmap.lookup ctx t uf.mapping |> from_opt (-1)
+  def create (n: i64) : (unionfind [n], [n]handle) =
+    let hs = iota n
+    in ({parents = rep root, handlers = hs}, hs)
 
-  def find_parent [n] (uf: unionfind [n]) (t: t) : i64 =
-    let j = find_index uf t
-    in loop i = j
-       while uf.elems[i].0 != -1 do
-         uf.elems[i].0
+  def find_parent [n] (uf: unionfind [n]) (h: handle) : handle =
+    loop i = h
+    while uf.parents[i] != root do
+      uf.parents[i]
 
-  def find [n] (uf: unionfind [n]) (t: t) : opt t =
-    let i = find_index uf t
-    in if 0 <= i && i < n
-       then #some uf.elems[i].1
-       else #none
+  def find [n] (uf: unionfind [n]) (h: handle) : handle =
+    let h' = find_parent uf h
+    in if 0 <= h' && h' < n
+       then h'
+       else root
 
-  def union [n] [u] (uf: unionfind [n]) (eqs: [u](t, t)) : *unionfind [n] =
+  def union [n] [u]
+            (uf: unionfind [n])
+            (eqs: [u](handle, handle)) : *unionfind [n] =
     loop uf' = copy uf
-    for (t, t') in eqs do
-      let i = find_index uf' t
-      let p = find_index uf' t'
-      let (_, t) = uf'.elems[i]
-      in uf' with elems = (uf'.elems with [i] = (p, copy t))
+    for (h, h') in eqs do
+      let i = find_parent uf' h
+      let p = find_parent uf' h'
+      in uf' with parents = (uf'.parents with [i] = p)
 }
