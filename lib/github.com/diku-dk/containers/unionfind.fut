@@ -5,7 +5,7 @@ import "opt"
 module type unionfind = {
   type handle
   type unionfind [n]
-  val 
+  val none : handle
   val create : (n: i64) -> (unionfind [n], [n]handle)
   val union [n] [u] : *unionfind [n] -> [u](handle, handle) -> *unionfind [n]
   val find [n] : unionfind [n] -> handle -> handle
@@ -29,22 +29,22 @@ module mk_unionfind : unionfind with handle = i64 = {
     , handlers: [n]handle
     }
 
-  def root : handle = -1
+  def none : handle = -1
 
   def create (n: i64) : (unionfind [n], [n]handle) =
     let hs = iota n
-    in ({parents = rep root, handlers = hs}, hs)
+    in ({parents = rep none, handlers = hs}, hs)
 
   def find_root [n] (parents: [n]handle) (h: handle) : handle =
     loop i = h
-    while parents[i] != root do
+    while parents[i] != none do
       parents[i]
 
   def find [n] (uf: unionfind [n]) (h: handle) : handle =
     let h' = find_root uf.parents h
     in if 0 <= h' && h' < n
        then h'
-       else root
+       else none
 
   def both f (a, b) = (f a, f b)
 
@@ -82,22 +82,22 @@ module mk_unionfind_sequential : unionfind with handle = i64 = {
     , handlers: [n]handle
     }
 
-  def root : handle = -1
+  def none : handle = -1
 
   def create (n: i64) : (unionfind [n], [n]handle) =
     let hs = iota n
-    in ({parents = rep root, handlers = hs}, hs)
+    in ({parents = rep none, handlers = hs}, hs)
 
   def find_parent [n] (uf: unionfind [n]) (h: handle) : handle =
     loop i = h
-    while uf.parents[i] != root do
+    while uf.parents[i] != none do
       uf.parents[i]
 
   def find [n] (uf: unionfind [n]) (h: handle) : handle =
     let h' = find_parent uf h
     in if 0 <= h' && h' < n
        then h'
-       else root
+       else none
 
   def union [n] [u]
             (uf: unionfind [n])
