@@ -21,6 +21,11 @@ def binary_search [n] 't (lte: t -> t -> bool) (xs: [n]t) (x: t) : i64 =
          else (t + 1, r)
   in l
 
+def both f (a, b) = (f a, f b)
+
+def swap 't lte (a, b) : (t, t) =
+  if a `lte` b then (a, b) else (b, a)
+
 module mk_unionfind : unionfind with handle = i64 = {
   type handle = i64
 
@@ -29,7 +34,7 @@ module mk_unionfind : unionfind with handle = i64 = {
     , handlers: [n]handle
     }
 
-  def none : handle = -1
+  def none : handle = i64.highest
 
   def create (n: i64) : (unionfind [n], [n]handle) =
     let hs = iota n
@@ -46,19 +51,16 @@ module mk_unionfind : unionfind with handle = i64 = {
        then h'
        else none
 
-  def both f (a, b) = (f a, f b)
-
-  def swap (a, b) : (handle, handle) =
-    if a < b then (a, b) else (b, a)
-
   def loop_body [n] [u]
                 (parents: *[n]handle)
                 (eqs: [u](handle, handle)) : ?[m].(*[n]handle, [m](handle, handle)) =
-    let eqs = map (swap <-< both (find_root parents)) eqs
+    let eqs =
+      map (swap (<=) <-< both (find_root parents)) eqs
+      |> filter (uncurry (!=))
     let (l, r) = unzip eqs
-    let parents' = reduce_by_index parents i64.min i64.highest l r
+    let parents' = reduce_by_index parents i64.min none l r
     let eqs' =
-      zip (iota u) eqs
+      zip (indices eqs) eqs
       |> filter (\(i, (_, p)) -> parents'[i] != p)
       |> map (.1)
     in (parents', copy eqs')
@@ -82,7 +84,7 @@ module mk_unionfind_sequential : unionfind with handle = i64 = {
     , handlers: [n]handle
     }
 
-  def none : handle = -1
+  def none : handle = i64.highest
 
   def create (n: i64) : (unionfind [n], [n]handle) =
     let hs = iota n
@@ -104,7 +106,8 @@ module mk_unionfind_sequential : unionfind with handle = i64 = {
             (eqs: [u](handle, handle)) : *unionfind [n] =
     loop uf' = copy uf
     for (h, h') in eqs do
-      let i = find_parent uf' h
-      let p = find_parent uf' h'
-      in uf' with parents = (uf'.parents with [i] = p)
+      let (i, p) = swap (<=) (find_parent uf' h, find_parent uf' h')
+      in if i == p
+         then uf'
+         else uf' with parents = (uf'.parents with [i] = p)
 }

@@ -53,6 +53,6 @@ entry count_equal_elems_seq [m] (n: i64) (sample: [m]i64) : [n]i64 =
 -- compiled random input { 10000i64 [2000]i64 }
 -- output { true }
 entry test [m] (n: i64) (sample: [m]i64) =
-  let reps_count = count_equal_elems_seq n sample
+  let reps_count = count_equal_elems n sample
   let reps_seq_count = count_equal_elems_seq n sample
   in map2 (==) reps_count reps_seq_count |> and
