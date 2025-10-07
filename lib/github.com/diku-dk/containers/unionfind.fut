@@ -54,14 +54,12 @@ module mk_unionfind : unionfind with handle = i64 = {
   def loop_body [n] [u]
                 (parents: *[n]handle)
                 (eqs: [u](handle, handle)) : ?[m].(*[n]handle, [m](handle, handle)) =
-    let eqs =
-      map (swap (<=) <-< both (find_root parents)) eqs
-      |> filter (uncurry (!=))
     let (l, r) = unzip eqs
     let parents' = reduce_by_index parents i64.min none l r
     let eqs' =
-      zip (indices eqs) eqs
-      |> filter (\(i, (_, p)) -> parents'[i] != p)
+      map (swap (<=) <-< both (find_root parents')) eqs
+      |> zip (indices eqs)
+      |> filter (\(j, (i, p)) -> parents'[j] != p && i != p)
       |> map (.1)
     in (parents', copy eqs')
 
@@ -70,7 +68,7 @@ module mk_unionfind : unionfind with handle = i64 = {
             (eqs: [u](handle, handle)) : *unionfind [n] =
     let ps = parents
     let (ps', _) =
-      loop (ps', eqs') = (ps, eqs)
+      loop (ps', eqs') = (ps, map (swap (<=) <-< both (find_root ps)) eqs)
       while length eqs' != 0 do
         loop_body ps' eqs'
     in {parents = ps', handlers}
