@@ -30,15 +30,13 @@ module mk_unionfind : unionfind with handle = i64 = {
   type handle = i64
 
   type unionfind [n] =
-    { parents: [n]handle
-    , handlers: [n]handle
-    }
+    {parents: [n]handle}
 
   def none : handle = i64.highest
 
   def create (n: i64) : (unionfind [n], [n]handle) =
     let hs = iota n
-    in ({parents = rep none, handlers = hs}, hs)
+    in ({parents = rep none}, hs)
 
   def find_root [n] (parents: [n]handle) (h: handle) : handle =
     loop i = h
@@ -64,29 +62,31 @@ module mk_unionfind : unionfind with handle = i64 = {
     in (parents', copy eqs')
 
   def union [n] [u]
-            ({parents, handlers}: *unionfind [n])
+            ({parents}: *unionfind [n])
             (eqs: [u](handle, handle)) : *unionfind [n] =
     let ps = parents
     let (ps', _) =
-      loop (ps', eqs') = (ps, map (swap (<=) <-< both (find_root ps)) eqs)
+      loop (ps', eqs') =
+             ( ps
+             , map (swap (<=) <-< both (find_root ps)) eqs
+               |> filter (uncurry (!=))
+             )
       while length eqs' != 0 do
         loop_body ps' eqs'
-    in {parents = ps', handlers}
+    in {parents = ps'}
 }
 
 module mk_unionfind_sequential : unionfind with handle = i64 = {
   type handle = i64
 
   type unionfind [n] =
-    { parents: [n]handle
-    , handlers: [n]handle
-    }
+    {parents: [n]handle}
 
   def none : handle = i64.highest
 
   def create (n: i64) : (unionfind [n], [n]handle) =
     let hs = iota n
-    in ({parents = rep none, handlers = hs}, hs)
+    in ({parents = rep none}, hs)
 
   def find_parent [n] (uf: unionfind [n]) (h: handle) : handle =
     loop i = h
@@ -104,7 +104,7 @@ module mk_unionfind_sequential : unionfind with handle = i64 = {
             (eqs: [u](handle, handle)) : *unionfind [n] =
     loop uf' = copy uf
     for (h, h') in eqs do
-      let (i, p) = swap (<=) (find_parent uf' h, find_parent uf' h')
+      let (i, p) = (find_parent uf' h, find_parent uf' h')
       in if i == p
          then uf'
          else uf' with parents = (uf'.parents with [i] = p)
