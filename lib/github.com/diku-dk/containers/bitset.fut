@@ -119,9 +119,9 @@ module type bitset = {
 
   -- | Convert an array of indices to a bitset.
   --
-  -- **Work:** *O(n)*
+  -- **Work:** *O(m)*
   --
-  -- **Span:** *O(1)* in best case but O(n) in worst case with all
+  -- **Span:** *O(1)* in best case but O(m) in worst case with all
   -- indices being the same.
   val from_array [m] : (n: i64) -> [m]i64 -> bitset [s num_bits n]
 
