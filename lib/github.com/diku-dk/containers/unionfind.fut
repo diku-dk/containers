@@ -55,11 +55,15 @@ module mk_unionfind : unionfind with handle = i64 = {
     let (l, r) = unzip eqs
     let parents' = reduce_by_index parents i64.min none l r
     let eqs' =
-      map (swap (<=) <-< both (find_root parents')) eqs
+      map ((\(a, b) -> (b, a)) <-< both (find_root parents')) eqs
       |> zip (indices eqs)
       |> filter (\(j, (i, p)) -> parents'[j] != p && i != p)
       |> map (.1)
     in (parents', copy eqs')
+
+  def step [n] (arr: [n]i64) =
+    let f i = if arr[i] == -1 || arr[arr[i]] == -1 then arr[i] else arr[arr[i]]
+    in tabulate n f
 
   def union [n] [u]
             ({parents}: *unionfind [n])
@@ -71,7 +75,7 @@ module mk_unionfind : unionfind with handle = i64 = {
              , map (swap (<=) <-< both (find_root ps)) eqs
                |> filter (uncurry (!=))
              )
-      while length eqs' != 0 do
+      for _i < 2 do
         loop_body ps' eqs'
     in {parents = ps'}
 }
