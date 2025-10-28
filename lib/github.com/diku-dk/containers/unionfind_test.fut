@@ -56,7 +56,7 @@ entry count_equal_elems_seq [m] (n: i64) (sample: [m]i64) : [n]i64 =
 
 -- ==
 -- entry: test
--- compiled random input { 10000i64 [2000]i64 }
+-- compiled random input { 100000i64 [100000]i64 }
 -- output { true }
 entry test [m] (n: i64) (sample: [m]i64) =
   let reps_count = count_equal_elems n sample
