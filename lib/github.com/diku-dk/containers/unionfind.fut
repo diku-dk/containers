@@ -49,6 +49,10 @@ module mk_unionfind : unionfind with handle = i64 = {
        then h'
        else none
 
+  def step [n] (parents: [n]i64) =
+    let f i = if i == -1 || parents[i] == -1 then i else parents[i]
+    in map f parents
+
   def loop_body [n] [u]
                 (parents: *[n]handle)
                 (eqs: [u](handle, handle)) : ?[m].(*[n]handle, [m](handle, handle)) =
@@ -98,10 +102,6 @@ module mk_unionfind_sequential : unionfind with handle = i64 = {
     in if 0 <= h' && h' < n
        then h'
        else none
-
-  def step [n] (parents: [n]i64) =
-    let f i = if i == -1 || parents[i] == -1 then i else parents[i]
-    in map f parents
 
   def union [n] [u]
             (uf: unionfind [n])
