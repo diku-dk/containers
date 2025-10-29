@@ -23,8 +23,10 @@ def binary_search [n] 't (lte: t -> t -> bool) (xs: [n]t) (x: t) : i64 =
 
 def both f (a, b) = (f a, f b)
 
-def swap 't lte (a, b) : (t, t) =
+def order 't lte (a, b) : (t, t) =
   if a `lte` b then (a, b) else (b, a)
+
+def swap 't (a, b) : (t, t) = (b, a)
 
 module mk_unionfind : unionfind with handle = i64 = {
   type handle = i64
@@ -38,46 +40,67 @@ module mk_unionfind : unionfind with handle = i64 = {
     let hs = iota n
     in ({parents = rep none}, hs)
 
-  def find_root [n] (parents: [n]handle) (h: handle) : handle =
-    loop i = h
-    while parents[i] != none do
-      parents[i]
+  def inbound (n: i64) (h: handle) : bool =
+    0 <= h && h < n
+
+  def find_by_vector [n] (parents: [n]handle) (h: handle) : handle =
+    if inbound n h
+    then loop h' = h
+         while parents[h'] != none do
+           parents[h']
+    else none
 
   def find [n] (uf: unionfind [n]) (h: handle) : handle =
-    let h' = find_root uf.parents h
-    in if 0 <= h' && h' < n
-       then h'
-       else none
+    if inbound n h
+    then loop h' = h
+         while uf.parents[h'] != none do
+           uf.parents[h']
+    else none
 
-  def step [n] (parents: [n]handle) =
-    let f i = if i == none || parents[i] == none then i else parents[i]
-    in map f parents
+  def normalize_step [m] [n]
+                     (is: [m]handle)
+                     (parents: *[n]handle)
+                     (ps: [m]handle) : (*[n]handle, [m]handle) =
+    let f h =
+      if parents[h] == none
+      then h
+      else if parents[parents[h]] == none
+      then parents[h]
+      else parents[parents[h]]
+    let ps' = map f ps
+    let new_parents = scatter parents is ps'
+    in (new_parents, ps')
 
-  def loop_body [n] [u]
-                (parents: *[n]handle)
-                (eqs: [u](handle, handle)) : ?[m].(*[n]handle, [m](handle, handle)) =
+  def normalize [m] [n] (parents: *[n]handle) (is: [m]handle) (ps: [m]handle) : *[n]handle =
+    let (new_parents, _) =
+      loop (parents, ps)
+      for _i < 64 - i64.clz m do
+        normalize_step is parents ps
+    in new_parents
+
+  def left_maximal_union [n] [u]
+                         (parents: *[n]handle)
+                         (eqs: [u](handle, handle)) : ?[m].(*[n]handle, [m](handle, handle)) =
     let (l, r) = unzip eqs
     let parents' = reduce_by_index parents i64.min none l r
-    let eqs' =
-      map ((\(a, b) -> (b, a)) <-< both (find_root parents')) eqs
-      |> zip (indices eqs)
-      |> filter (\(j, (i, p)) -> parents'[j] != p && i != p)
-      |> map (.1)
-    in (parents', copy eqs')
+    let (eqs', done) = partition (\(i, p) -> parents'[i] != p) eqs
+    let (is, ps) = unzip done
+    let parents'' = normalize (copy parents') is ps
+    in (parents'', map (both (find {parents = parents''})) eqs')
+
+  def find_equations [n] [u]
+                     (parents: [n]handle)
+                     (eqs: [u](handle, handle)) : ?[m].[m](handle, handle) =
+    map (both (find_by_vector parents)) eqs
+    |> filter (\(l, r) -> l != r && l != none && none != r)
 
   def union [n] [u]
             ({parents}: *unionfind [n])
             (eqs: [u](handle, handle)) : *unionfind [n] =
-    let ps = parents
-    let (ps', _) =
-      loop (ps', eqs') =
-             ( ps
-             , map (swap (<=) <-< both (find_root ps)) eqs
-               |> filter (uncurry (!=))
-             )
-      for _i < 2 do
-        loop_body ps' eqs'
-    in {parents = ps'}
+    let eqs' = find_equations (copy parents) eqs |> map (order (<))
+    let (ps', eqs'') = left_maximal_union parents eqs'
+    let (ps'', _) = left_maximal_union ps' (map swap eqs'' |> filter (\(a, b) -> a != b))
+    in {parents = ps''}
 }
 
 module mk_unionfind_sequential : unionfind with handle = i64 = {
