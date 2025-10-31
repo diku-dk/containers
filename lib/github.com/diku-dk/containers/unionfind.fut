@@ -124,9 +124,9 @@ module mk_unionfind : unionfind with handle = i64 = {
       map ((\(a, b) ->
               if a == none || b == none
               then (a, b)
-              else if sizes[a] <= sizes[b]
-              then (a, b)
-              else (b, a))
+              else if sizes[a] != sizes[b]
+              then if sizes[a] < sizes[b] then (a, b) else (b, a)
+              else if a < b then (a, b) else (b, a))
            <-< both (find_by_vector parents))
           eqs
       |> filter (\(l, r) -> l != r && l != none && none != r)
