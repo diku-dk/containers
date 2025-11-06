@@ -1,64 +1,60 @@
 import "unionfind"
 import "../sorts/merge_sort"
 
+module type test = {
+  -- | Normalized equivalence count will create an initial union find
+  -- structures of size `n`@norm_eq_count then uses the
+  -- `eqs`@norm_eq_count to index into the array of handles to create
+  -- the array of equations that are used to be unioned. Then the
+  -- number of equivalent elements are counted where the element with
+  -- the smallest index is used to be the representative.
+  val norm_eq_count [m] : (n: i64) -> (eqs: [m](i64, i64)) -> [n]i64
+}
+
+module mk_test
+  (U: unionfind)
+  (E: {
+    type t
+    val (==) : t -> t -> bool
+  }
+  with t = U.handle)
+  : test = {
+  type t = U.handle
+
+  def normalize [n] (hs: [n]t) : [n]i64 =
+    let is =
+      map (\h ->
+             zip (indices hs) hs
+             |> reduce_comm (\a b ->
+                               if a.0 != -1 && b.0 != -1
+                               then if a.1 E.== h
+                                    then a
+                                    else b
+                               else a)
+                            (-1, U.none))
+          hs
+      |> map (.0)
+    in is
+
+  def norm_eq_count [m]
+                    (n: i64)
+                    (eqs: [m](i64, i64)) : [n]i64 =
+    let (uf, hs) = U.create n
+    let eqs' = map (\(i, j) -> (hs[i % n], hs[j % n])) eqs
+    let uf = U.union (copy uf) eqs'
+    let (_, ps) = U.find uf hs
+    let reps = normalize ps
+    in hist (+) 0 n reps (rep 1)
+}
+
 module unionfind_seq = mk_unionfind_sequential
 module unionfind = mk_unionfind
 
-def equations [m] [n] 'h (hs: [m]h) (ds: [n]i64) =
-  let is = map (% m) ds
-  let hs2 = map (\i -> hs[i]) is
-  in tabulate (n / 2) (\i -> (hs2[2 * i], hs2[2 * i + 1]))
+module test_unionfind_seq = mk_test unionfind_seq i64
+module test_unionfind = mk_test unionfind i64
 
--- https://futhark-lang.org/examples/binary-search.html
-def binary_search [n] 't (lte: t -> t -> bool) (xs: [n]t) (x: t) : i64 =
-  let (l, _) =
-    loop (l, r) = (0, n - 1)
-    while l < r do
-      let t = l + (r - l) / 2
-      in if x `lte` xs[t]
-         then (l, t)
-         else (t + 1, r)
-  in l
+entry norm_eq_count_unionfind_seq [m] (n: i64) (eqs: [m](i64, i64)) : [n]i64 =
+  test_unionfind_seq.norm_eq_count n eqs
 
--- Goes through every representative and finds the smallest one.
-def normalize [n] 't
-              (eq: t -> t -> bool)
-              (none: t)
-              (f: t -> t)
-              (hs: [n]t) : [n]i64 =
-  let is =
-    map (\h ->
-           zip (indices hs) hs
-           |> reduce_comm (\a b ->
-                             if a.0 != -1 && b.0 != -1
-                             then if (f a.1) `eq` (f h)
-                                  then a
-                                  else b
-                             else a)
-                          (-1, none))
-        hs
-    |> map (.0)
-  in is
-
-entry count_equal_elems [m] (n: i64) (sample: [m]i64) : [n]i64 =
-  let (uf, hs) = unionfind.create n
-  let eqs = equations hs sample
-  let uf' = unionfind.union (copy uf) eqs
-  let reps = normalize (==) unionfind.none (unionfind.find uf') hs
-  in hist (+) 0 n reps (rep 1)
-
-entry count_equal_elems_seq [m] (n: i64) (sample: [m]i64) : [n]i64 =
-  let (uf_seq, hs_seq) = unionfind_seq.create n
-  let eqs_seq = equations hs_seq sample
-  let uf_seq' = unionfind_seq.union (copy uf_seq) eqs_seq
-  let reps_seq = normalize (==) unionfind.none (unionfind_seq.find uf_seq') hs_seq
-  in hist (+) 0 n reps_seq (rep 1)
-
--- ==
--- entry: test
--- compiled random input { 100000i64 [20000]i64 }
--- output { true }
-entry test [m] (n: i64) (sample: [m]i64) =
-  let reps_count = count_equal_elems n sample
-  let reps_seq_count = count_equal_elems_seq n sample
-  in map2 (==) reps_count reps_seq_count |> and
+entry norm_eq_count_unionfind [m] (n: i64) (eqs: [m](i64, i64)) : [n]i64 =
+  test_unionfind.norm_eq_count n eqs
