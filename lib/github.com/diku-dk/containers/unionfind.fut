@@ -231,11 +231,12 @@ module unionfind_by_rank : unionfind = {
     let (is, ps) = unzip done
     let parents = scatter parents is ps
     let (new_parents, new_ps) = normalize parents is
-    let is_same_rank_done = map (\(l, r) -> ranks[l] u8.== ranks[r]) done
-    let is_same_rank =
-      reduce_by_index is_same_rank (||) false new_ps is_same_rank_done
     let new_ranks_done =
-      map (\p -> u8.bool is_same_rank[p] + ranks[p]) new_ps
+      copy
+      <| map2 (\l p ->
+                 u8.bool (ranks[l] u8.== ranks[p]) + ranks[p])
+              is
+              new_ps
     let new_ranks = reduce_by_index ranks u8.max 0 new_ps new_ranks_done
     let new_is_same_rank = scatter is_same_rank new_ps (rep false)
     let new_eqs = copy eqs
