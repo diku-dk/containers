@@ -236,7 +236,7 @@ module unionfind_by_rank : unionfind = {
       reduce_by_index is_same_rank (||) false new_ps is_same_rank_done
     let new_ranks_done =
       map (\p -> u8.bool is_same_rank[p] + ranks[p]) new_ps
-    let new_ranks = scatter ranks new_ps new_ranks_done
+    let new_ranks = reduce_by_index ranks u8.max 0 new_ps new_ranks_done
     let new_is_same_rank = scatter is_same_rank new_ps (rep false)
     let new_eqs = copy eqs
     let new_temporary_indices = scatter temporary_indices lefts (rep i64.highest)
