@@ -6,7 +6,7 @@ module type unionfind = {
   type handle
   type unionfind [n]
   val (==) : handle -> handle -> bool
-  val create : (n: i64) -> (unionfind [n], [n]handle)
+  val create : (n: i64) -> (*unionfind [n], [n]handle)
   val union [n] [u] : *unionfind [n] -> [u](handle, handle) -> *unionfind [n]
   val find [n] [u] : *unionfind [n] -> [u]handle -> (*unionfind [n], [u]handle)
 }
@@ -30,7 +30,7 @@ module unionfind_by_size : unionfind = {
 
   def none : handle = i64.highest
 
-  def create (n: i64) : (unionfind [n], [n]handle) =
+  def create (n: i64) : (*unionfind [n], [n]handle) =
     let hs = iota n
     in ( { parents = rep none
          , sizes = rep 1
@@ -158,7 +158,7 @@ module unionfind_by_rank : unionfind = {
 
   def none : handle = i64.highest
 
-  def create (n: i64) : (unionfind [n], [n]handle) =
+  def create (n: i64) : (*unionfind [n], [n]handle) =
     let hs = iota n
     in ( { parents = rep none
          , ranks = rep 0
@@ -291,7 +291,7 @@ module unionfind : unionfind = {
 
   def none : handle = i64.highest
 
-  def create (n: i64) : (unionfind [n], [n]handle) =
+  def create (n: i64) : (*unionfind [n], [n]handle) =
     let hs = iota n
     in ({parents = rep none}, hs)
 
@@ -379,7 +379,8 @@ module unionfind_sequential : unionfind = {
 
   def (==) (a: handle) (b: handle) = a == b
 
-  def create (n: i64) : (unionfind [n], [n]handle) =
+  def create (n: i64) : (*unionfind [n], [n]handle) =
+    #[sequential]
     let hs = iota n
     in ({parents = rep none}, hs)
 
@@ -390,6 +391,7 @@ module unionfind_sequential : unionfind = {
   def find [n] [u]
            (uf: *unionfind [n])
            (hs: [u]handle) : (*unionfind [n], [u]handle) =
+    #[sequential]
     let hs' = map (find_one uf) hs
     in (uf, hs')
 
@@ -402,4 +404,56 @@ module unionfind_sequential : unionfind = {
       in if i == p
          then uf'
          else uf' with parents = (uf'.parents with [i] = p)
+}
+
+module unionfind_sequential_work_efficient : unionfind = {
+  type handle = i64
+
+  type unionfind [n] =
+    { parents: [n]handle
+    , ranks: [n]u8
+    }
+
+  def none : handle = i64.highest
+
+  def (==) (a: handle) (b: handle) = a == b
+
+  def create (n: i64) : (*unionfind [n], [n]handle) =
+    #[sequential]
+    let hs = iota n
+    in ({parents = rep none, ranks = rep 0}, hs)
+
+  def find_one [n] (parents: *[n]handle) (h: handle) : (*[n]handle, handle) =
+    loop (parents, h) while parents[h] != none do
+      let parents[h] = parents[parents[h]]
+      in (parents, parents[h])
+
+  def find [n] [u]
+           ({parents, ranks}: *unionfind [n])
+           (hs: [u]handle) : (*unionfind [n], [u]handle) =
+    let hs' = copy hs
+    let (parents, hs) =
+      loop (parents, hs') for (i, h) in zip (indices hs) hs do
+        let (parents, h) = find_one parents h
+        let hs'[i] = h
+        in (parents, hs')
+    in ({parents, ranks}, hs)
+
+  def union [n] [u]
+            ({parents, ranks}: *unionfind [n])
+            (eqs: [u](handle, handle)) : *unionfind [n] =
+    let (parents, ranks) =
+      loop (parents, ranks)
+      for (h, h') in eqs do
+        let (parents, i) = find_one parents h
+        let (parents, p) = find_one parents h'
+        in if i == p
+           then (parents, ranks)
+           else let (i, p) = if ranks[i] <= ranks[p] then (i, p) else (p, i)
+                let ranks =
+                  if ranks[i] u8.== ranks[p]
+                  then ranks with [p] = ranks[p] + 1
+                  else ranks
+                in (parents with [i] = p, ranks)
+    in {parents, ranks}
 }
