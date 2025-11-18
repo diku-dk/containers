@@ -46,6 +46,8 @@ module mk_norm_eq_count
 }
 
 module type test = {
+  -- | Test that two unionfind implementations give an equivalent
+  -- partioning of variables.
   val test : i64 -> i64 -> bool
 }
 
