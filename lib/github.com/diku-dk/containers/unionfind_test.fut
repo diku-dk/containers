@@ -1,5 +1,6 @@
 import "unionfind"
 import "../sorts/merge_sort"
+import "opt"
 
 module type test = {
   -- | Normalized equivalence count will create an initial union find
@@ -13,25 +14,22 @@ module type test = {
 
 module mk_test
   (U: unionfind)
-  (E: {
-    type t
-    val (==) : t -> t -> bool
-  }
-  with t = U.handle)
   : test = {
   type t = U.handle
 
   def normalize [n] (hs: [n]t) : [n]i64 =
+    let eq = equal_opt (U.==)
     let is =
       map (\h ->
-             zip (indices hs) hs
+             map some hs
+             |> zip (indices hs)
              |> reduce_comm (\a b ->
                                if a.0 != -1 && b.0 != -1
-                               then if a.1 E.== h
+                               then if a.1 `eq` some h
                                     then a
                                     else b
                                else a)
-                            (-1, U.none))
+                            (-1, #none))
           hs
       |> map (.0)
     in is
@@ -47,11 +45,10 @@ module mk_test
     in hist (+) 0 n reps (rep 1)
 }
 
-module unionfind_seq = mk_unionfind_sequential
-module unionfind = mk_unionfind
-
-module test_unionfind_seq = mk_test unionfind_seq i64
-module test_unionfind = mk_test unionfind i64
+module test_unionfind_sequential = mk_test unionfind_sequential
+module test_unionfind = mk_test unionfind
+module test_unionfind_by_size = mk_test unionfind_by_size
+module test_unionfind_by_rank = mk_test unionfind_by_rank
 
 -- | Multiply-shift hash function https://arxiv.org/abs/1504.06804
 def hash (a: (u64, u64)) (b: (u64, u64)) (x: u64) : u64 =
@@ -76,18 +73,35 @@ entry equations (n: i64) (m: i64) : [m](i64, i64) =
   |> split
   |> uncurry zip
 
-entry norm_eq_count_unionfind_seq [m] (n: i64) (eqs: [m](i64, i64)) : [n]i64 =
-  test_unionfind_seq.norm_eq_count n eqs
-
 -- ==
 -- entry: norm_eq_count_unionfind
--- script input { let num_vars = 100i64 in
---                let num_eqs = 20i64 in
---                let eqs = equations 100i64 20i64
---                 in (100i64, eqs) }
--- script output { let num_vars = 100i64 in
---                 let num_eqs = 20i64 in
---                 let eqs = equations 100i64 20i64
---                  in norm_eq_count_unionfind_seq }
-entry norm_eq_count_unionfind [m] (n: i64) (eqs: [m](i64, i64)) : [n]i64 =
-  test_unionfind.norm_eq_count n eqs
+-- input { 10000i64 2000i64 }
+-- output { true }
+entry norm_eq_count_unionfind (num_vars: i64) (num_eqs: i64) : bool =
+  let eqs = equations num_vars num_eqs
+  let expected = test_unionfind_sequential.norm_eq_count num_vars eqs
+  let result = test_unionfind.norm_eq_count num_vars eqs
+  in map2 (==) expected result
+     |> and
+
+-- ==
+-- entry: norm_eq_count_unionfind_by_size
+-- input { 10000i64 2000i64 }
+-- output { true }
+entry norm_eq_count_unionfind_by_size (num_vars: i64) (num_eqs: i64) : bool =
+  let eqs = equations num_vars num_eqs
+  let expected = test_unionfind_sequential.norm_eq_count num_vars eqs
+  let result = test_unionfind_by_size.norm_eq_count num_vars eqs
+  in map2 (==) expected result
+     |> and
+
+-- ==
+-- entry: norm_eq_count_unionfind_by_rank
+-- input { 10000i64 2000i64 }
+-- output { true }
+entry norm_eq_count_unionfind_by_rank (num_vars: i64) (num_eqs: i64) : bool =
+  let eqs = equations num_vars num_eqs
+  let expected = test_unionfind_sequential.norm_eq_count num_vars eqs
+  let result = test_unionfind_by_rank.norm_eq_count num_vars eqs
+  in map2 (==) expected result
+     |> and

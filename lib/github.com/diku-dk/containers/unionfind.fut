@@ -5,7 +5,7 @@ import "opt"
 module type unionfind = {
   type handle
   type unionfind [n]
-  val none : handle
+  val (==) : handle -> handle -> bool
   val create : (n: i64) -> (unionfind [n], [n]handle)
   val union [n] [u] : *unionfind [n] -> [u](handle, handle) -> *unionfind [n]
   val find [n] [u] : *unionfind [n] -> [u]handle -> (*unionfind [n], [u]handle)
@@ -17,7 +17,7 @@ def bimap f g (a, b) = (f a, g b)
 
 def swap 't (a, b) : (t, t) = (b, a)
 
-module mk_unionfind_by_size : unionfind = {
+module unionfind_by_size : unionfind = {
   type handle = i64
 
   type unionfind [n] =
@@ -25,6 +25,8 @@ module mk_unionfind_by_size : unionfind = {
     , sizes: [n]i64
     , temporary_indices: [n]i64
     }
+
+  def (==) (a: handle) (b: handle) = a == b
 
   def none : handle = i64.highest
 
@@ -37,19 +39,14 @@ module mk_unionfind_by_size : unionfind = {
        , hs
        )
 
-  def inbound (n: i64) (h: handle) : bool =
-    0 <= h && h < n
-
   def find_by_vector [n] [u]
                      (parents: *[n]handle)
                      (hs: [u]handle) : (*[n]handle, [u]handle) =
     ( parents
     , map (\h ->
-             if inbound n h
-             then loop h' = h
-                  while parents[h'] != none do
-                    parents[h']
-             else none)
+             loop h
+             while parents[h] != none do
+               parents[h])
           hs
     )
 
@@ -147,41 +144,172 @@ module mk_unionfind_by_size : unionfind = {
        }
 }
 
-module mk_unionfind : unionfind = {
+module unionfind_by_rank : unionfind = {
   type handle = i64
 
   type unionfind [n] =
     { parents: [n]handle
+    , ranks: [n]u8
     , temporary_indices: [n]i64
+    , is_same_rank: [n]bool
     }
+
+  def (==) (a: handle) (b: handle) = a == b
 
   def none : handle = i64.highest
 
   def create (n: i64) : (unionfind [n], [n]handle) =
     let hs = iota n
-    in ({parents = rep none, temporary_indices = rep none}, hs)
+    in ( { parents = rep none
+         , ranks = rep 0
+         , temporary_indices = rep none
+         , is_same_rank = rep false
+         }
+       , hs
+       )
 
-  def inbound (n: i64) (h: handle) : bool =
-    0 <= h && h < n
+  def find_by_vector [n] [u]
+                     (parents: *[n]handle)
+                     (hs: [u]handle) : (*[n]handle, [u]handle) =
+    ( parents
+    , map (\h ->
+             loop h
+             while parents[h] != none do
+               parents[h])
+          hs
+    )
+
+  def find [n] [u]
+           ({parents, ranks, temporary_indices, is_same_rank}: *unionfind [n])
+           (hs: [u]handle) : (*unionfind [n], [u]handle) =
+    let (new_parents, ps) = find_by_vector parents hs
+    in ({parents = new_parents, ranks, temporary_indices, is_same_rank}, ps)
+
+  def normalize_step [m] [n]
+                     (is: [m]handle)
+                     (parents: *[n]handle)
+                     (ps: [m]handle) : (*[n]handle, [m]handle) =
+    let f h =
+      if parents[h] == none
+      then h
+      else if parents[parents[h]] == none
+      then parents[h]
+      else parents[parents[h]]
+    let ps' = map f ps
+    let new_parents = scatter parents is ps'
+    in (new_parents, ps')
+
+  def normalize [m] [n]
+                (parents: *[n]handle)
+                (is: [m]handle) : (*[n]handle, [m]handle) =
+    let ps = is
+    let (new_parents, _) =
+      loop (parents, ps)
+      for _i < 64 - i64.clz m do
+        normalize_step is parents ps
+    in (new_parents, ps)
+
+  def left_maximal_union [n] [u]
+                         (parents: *[n]handle)
+                         (ranks: *[n]u8)
+                         (temporary_indices: *[n]i64)
+                         (is_same_rank: *[n]bool)
+                         (eqs: [u](handle, handle)) : ?[m].( *[n]handle
+                                                           , *[n]u8
+                                                           , *[n]i64
+                                                           , *[n]bool
+                                                           , [m](handle, handle)
+                                                           ) =
+    let lefts = map (.0) eqs
+    let eq_is = indices eqs
+    let temporary_indices =
+      reduce_by_index temporary_indices i64.min i64.highest lefts eq_is
+    let (done, eqs) =
+      zip (indices eqs) eqs
+      |> partition (\(i, (l, _)) -> i == temporary_indices[l])
+      |> bimap (map (.1)) (map (.1))
+    let (is, ps) = unzip done
+    let parents = scatter parents is ps
+    let (new_parents, new_ps) = normalize parents is
+    let is_same_rank_done = map (\(l, r) -> ranks[l] u8.== ranks[r]) done
+    let is_same_rank =
+      reduce_by_index is_same_rank (||) false new_ps is_same_rank_done
+    let new_ranks_done =
+      map (\p -> u8.bool is_same_rank[p] + ranks[p]) new_ps
+    let new_ranks = scatter ranks new_ps new_ranks_done
+    let new_is_same_rank = scatter is_same_rank new_ps (rep false)
+    let new_eqs = copy eqs
+    let new_temporary_indices = scatter temporary_indices lefts (rep i64.highest)
+    in (new_parents, new_ranks, new_temporary_indices, new_is_same_rank, new_eqs)
+
+  def order [n] [u]
+            (parents: *[n]handle)
+            (ranks: [n]u8)
+            (eqs: [u](handle, handle)) : ( *[n]handle
+                                         , [u](handle, handle)
+                                         ) =
+    let eqs_elems = unzip eqs |> uncurry (++)
+    let (new_parents, new_eqs_elems) = find_by_vector parents eqs_elems
+    let eqs' = split new_eqs_elems |> uncurry zip
+    let new_eqs =
+      map (\(a, b) ->
+             if a == none || b == none
+             then (a, b)
+             else if ranks[a] != ranks[b]
+             then if ranks[a] < ranks[b] then (a, b) else (b, a)
+             else if a < b then (a, b) else (b, a))
+          eqs'
+    in (new_parents, new_eqs)
+
+  def union [n] [u]
+            ({parents, ranks, temporary_indices, is_same_rank}: *unionfind [n])
+            (eqs: [u](handle, handle)) : *unionfind [n] =
+    let (parents, eqs) = order parents ranks eqs
+    let eqs = filter (\(l, r) -> l != r && l != none && none != r) eqs
+    let (new_parents, new_ranks, new_temporary_indices, new_is_same_rank, _) =
+      loop (parents, ranks, temporary_indices, is_same_rank, eqs)
+      while not (null eqs) do
+        let (parents', ranks', temporary_indices', is_same_rank', eqs') =
+          left_maximal_union parents ranks temporary_indices is_same_rank eqs
+        let (parents', eqs') = order parents' ranks' eqs'
+        let eqs' = filter (\(l, r) -> l != r) eqs'
+        in (parents', ranks', temporary_indices', is_same_rank', eqs')
+    in { parents = new_parents
+       , ranks = new_ranks
+       , temporary_indices = new_temporary_indices
+       , is_same_rank = new_is_same_rank
+       }
+}
+
+module unionfind : unionfind = {
+  type handle = i64
+
+  type unionfind [n] = {parents: [n]handle}
+
+  def (==) (a: handle) (b: handle) = a == b
+
+  def none : handle = i64.highest
+
+  def create (n: i64) : (unionfind [n], [n]handle) =
+    let hs = iota n
+    in ({parents = rep none}, hs)
 
   def find_by_vector [n] [u]
                      (parents: *[n]handle)
                      (hs: [u]handle) : (*[n]handle, [u]handle) =
     let ps =
       map (\h ->
-             if inbound n h
-             then loop h' = h
-                  while parents[h'] != none do
-                    parents[h']
-             else none)
+             loop h
+             while parents[h] != none do
+               parents[h])
           hs
     in (parents, ps)
 
   def find [n] [u]
-           ({parents, temporary_indices}: *unionfind [n])
+           ({parents}: *unionfind [n])
            (hs: [u]handle) : (*unionfind [n], [u]handle) =
     let (new_parents, ps) = find_by_vector parents hs
-    in ({parents = new_parents, temporary_indices}, ps)
+    in ({parents = new_parents}, ps)
 
   def normalize_step [m] [n]
                      (is: [m]handle)
@@ -207,51 +335,40 @@ module mk_unionfind : unionfind = {
         normalize_step is parents ps
     in parents
 
-  def order [n] [u]
-            (parents: *[n]handle)
-            (eqs: [u](handle, handle)) : ( *[n]handle
-                                         , [u](handle, handle)
-                                         ) =
+  def find_eqs_root [n] [u]
+                    (parents: *[n]handle)
+                    (eqs: [u](handle, handle)) : ( *[n]handle
+                                                 , [u](handle, handle)
+                                                 ) =
     let eqs_elems = unzip eqs |> uncurry (++)
     let (new_parents, new_eqs_elems) = find_by_vector parents eqs_elems
-    let eqs' = split new_eqs_elems |> uncurry zip
-    let new_eqs = map (\(a, b) -> if a < b then (a, b) else (b, a)) eqs'
-    in (new_parents, new_eqs)
+    let eqs = split new_eqs_elems |> uncurry zip
+    in (new_parents, eqs)
 
   def left_maximal_union [n] [u]
                          (parents: *[n]handle)
-                         (temporary_indices: *[n]i64)
-                         (eqs: [u](handle, handle)) : ?[m].( *[n]handle
-                                                           , *[n]i64
-                                                           , [m](handle, handle)
-                                                           ) =
-    let lefts = map (.0) eqs
-    let eq_is = indices eqs
-    let temporary_indices =
-      reduce_by_index temporary_indices i64.min i64.highest lefts eq_is
-    let (done, eqs) =
-      zip (indices eqs) eqs
-      |> partition (\(i, (l, _)) -> i == temporary_indices[l])
-      |> bimap (map (.1)) (map (.1))
-    let (is, ps) = unzip done
-    let new_eqs = copy eqs
-    let new_parents = scatter parents is ps
-    let new_temporary_indices = scatter temporary_indices lefts (rep none)
-    in (new_parents, new_temporary_indices, new_eqs)
+                         (eqs: [u](handle, handle)) : ?[m].(*[n]handle, [m](handle, handle)) =
+    let (l, r) = unzip eqs
+    let parents = reduce_by_index parents i64.min none l r
+    let (eqs, done) =
+      copy (partition (\(i, p) -> parents[i] != p) eqs)
+    let parents = normalize parents (map (.0) done)
+    in (parents, eqs)
 
   def union [n] [u]
-            ({parents, temporary_indices}: *unionfind [n])
+            ({parents}: *unionfind [n])
             (eqs: [u](handle, handle)) : *unionfind [n] =
-    let (parents, eqs) = order parents eqs
-    let (parents, temporary_indices, eqs) =
-      left_maximal_union parents temporary_indices eqs
+    let (parents, eqs) = find_eqs_root parents eqs
+    let eqs = map (\(a, b) -> if a < b then (a, b) else (b, a)) eqs
+    let eqs = filter (\(a, b) -> a != b) eqs
+    let (parents, eqs) = left_maximal_union parents eqs
+    let (parents, eqs) = find_eqs_root parents eqs
     let eqs = map swap eqs |> filter (\(a, b) -> a != b)
-    let (parents, temporary_indices, _) =
-      left_maximal_union parents temporary_indices eqs
-    in {parents, temporary_indices}
+    let (parents, _) = left_maximal_union parents eqs
+    in {parents}
 }
 
-module mk_unionfind_sequential : unionfind = {
+module unionfind_sequential : unionfind = {
   type handle = i64
 
   type unionfind [n] =
@@ -259,19 +376,15 @@ module mk_unionfind_sequential : unionfind = {
 
   def none : handle = i64.highest
 
+  def (==) (a: handle) (b: handle) = a == b
+
   def create (n: i64) : (unionfind [n], [n]handle) =
     let hs = iota n
     in ({parents = rep none}, hs)
 
-  def inbound (n: i64) (h: handle) : bool =
-    0 <= h && h < n
-
   def find_one [n] (uf: unionfind [n]) h =
-    if inbound n h
-    then loop i = h
-         while uf.parents[i] != none do
-           uf.parents[i]
-    else none
+    loop h while uf.parents[h] != none do
+      uf.parents[h]
 
   def find [n] [u]
            (uf: *unionfind [n])
