@@ -4,18 +4,29 @@ module type bench = {
   type handle
   type unionfind [n]
   val random : (n: i64) -> (m: i64) -> (*unionfind [n], [m](handle, handle))
-  val linear : (n: i64) -> (*unionfind [n], [n](handle, handle))
+  val linear : (n: i64) -> (m: i64) -> (*unionfind [n], [m](handle, handle))
+  val single : (n: i64) -> (m: i64) -> (*unionfind [n], [m](handle, handle))
+  val inverse_single : (n: i64) -> (m: i64) -> (*unionfind [n], [m](handle, handle))
+  val all [n] [m] : *unionfind [n] -> [m](handle, handle) -> *unionfind [n]
+  val halving [n] [m] : *unionfind [n] -> [m](handle, handle) -> *unionfind [n]
+  val reverse_halving [n] [m] : *unionfind [n] -> [m](handle, handle) -> *unionfind [n]
+  val chunked [n] [m] : i64 -> *unionfind [n] -> [m](handle, handle) -> *unionfind [n]
 }
 
-module mk_bench (U: unionfind) : bench = {
+module mk_bench (U: unionfind)
+  : bench
+    with handle = U.handle
+    with unionfind [n] = U.unionfind [n] = {
   type handle = U.handle
   type unionfind [n] = U.unionfind [n]
 
   -- | Multiply-shift hash function https://arxiv.org/abs/1504.06804
+  #[inline]
   def hash (a: (u64, u64)) (b: (u64, u64)) (x: u64) : u64 =
     let y_mul_lo = a.0 * x
     in u64.mul_hi a.1 x + b.1 + u64.bool (y_mul_lo < b.0)
 
+  #[inline]
   def rand (n: i64) : [n]i64 =
     let seed = (n + 2677) * 27644437
     let a0 = 0x8422d1795f837e8b
@@ -41,9 +52,20 @@ module mk_bench (U: unionfind) : bench = {
       |> map (\(i, j) -> (hs[i], hs[j]))
     in (uf, eqs)
 
-  def linear (n: i64) : (*unionfind [n], [n](handle, handle)) =
+  def single (n: i64) (m: i64) : (*unionfind [n], [m](handle, handle)) =
     let (uf, hs) = U.create n
-    in (uf, zip hs (rotate 1 hs))
+    let hs' = take m hs
+    in (uf, map (\h -> (hs'[0], h)) hs')
+
+  def inverse_single (n: i64) (m: i64) : (*unionfind [n], [m](handle, handle)) =
+    let (uf, hs) = U.create n
+    let hs' = take m hs
+    in (uf, map (\h -> (h, hs'[0])) hs')
+
+  def linear (n: i64) (m: i64) : (*unionfind [n], [m](handle, handle)) =
+    let (uf, hs) = U.create n
+    let hs' = take m hs
+    in (uf, zip hs' (rotate 1 hs'))
 
   def all [n] [m] (uf: *unionfind [n]) (hs: [m](handle, handle)) =
     U.union uf hs
@@ -62,9 +84,75 @@ module mk_bench (U: unionfind) : bench = {
     let (uf, _, _) =
       loop (uf, hs, a) = (uf, hs, 1)
       while length hs != 0 do
-        let b = i64.max 0 (length hs - a)
-        let (xs, ys) = sized (a + b) hs |> split
+        let k = length hs
+        let b = i64.max 0 (k - a)
+        let (xs, ys) = sized (i64.min k a + b) hs |> split
         let uf = U.union uf xs
         in (uf, ys, 2 * a)
     in uf
+
+  def chunked [n] [m] (step: i64) (uf: *unionfind [n]) (hs: [m](handle, handle)) =
+    let (uf, _) =
+      loop (uf, hs) = (uf, hs)
+      while length hs != 0 do
+        let k = length hs
+        let b = i64.max 0 (k - step)
+        let (xs, ys) = sized (i64.min k step + b) hs |> split
+        let uf = U.union uf xs
+        in (uf, ys)
+    in uf
 }
+
+module bench_unionfind = mk_bench unionfind
+
+entry unionfind_random = bench_unionfind.random
+entry unionfind_linear = bench_unionfind.linear
+entry unionfind_single = bench_unionfind.single
+entry unionfind_inverse_single = bench_unionfind.inverse_single
+
+-- ==
+-- entry: unionfind_all_bench unionfind_halving_bench unionfind_reverse_halving_bench unionfind_chunked_1000_bench
+-- script input { unionfind_random 1000000i64 200000i64 }
+-- script input { unionfind_linear 1000000i64 200000i64 }
+-- script input { unionfind_single 1000000i64 200000i64 }
+-- script input { unionfind_inverse_single 1000000i64 200000i64 }
+entry unionfind_all_bench = bench_unionfind.all
+entry unionfind_halving_bench = bench_unionfind.halving
+entry unionfind_reverse_halving_bench = bench_unionfind.reverse_halving
+entry unionfind_chunked_1000_bench = bench_unionfind.chunked 1000i64
+
+module bench_unionfind_by_size = mk_bench unionfind_by_size
+
+entry unionfind_by_size_random = bench_unionfind_by_size.random
+entry unionfind_by_size_linear = bench_unionfind_by_size.linear
+entry unionfind_by_size_single = bench_unionfind_by_size.single
+entry unionfind_by_size_inverse_single = bench_unionfind_by_size.inverse_single
+
+-- ==
+-- entry: unionfind_by_size_all_bench unionfind_by_size_halving_bench unionfind_by_size_reverse_halving_bench unionfind_by_size_chunked_1000_bench
+-- script input { unionfind_by_size_random 1000000i64 200000i64 }
+-- script input { unionfind_by_size_linear 1000000i64 200000i64 }
+-- script input { unionfind_by_size_single 1000000i64 200000i64 }
+-- script input { unionfind_by_size_inverse_single 1000000i64 200000i64 }
+entry unionfind_by_size_all_bench = bench_unionfind_by_size.all
+entry unionfind_by_size_halving_bench = bench_unionfind_by_size.halving
+entry unionfind_by_size_reverse_halving_bench = bench_unionfind_by_size.reverse_halving
+entry unionfind_by_size_chunked_1000_bench = bench_unionfind_by_size.chunked 1000i64
+
+module bench_unionfind_by_rank = mk_bench unionfind_by_rank
+
+entry unionfind_by_rank_random = bench_unionfind_by_rank.random
+entry unionfind_by_rank_linear = bench_unionfind_by_rank.linear
+entry unionfind_by_rank_single = bench_unionfind_by_rank.single
+entry unionfind_by_rank_inverse_single = bench_unionfind_by_rank.inverse_single
+
+-- ==
+-- entry: unionfind_by_rank_all_bench unionfind_by_rank_halving_bench unionfind_by_rank_reverse_halving_bench unionfind_by_rank_chunked_1000_bench
+-- script input { unionfind_by_rank_random 1000000i64 200000i64 }
+-- script input { unionfind_by_rank_linear 1000000i64 200000i64 }
+-- script input { unionfind_by_rank_single 1000000i64 200000i64 }
+-- script input { unionfind_by_rank_inverse_single 1000000i64 200000i64 }
+entry unionfind_by_rank_all_bench = bench_unionfind_by_rank.all
+entry unionfind_by_rank_halving_bench = bench_unionfind_by_rank.halving
+entry unionfind_by_rank_reverse_halving_bench = bench_unionfind_by_rank.reverse_halving
+entry unionfind_by_rank_chunked_1000_bench = bench_unionfind_by_rank.chunked 1000i64
