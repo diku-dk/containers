@@ -156,3 +156,21 @@ entry unionfind_by_rank_all_bench = bench_unionfind_by_rank.all
 entry unionfind_by_rank_halving_bench = bench_unionfind_by_rank.halving
 entry unionfind_by_rank_reverse_halving_bench = bench_unionfind_by_rank.reverse_halving
 entry unionfind_by_rank_chunked_1000_bench = bench_unionfind_by_rank.chunked 1000i64
+
+module bench_unionfind_by_rank_alternative = mk_bench unionfind_by_rank_alternative
+
+entry unionfind_by_rank_alternative_random = bench_unionfind_by_rank_alternative.random
+entry unionfind_by_rank_alternative_linear = bench_unionfind_by_rank_alternative.linear
+entry unionfind_by_rank_alternative_single = bench_unionfind_by_rank_alternative.single
+entry unionfind_by_rank_alternative_inverse_single = bench_unionfind_by_rank_alternative.inverse_single
+
+-- ==
+-- entry: unionfind_by_rank_alternative_all_bench unionfind_by_rank_alternative_halving_bench unionfind_by_rank_alternative_reverse_halving_bench unionfind_by_rank_alternative_chunked_1000_bench
+-- script input { unionfind_by_rank_alternative_random 1000000i64 200000i64 }
+-- script input { unionfind_by_rank_alternative_linear 1000000i64 200000i64 }
+-- script input { unionfind_by_rank_alternative_single 1000000i64 200000i64 }
+-- script input { unionfind_by_rank_alternative_inverse_single 1000000i64 200000i64 }
+entry unionfind_by_rank_alternative_all_bench = bench_unionfind_by_rank_alternative.all
+entry unionfind_by_rank_alternative_halving_bench = bench_unionfind_by_rank_alternative.halving
+entry unionfind_by_rank_alternative_reverse_halving_bench = bench_unionfind_by_rank_alternative.reverse_halving
+entry unionfind_by_rank_alternative_chunked_1000_bench = bench_unionfind_by_rank_alternative.chunked 1000i64
