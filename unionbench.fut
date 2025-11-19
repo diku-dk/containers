@@ -11,6 +11,7 @@ module type bench = {
   val halving [n] [m] : *unionfind [n] -> [m](handle, handle) -> *unionfind [n]
   val reverse_halving [n] [m] : *unionfind [n] -> [m](handle, handle) -> *unionfind [n]
   val chunked [n] [m] : i64 -> *unionfind [n] -> [m](handle, handle) -> *unionfind [n]
+  val find [n] [m] : i64 -> *unionfind [n] -> [m]handle -> *unionfind [n]
 }
 
 module mk_bench (U: unionfind)
@@ -101,6 +102,16 @@ module mk_bench (U: unionfind)
         let uf = U.union uf xs
         in (uf, ys)
     in uf
+
+  def find [n] [m] (steps: i64) (uf: *unionfind [n]) (hs: [m]handle) =
+    loop uf for _i < steps do
+      let (uf, _) = U.find uf hs
+      in uf
+
+  def compose f g num_vars num_eqs =
+    let (uf, eqs) = f num_vars num_eqs
+    let uf' = g uf eqs
+    in (uf', U.handles uf')
 }
 
 module bench_unionfind = mk_bench unionfind
@@ -174,3 +185,21 @@ entry unionfind_by_rank_alternative_all_bench = bench_unionfind_by_rank_alternat
 entry unionfind_by_rank_alternative_halving_bench = bench_unionfind_by_rank_alternative.halving
 entry unionfind_by_rank_alternative_reverse_halving_bench = bench_unionfind_by_rank_alternative.reverse_halving
 entry unionfind_by_rank_alternative_chunked_1000_bench = bench_unionfind_by_rank_alternative.chunked 1000i64
+
+module bench_unionfind_sequential_work_efficient = mk_bench unionfind_sequential_work_efficient
+
+entry unionfind_sequential_work_efficient_random = bench_unionfind_sequential_work_efficient.random
+entry unionfind_sequential_work_efficient_linear = bench_unionfind_sequential_work_efficient.linear
+entry unionfind_sequential_work_efficient_single = bench_unionfind_sequential_work_efficient.single
+entry unionfind_sequential_work_efficient_inverse_single = bench_unionfind_sequential_work_efficient.inverse_single
+
+-- ==
+-- entry: unionfind_sequential_work_efficient_all_bench unionfind_sequential_work_efficient_halving_bench unionfind_sequential_work_efficient_reverse_halving_bench unionfind_sequential_work_efficient_chunked_1000_bench
+-- no_cuda no_opencl no_hip script input { unionfind_sequential_work_efficient_random 100000i64 20000i64 }
+-- no_cuda no_opencl no_hip script input { unionfind_sequential_work_efficient_linear 100000i64 20000i64 }
+-- no_cuda no_opencl no_hip script input { unionfind_sequential_work_efficient_single 100000i64 20000i64 }
+-- no_cuda no_opencl no_hip script input { unionfind_sequential_work_efficient_inverse_single 100000i64 20000i64 }
+entry unionfind_sequential_work_efficient_all_bench = bench_unionfind_sequential_work_efficient.all
+entry unionfind_sequential_work_efficient_halving_bench = bench_unionfind_sequential_work_efficient.halving
+entry unionfind_sequential_work_efficient_reverse_halving_bench = bench_unionfind_sequential_work_efficient.reverse_halving
+entry unionfind_sequential_work_efficient_chunked_1000_bench = bench_unionfind_sequential_work_efficient.chunked 1000i64
