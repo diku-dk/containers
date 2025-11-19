@@ -106,4 +106,4 @@ entry unionfind_by_rank_test (num_vars: i64) (num_eqs: i64) : bool =
   test_unionfind_by_rank.test num_vars num_eqs
 
 entry unionfind_sequential_work_efficient_test (num_vars: i64) (num_eqs: i64) : bool =
-  test_unionfind_by_rank.test num_vars num_eqs
+  test_unionfind_sequential_work_efficient.test num_vars num_eqs

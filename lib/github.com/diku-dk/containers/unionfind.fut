@@ -107,6 +107,7 @@ module unionfind_by_size : unionfind = {
     in (new_parents, new_sizes, new_temporary_indices, new_eqs)
 
   def order [n] [u]
+            (flip: bool)
             (parents: *[n]handle)
             (sizes: [n]i64)
             (eqs: [u](handle, handle)) : ( *[n]handle
@@ -121,23 +122,27 @@ module unionfind_by_size : unionfind = {
              then (a, b)
              else if sizes[a] != sizes[b]
              then if sizes[a] < sizes[b] then (a, b) else (b, a)
-             else if a < b then (a, b) else (b, a))
+             else let cmp = a < b
+                  in if flip
+                     then if cmp then (a, b) else (b, a)
+                     else if cmp then (b, a) else (a, b))
           eqs'
     in (new_parents, new_eqs)
 
   def union [n] [u]
             ({parents, sizes, temporary_indices}: *unionfind [n])
             (eqs: [u](handle, handle)) : *unionfind [n] =
-    let (parents, eqs) = order parents sizes eqs
+    let flip = false
+    let (parents, eqs) = order (not flip) parents sizes eqs
     let eqs = filter (\(l, r) -> l != r && l != none && none != r) eqs
-    let (new_parents, new_sizes, new_temporary_indices, _) =
-      loop (parents, sizes, temporary_indices, eqs)
+    let (new_parents, new_sizes, new_temporary_indices, _, _) =
+      loop (parents, sizes, temporary_indices, eqs, flip)
       while not (null eqs) do
-        let (parents', sizes', temporary_indices', eqs') =
+        let (parents, sizes, temporary_indices, eqs) =
           left_maximal_union parents sizes temporary_indices eqs
-        let (parents', eqs') = order parents' sizes' eqs'
-        let eqs' = filter (\(l, r) -> l != r) eqs'
-        in (parents', sizes', temporary_indices', eqs')
+        let (parents, eqs) = order flip parents sizes eqs
+        let eqs = filter (\(l, r) -> l != r) eqs
+        in (parents, sizes, temporary_indices, eqs, not flip)
     in { parents = new_parents
        , sizes = new_sizes
        , temporary_indices = new_temporary_indices
@@ -244,6 +249,7 @@ module unionfind_by_rank : unionfind = {
     in (new_parents, new_ranks, new_temporary_indices, new_is_same_rank, new_eqs)
 
   def order [n] [u]
+            (flip: bool)
             (parents: *[n]handle)
             (ranks: [n]u8)
             (eqs: [u](handle, handle)) : ( *[n]handle
@@ -258,23 +264,27 @@ module unionfind_by_rank : unionfind = {
              then (a, b)
              else if ranks[a] != ranks[b]
              then if ranks[a] < ranks[b] then (a, b) else (b, a)
-             else if a < b then (a, b) else (b, a))
+             else let cmp = a < b
+                  in if flip
+                     then if cmp then (a, b) else (b, a)
+                     else if cmp then (b, a) else (a, b))
           eqs'
     in (new_parents, new_eqs)
 
   def union [n] [u]
             ({parents, ranks, temporary_indices, is_same_rank}: *unionfind [n])
             (eqs: [u](handle, handle)) : *unionfind [n] =
-    let (parents, eqs) = order parents ranks eqs
+    let flip = false
+    let (parents, eqs) = order (not flip) parents ranks eqs
     let eqs = filter (\(l, r) -> l != r && l != none && none != r) eqs
-    let (new_parents, new_ranks, new_temporary_indices, new_is_same_rank, _) =
-      loop (parents, ranks, temporary_indices, is_same_rank, eqs)
+    let (new_parents, new_ranks, new_temporary_indices, new_is_same_rank, _, _) =
+      loop (parents, ranks, temporary_indices, is_same_rank, eqs, flip)
       while not (null eqs) do
-        let (parents', ranks', temporary_indices', is_same_rank', eqs') =
+        let (parents, ranks, temporary_indices, is_same_rank, eqs) =
           left_maximal_union parents ranks temporary_indices is_same_rank eqs
-        let (parents', eqs') = order parents' ranks' eqs'
-        let eqs' = filter (\(l, r) -> l != r) eqs'
-        in (parents', ranks', temporary_indices', is_same_rank', eqs')
+        let (parents, eqs) = order flip parents ranks eqs
+        let eqs = filter (\(l, r) -> l != r) eqs
+        in (parents, ranks, temporary_indices, is_same_rank, eqs, not flip)
     in { parents = new_parents
        , ranks = new_ranks
        , temporary_indices = new_temporary_indices
@@ -425,7 +435,7 @@ module unionfind_sequential_work_efficient : unionfind = {
 
   def find_one [n] (parents: *[n]handle) (h: handle) : (*[n]handle, handle) =
     loop (parents, h) while parents[h] != none do
-      let parents[h] = parents[parents[h]]
+      let parents[h] = if parents[parents[h]] != none then parents[parents[h]] else parents[h]
       in (parents, parents[h])
 
   def find [n] [u]
