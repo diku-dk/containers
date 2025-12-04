@@ -10,13 +10,27 @@ module type unionfind = {
   val union [n] [u] : *unionfind [n] -> [u](handle, handle) -> *unionfind [n]
   val find [n] [u] : *unionfind [n] -> [u]handle -> (*unionfind [n], [u]handle)
   val handles [n] : unionfind [n] -> [n]handle
+  val distance [n] : unionfind [n] -> handle -> i64
 }
 
+local
 def both f (a, b) = (f a, f b)
 
+local
 def bimap f g (a, b) = (f a, g b)
 
+local
 def swap 't (a, b) : (t, t) = (b, a)
+
+local
+def distance_by_vector [n]
+                       (none: i64)
+                       (parents: [n]i64)
+                       (h: i64) : i64 =
+  (.0)
+  <| loop (dist, h) = (0, h)
+     while parents[h] != none do
+       (dist + 1, parents[h])
 
 module unionfind_by_size : unionfind = {
   type handle = i64
@@ -33,6 +47,9 @@ module unionfind_by_size : unionfind = {
 
   def handles [n] (_: unionfind [n]) : [n]handle =
     iota n
+
+  def distance [n] (uf: unionfind [n]) (h: handle) =
+    distance_by_vector none uf.parents h
 
   def create (n: i64) : (*unionfind [n], [n]handle) =
     let hs = iota n
@@ -168,6 +185,9 @@ module unionfind_by_rank : unionfind = {
 
   def handles [n] (_: unionfind [n]) : [n]handle =
     iota n
+
+  def distance [n] (uf: unionfind [n]) (h: handle) =
+    distance_by_vector none uf.parents h
 
   def create (n: i64) : (*unionfind [n], [n]handle) =
     let hs = iota n
@@ -308,6 +328,9 @@ module unionfind_by_rank_alternative : unionfind = {
   def handles [n] (_: unionfind [n]) : [n]handle =
     iota n
 
+  def distance [n] (uf: unionfind [n]) (h: handle) =
+    distance_by_vector none uf.parents h
+
   def create (n: i64) : (*unionfind [n], [n]handle) =
     let hs = iota n
     in ( { parents = rep none
@@ -371,6 +394,7 @@ module unionfind_by_rank_alternative : unionfind = {
     let is = map (.0) done
     let (new_parents, new_ps) = normalize parents is
     let new_ranks_done =
+      #[trace]
       copy
       <| map2 (\l p ->
                  u8.bool (ranks[l] u8.== ranks[p]) + ranks[p])
@@ -436,6 +460,9 @@ module unionfind : unionfind = {
   def create (n: i64) : (*unionfind [n], [n]handle) =
     let hs = iota n
     in ({parents = rep none}, hs)
+
+  def distance [n] (uf: unionfind [n]) (h: handle) =
+    distance_by_vector none uf.parents h
 
   def find_by_vector [n] [u]
                      (parents: *[n]handle)
@@ -530,6 +557,9 @@ module unionfind_sequential : unionfind = {
     let hs = iota n
     in ({parents = rep none}, hs)
 
+  def distance [n] (uf: unionfind [n]) (h: handle) =
+    distance_by_vector none uf.parents h
+
   #[sequential]
   def find_one [n] (uf: unionfind [n]) h =
     loop h while uf.parents[h] != none do
@@ -574,6 +604,9 @@ module unionfind_sequential_work_efficient : unionfind = {
   def create (n: i64) : (*unionfind [n], [n]handle) =
     let hs = iota n
     in ({parents = rep none, ranks = rep 0}, hs)
+
+  def distance [n] (uf: unionfind [n]) (h: handle) =
+    distance_by_vector none uf.parents h
 
   #[sequential]
   def find_one [n] (parents: *[n]handle) (h: handle) : (*[n]handle, handle) =
