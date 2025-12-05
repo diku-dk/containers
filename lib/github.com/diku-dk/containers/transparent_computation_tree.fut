@@ -6,10 +6,10 @@
 -- computing reduction. This tree can then be used to ask queries
 -- about the surrounding elements. An example is you can construct a
 -- binary tree of minima and find the previous smaller element in the
--- array. The module `mk_mintree`@term implements this strategy and
--- uses the module system to help garantee correctness. The
--- implementation found in here can allow for wrong usage and allows
--- for the ability to make more specialized modules.
+-- array. The module `mk_mintree` implements this strategy and uses
+-- the module system to help garantee correctness. The implementation
+-- found in here can allow for wrong usage and allows for the ability
+-- to make more specialized modules.
 --
 -- The implementation is the one descriped by Bar-on and Vishkin [1]
 -- and the implementation is based on the one found in Voetters
