@@ -59,9 +59,9 @@ module type transparent_computation_tree = {
   -- | Given a binary operation, a neutral element, and an array
   -- compute the binary computation tree.
   --
-  -- Work: **O(n)**
+  -- **Work:** *O(n)*
   --
-  -- Span: **O(log n)**
+  -- **Span:** *O(log n)*
   val make [n] 't :
     (op: t -> t -> t) -> (ne: t) -> (arr: [n]t) -> tree [n] t
 
@@ -69,9 +69,9 @@ module type transparent_computation_tree = {
   -- element with a smaller index which satisfies the relation. If it
   -- fails to find this element (-1) is the result.
   --
-  -- Work: **O(log n)**
+  -- **Work:** *O(log n)*
   --
-  -- Span: **O(1)**
+  -- **Span:** *O(1)*
   val previous [n] 't :
     (op: t -> t -> bool) -> (tree: tree [n] t) -> (i: i64) -> i64
 
@@ -79,24 +79,24 @@ module type transparent_computation_tree = {
   -- element with a greater index which satisfies the relation. If it
   -- fails to find this element (-1) is the result.
   --
-  -- Work: **O(log n)**
+  -- **Work:** *O(log n)*
   --
-  -- Span: **O(1)**
+  -- **Span:** *O(1)*
   val next [n] 't :
     (op: t -> t -> bool) -> (tree: tree [n] t) -> (i: i64) -> i64
 
   -- | Given a tree return the tree as an array.
   --
-  -- Work: **O(n)**
+  -- **Work:** *O(n)*
   --
-  -- Span: **O(1)**
+  -- **Span:** *O(1)*
   val to_array [n] 't : (tree: tree [n] t) -> [size n]t
 
   -- | Given an array on the tree form return the tree.
   --
-  -- Work: **O(n)**
+  -- **Work:** *O(n)*
   --
-  -- Span: **O(1)**
+  -- **Span:** *O(1)*
   val from_array [n] 't : (array: [size n]t) -> tree [n] t
 }
 
@@ -126,7 +126,7 @@ module transparent_computation_tree : transparent_computation_tree = {
         let offsets = iota new_size |> map (+ offset)
         let new_tree = scatter tree offsets new_arr
         in (new_tree, new_arr, level - 1)
-    in from_array (#[trace] tree :> [size n]t)
+    in from_array (tree :> [size n]t)
 
   def previous [n] 't
                (op: t -> t -> bool)
