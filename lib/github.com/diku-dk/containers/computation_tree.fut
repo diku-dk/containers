@@ -1,0 +1,139 @@
+-- | A collection of common binary computation tree.
+--
+-- The following collection of binary computation tree. These trees
+-- allows for the abilities like asking questions about an array such
+-- as "What is the next smaller or equal element in this array". Such
+-- an question can be answered as following:
+--
+-- ```
+-- module mintree = mk_mintree
+-- let tree = mintree.make [0, 1, 2, 3, 4, 5, 0]
+-- let i = mintree.next tree 1
+-- ```
+--
+-- Here `i` will be the index `6`, of the next smaller or equal
+-- element.
+--
+-- All these binary computation trees are a specialisations of the
+-- `transparent_computation_tree`@term module which has no type safety
+-- guarantees.
+
+import "transparent_computation_tree"
+
+-- | Module type that specifies an ordered binary computation tree.
+module type ordered_computation_tree = {
+  -- | The type of elements in ordered binary computation tree.
+  type t
+
+  -- | The type of the binary computation tree.
+  type~ tree
+
+  -- | From an array of elements create a binary computation tree.
+  --
+  -- Work: **O(n)**
+  --
+  -- Span: **O(log n)**
+  val make [n] : [n]t -> tree
+
+  -- | Using the binary computation tree and the index of an element
+  -- find an element with a smaller index that fulfills some (<=)
+  -- binary relation from a total ordering. If the element does not
+  -- exists `-1` is returned. E.g. if it is a of minima you find the
+  -- previous smaller or equal element. Likewise a of maxima finds the
+  -- previous greater or equal element.
+  --
+  -- Work: **O(log n)**
+  --
+  -- Span: **O(1)**
+  val previous : tree -> i64 -> i64
+
+  -- | Using the binary computation tree and the index of an element
+  -- find an element with a greater index that fulfills some (<=)
+  -- binary relation from a total ordering. If the element does not
+  -- exists `-1` is returned.
+  --
+  -- Work: **O(log n)**
+  --
+  -- Span: **O(1)**
+  val next : tree -> i64 -> i64
+
+  -- | Using the binary computation tree and the index of an element
+  -- find an element with a smaller index that fulfills some (<)
+  -- binary relation from a strict total ordering. If the element does
+  -- not exists `-1` is returned.
+  --
+  -- Work: **O(log n)**
+  --
+  -- Span: **O(1)**
+  val strict_previous : tree -> i64 -> i64
+
+  -- | Using the binary computation tree and the index of an element
+  -- find anelement with a greater index that fulfills some (<) binary
+  -- relation from a strict total ordering. If the element does not
+  -- exists `-1` is returned.
+  --
+  -- Work: **O(log n)**
+  --
+  -- Span: **O(1)**
+  val strict_next : tree -> i64 -> i64
+}
+
+-- | Make a binary computation tree of minima.
+module mk_mintree
+  (O: {
+    type t
+    val highest : t
+    val min : t -> t -> t
+    val (<=) : t -> t -> bool
+    val (<) : t -> t -> bool
+  })
+  : ordered_computation_tree with t = O.t = {
+  module T = transparent_computation_tree
+  type t = O.t
+  type~ tree = ?[n].T.tree [n] t
+
+  def make [n] (arr: [n]t) =
+    T.make O.min O.highest arr
+
+  def previous (tree: tree) (i: i64) : i64 =
+    T.previous (O.<=) tree i
+
+  def next (tree: tree) (i: i64) : i64 =
+    T.next (O.<=) tree i
+
+  def strict_previous (tree: tree) (i: i64) : i64 =
+    T.previous (O.<) tree i
+
+  def strict_next (tree: tree) (i: i64) : i64 =
+    T.next (O.<) tree i
+}
+
+-- | Make a binary computation tree of maxima.
+module mk_maxtree
+  (O: {
+    type t
+    val lowest : t
+    val max : t -> t -> t
+    val (>=) : t -> t -> bool
+    val (>) : t -> t -> bool
+  })
+  : ordered_computation_tree with t = O.t = {
+  module T = transparent_computation_tree
+  type t = O.t
+  type~ tree = ?[n].T.tree [n] t
+
+  def make [n] (arr: [n]t) =
+    T.make O.max O.lowest arr
+
+  def previous (tree: tree) (i: i64) : i64 =
+    T.previous (O.>=) tree i
+
+  def next (tree: tree) (i: i64) : i64 =
+    T.next (O.>=) tree i
+
+  def strict_previous (tree: tree) (i: i64) : i64 =
+    T.previous (O.>) tree i
+
+  def strict_next (tree: tree) (i: i64) : i64 =
+    T.next (O.>) tree i
+}
