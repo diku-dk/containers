@@ -6,13 +6,13 @@
 -- an question can be answered as following:
 --
 -- ```
--- module mintree = mk_mintree
--- let tree = mintree.make [0, 1, 2, 3, 4, 5, 0]
+-- module mintree = mk_mintree i32
+-- let tree = mintree.make [16, 32, 64, 48, 42, 58, 17]
 -- let i = mintree.next tree 1
 -- ```
 --
--- Here `i` will be the index `6`, of the next smaller or equal
--- element.
+-- Here `i` will be the value `6` since that is the index of the next
+-- smaller or equal element.
 --
 -- All these binary computation trees are a specialisations of the
 -- `transparent_computation_tree`@term module which has no type safety
