@@ -15,7 +15,7 @@
 -- element.
 --
 -- All these binary computation trees are a specialisations of the
--- `transparent_computation_tree`@term module which has no type safety
+-- `transparent_computation_tree` module which has no type safety
 -- guarantees.
 
 import "transparent_computation_tree"
@@ -30,9 +30,9 @@ module type ordered_computation_tree = {
 
   -- | From an array of elements create a binary computation tree.
   --
-  -- Work: **O(n)**
+  -- **Work:** *O(n)*
   --
-  -- Span: **O(log n)**
+  -- **Span:** *O(log n)*
   val make [n] : [n]t -> tree
 
   -- | Using the binary computation tree and the index of an element
@@ -42,9 +42,9 @@ module type ordered_computation_tree = {
   -- previous smaller or equal element. Likewise a of maxima finds the
   -- previous greater or equal element.
   --
-  -- Work: **O(log n)**
+  -- **Work:** *O(log n)*
   --
-  -- Span: **O(1)**
+  -- **Span:** *O(1)*
   val previous : tree -> i64 -> i64
 
   -- | Using the binary computation tree and the index of an element
@@ -52,9 +52,9 @@ module type ordered_computation_tree = {
   -- binary relation from a total ordering. If the element does not
   -- exists `-1` is returned.
   --
-  -- Work: **O(log n)**
+  -- **Work:** *O(log n)*
   --
-  -- Span: **O(1)**
+  -- **Span:** *O(1)*
   val next : tree -> i64 -> i64
 
   -- | Using the binary computation tree and the index of an element
@@ -62,9 +62,9 @@ module type ordered_computation_tree = {
   -- binary relation from a strict total ordering. If the element does
   -- not exists `-1` is returned.
   --
-  -- Work: **O(log n)**
+  -- **Work:** *O(log n)*
   --
-  -- Span: **O(1)**
+  -- **Span:** *O(1)*
   val strict_previous : tree -> i64 -> i64
 
   -- | Using the binary computation tree and the index of an element
@@ -72,9 +72,9 @@ module type ordered_computation_tree = {
   -- relation from a strict total ordering. If the element does not
   -- exists `-1` is returned.
   --
-  -- Work: **O(log n)**
+  -- **Work:** *O(log n)*
   --
-  -- Span: **O(1)**
+  -- **Span:** *O(1)*
   val strict_next : tree -> i64 -> i64
 }
 
