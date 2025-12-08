@@ -1,6 +1,27 @@
-import "hashkey"
-import "hashmap"
-import "opt"
+-- | Module containing different implementations of union-find.
+--
+-- Union-find is a data structure which support three operation:
+-- * `create`@term: Make an empty union-find structure.
+-- * `find`@term: Find the representative of an element in the
+--   union-find structure.
+-- * `union`@term: Make it so to elements in the union-find structure
+--   has the same representative.
+--
+-- The implementations found in this library focuses on bulk parallel
+-- find and union operations. There are three different
+-- implementations of the parallel union-find data-structure.
+-- * `unionfind`@term: A bare bones union-find implementation which
+--   has good performance if about O(log n) calls of union is done
+--   where `n` is the number of element pairs to be unioned.  If you
+--   have linear amount of calls to union then the finds will become
+--   expensive and linear in cost.
+-- * `union_by_rank`@term: A union-find implementation which uses union
+--   by rank leading to the find being O(log n) for a single element
+--   where `n` is the number of element pairs that have been unioned.
+-- * `union_by_size`@term: A union-find implementation which uses
+--   union by size leading to the same properties as
+--   `union_by_rank`@term but it has worse performance when
+--   benchmarking the union operation.
 
 module type unionfind = {
   -- | A handle is an element in the union-find structure.
@@ -13,11 +34,12 @@ module type unionfind = {
   val (==) : handle -> handle -> bool
 
   -- | Create an union-find structure of `n`@term handles where
-  -- initially every element is not unioned with any other element.
+  -- initially every element is not unioned with no other element then
+  -- it self.
   val create : (n: i64) -> *unionfind [n]
 
-  -- | Given an array handles find the representative of the handle
-  -- and give back the new union-find structure and the
+  -- | Given an array of handles find the representative of each
+  -- handle and give back the new union-find structure with the
   -- representatives.
   val find [n] [u] : *unionfind [n] -> [u]handle -> (*unionfind [n], [u]handle)
 
