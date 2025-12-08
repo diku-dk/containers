@@ -60,24 +60,28 @@ module mk_bench (U: unionfind)
     |> uncurry zip
 
   def random [n] [m] : (unionfind [n], [m](handle, handle)) =
-    let (uf, hs) = U.create n
+    let uf = U.create n
+    let hs = U.handles uf
     let eqs =
       equations n m
       |> map (\(i, j) -> (hs[i], hs[j]))
     in (uf, eqs)
 
   def single [n] [m] : (unionfind [n], [m](handle, handle)) =
-    let (uf, hs) = U.create n
+    let uf = U.create n
+    let hs = U.handles uf
     let hs' = take m hs
     in (uf, map (\h -> (hs'[0], h)) hs')
 
   def inverse_single [n] [m] : (unionfind [n], [m](handle, handle)) =
-    let (uf, hs) = U.create n
+    let uf = U.create n
+    let hs = U.handles uf
     let hs' = take m hs
     in (uf, map (\h -> (h, hs'[0])) hs')
 
   def linear [n] [m] : (unionfind [n], [m](handle, handle)) =
-    let (uf, hs) = U.create n
+    let uf = U.create n
+    let hs = U.handles uf
     let hs' = take m hs
     in (uf, zip hs' (rotate 1 hs'))
 
@@ -135,7 +139,7 @@ module mk_bench (U: unionfind)
     in (uf, U.handles uf)
 }
 
-def chunk_size = 1i64
+def chunk_size = 10000i64
 
 module bench_unionfind = mk_bench unionfind
 
@@ -212,22 +216,22 @@ entry unionfind_chunked_bench = bench_unionfind.chunked chunk_size
 
 -- ==
 -- entry: unionfind_find
--- script input { unionfind_all_random 10000000i64 10000000i64 }
--- script input { unionfind_all_linear 10000000i64 10000000i64 }
--- script input { unionfind_all_single 10000000i64 10000000i64 }
--- script input { unionfind_all_inverse_single 10000000i64 10000000i64 }
--- script input { unionfind_halving_random 10000000i64 10000000i64 }
--- script input { unionfind_halving_linear 10000000i64 10000000i64 }
--- script input { unionfind_halving_single 10000000i64 10000000i64 }
--- script input { unionfind_halving_inverse_single 10000000i64 10000000i64 }
--- script input { unionfind_reverse_halving_random 10000000i64 10000000i64 }
--- script input { unionfind_reverse_halving_linear 10000000i64 10000000i64 }
--- script input { unionfind_reverse_halving_single 10000000i64 10000000i64 }
--- script input { unionfind_reverse_halving_inverse_single 10000000i64 10000000i64 }
--- script input { unionfind_chunked_random 10000000i64 10000000i64 }
--- script input { unionfind_chunked_linear 10000000i64 10000000i64 }
--- script input { unionfind_chunked_single 10000000i64 10000000i64 }
--- script input { unionfind_chunked_inverse_single 10000000i64 10000000i64 }
+-- compiled script input { unionfind_all_random 10000000i64 10000000i64 }
+-- compiled script input { unionfind_all_linear 10000000i64 10000000i64 }
+-- compiled script input { unionfind_all_single 10000000i64 10000000i64 }
+-- compiled script input { unionfind_all_inverse_single 10000000i64 10000000i64 }
+-- compiled script input { unionfind_halving_random 10000000i64 10000000i64 }
+-- compiled script input { unionfind_halving_linear 10000000i64 10000000i64 }
+-- compiled script input { unionfind_halving_single 10000000i64 10000000i64 }
+-- compiled script input { unionfind_halving_inverse_single 10000000i64 10000000i64 }
+-- compiled script input { unionfind_reverse_halving_random 10000000i64 10000000i64 }
+-- compiled script input { unionfind_reverse_halving_linear 10000000i64 10000000i64 }
+-- compiled script input { unionfind_reverse_halving_single 10000000i64 10000000i64 }
+-- compiled script input { unionfind_reverse_halving_inverse_single 10000000i64 10000000i64 }
+-- compiled script input { unionfind_chunked_random 10000000i64 10000000i64 }
+-- compiled script input { unionfind_chunked_linear 10000000i64 10000000i64 }
+-- compiled script input { unionfind_chunked_single 10000000i64 10000000i64 }
+-- compiled script input { unionfind_chunked_inverse_single 10000000i64 10000000i64 }
 entry unionfind_find = bench_unionfind.find 10
 
 module bench_unionfind_by_size = mk_bench unionfind_by_size
@@ -305,22 +309,22 @@ entry unionfind_by_size_chunked_bench = bench_unionfind_by_size.chunked chunk_si
 
 -- ==
 -- entry: unionfind_by_size_find
--- script input { unionfind_by_size_all_random 10000000i64 10000000i64 }
--- script input { unionfind_by_size_all_linear 10000000i64 10000000i64 }
--- script input { unionfind_by_size_all_single 10000000i64 10000000i64 }
--- script input { unionfind_by_size_all_inverse_single 10000000i64 10000000i64 }
--- script input { unionfind_by_size_halving_random 10000000i64 10000000i64 }
--- script input { unionfind_by_size_halving_linear 10000000i64 10000000i64 }
--- script input { unionfind_by_size_halving_single 10000000i64 10000000i64 }
--- script input { unionfind_by_size_halving_inverse_single 10000000i64 10000000i64 }
--- script input { unionfind_by_size_reverse_halving_random 10000000i64 10000000i64 }
--- script input { unionfind_by_size_reverse_halving_linear 10000000i64 10000000i64 }
--- script input { unionfind_by_size_reverse_halving_single 10000000i64 10000000i64 }
--- script input { unionfind_by_size_reverse_halving_inverse_single 10000000i64 10000000i64 }
--- script input { unionfind_by_size_chunked_random 10000000i64 10000000i64 }
--- script input { unionfind_by_size_chunked_linear 10000000i64 10000000i64 }
--- script input { unionfind_by_size_chunked_single 10000000i64 10000000i64 }
--- script input { unionfind_by_size_chunked_inverse_single 10000000i64 10000000i64 }
+-- compiled script input { unionfind_by_size_all_random 10000000i64 10000000i64 }
+-- compiled script input { unionfind_by_size_all_linear 10000000i64 10000000i64 }
+-- compiled script input { unionfind_by_size_all_single 10000000i64 10000000i64 }
+-- compiled script input { unionfind_by_size_all_inverse_single 10000000i64 10000000i64 }
+-- compiled script input { unionfind_by_size_halving_random 10000000i64 10000000i64 }
+-- compiled script input { unionfind_by_size_halving_linear 10000000i64 10000000i64 }
+-- compiled script input { unionfind_by_size_halving_single 10000000i64 10000000i64 }
+-- compiled script input { unionfind_by_size_halving_inverse_single 10000000i64 10000000i64 }
+-- compiled script input { unionfind_by_size_reverse_halving_random 10000000i64 10000000i64 }
+-- compiled script input { unionfind_by_size_reverse_halving_linear 10000000i64 10000000i64 }
+-- compiled script input { unionfind_by_size_reverse_halving_single 10000000i64 10000000i64 }
+-- compiled script input { unionfind_by_size_reverse_halving_inverse_single 10000000i64 10000000i64 }
+-- compiled script input { unionfind_by_size_chunked_random 10000000i64 10000000i64 }
+-- compiled script input { unionfind_by_size_chunked_linear 10000000i64 10000000i64 }
+-- compiled script input { unionfind_by_size_chunked_single 10000000i64 10000000i64 }
+-- compiled script input { unionfind_by_size_chunked_inverse_single 10000000i64 10000000i64 }
 entry unionfind_by_size_find = bench_unionfind_by_size.find 10
 
 module bench_unionfind_by_rank = mk_bench unionfind_by_rank
@@ -398,121 +402,23 @@ entry unionfind_by_rank_chunked_bench = bench_unionfind_by_rank.chunked chunk_si
 
 -- ==
 -- entry: unionfind_by_rank_find
--- script input { unionfind_by_rank_all_random 10000000i64 10000000i64 }
--- script input { unionfind_by_rank_all_linear 10000000i64 10000000i64 }
--- script input { unionfind_by_rank_all_single 10000000i64 10000000i64 }
--- script input { unionfind_by_rank_all_inverse_single 10000000i64 10000000i64 }
--- script input { unionfind_by_rank_halving_random 10000000i64 10000000i64 }
--- script input { unionfind_by_rank_halving_linear 10000000i64 10000000i64 }
--- script input { unionfind_by_rank_halving_single 10000000i64 10000000i64 }
--- script input { unionfind_by_rank_halving_inverse_single 10000000i64 10000000i64 }
--- script input { unionfind_by_rank_reverse_halving_random 10000000i64 10000000i64 }
--- script input { unionfind_by_rank_reverse_halving_linear 10000000i64 10000000i64 }
--- script input { unionfind_by_rank_reverse_halving_single 10000000i64 10000000i64 }
--- script input { unionfind_by_rank_reverse_halving_inverse_single 10000000i64 10000000i64 }
--- script input { unionfind_by_rank_chunked_random 10000000i64 10000000i64 }
--- script input { unionfind_by_rank_chunked_linear 10000000i64 10000000i64 }
--- script input { unionfind_by_rank_chunked_single 10000000i64 10000000i64 }
--- script input { unionfind_by_rank_chunked_inverse_single 10000000i64 10000000i64 }
+-- compiled script input { unionfind_by_rank_all_random 10000000i64 10000000i64 }
+-- compiled script input { unionfind_by_rank_all_linear 10000000i64 10000000i64 }
+-- compiled script input { unionfind_by_rank_all_single 10000000i64 10000000i64 }
+-- compiled script input { unionfind_by_rank_all_inverse_single 10000000i64 10000000i64 }
+-- compiled script input { unionfind_by_rank_halving_random 10000000i64 10000000i64 }
+-- compiled script input { unionfind_by_rank_halving_linear 10000000i64 10000000i64 }
+-- compiled script input { unionfind_by_rank_halving_single 10000000i64 10000000i64 }
+-- compiled script input { unionfind_by_rank_halving_inverse_single 10000000i64 10000000i64 }
+-- compiled script input { unionfind_by_rank_reverse_halving_random 10000000i64 10000000i64 }
+-- compiled script input { unionfind_by_rank_reverse_halving_linear 10000000i64 10000000i64 }
+-- compiled script input { unionfind_by_rank_reverse_halving_single 10000000i64 10000000i64 }
+-- compiled script input { unionfind_by_rank_reverse_halving_inverse_single 10000000i64 10000000i64 }
+-- compiled script input { unionfind_by_rank_chunked_random 10000000i64 10000000i64 }
+-- compiled script input { unionfind_by_rank_chunked_linear 10000000i64 10000000i64 }
+-- compiled script input { unionfind_by_rank_chunked_single 10000000i64 10000000i64 }
+-- compiled script input { unionfind_by_rank_chunked_inverse_single 10000000i64 10000000i64 }
 entry unionfind_by_rank_find = bench_unionfind_by_rank.find 10
-
-module bench_unionfind_by_rank_alternative = mk_bench unionfind_by_rank_alternative
-
-entry unionfind_by_rank_alternative_random n m =
-  bench_unionfind_by_rank_alternative.infer n m bench_unionfind_by_rank_alternative.random
-
-entry unionfind_by_rank_alternative_linear n m =
-  bench_unionfind_by_rank_alternative.infer n m bench_unionfind_by_rank_alternative.linear
-
-entry unionfind_by_rank_alternative_single n m =
-  bench_unionfind_by_rank_alternative.infer n m bench_unionfind_by_rank_alternative.single
-
-entry unionfind_by_rank_alternative_inverse_single n m =
-  bench_unionfind_by_rank_alternative.infer n m bench_unionfind_by_rank_alternative.inverse_single
-
-entry unionfind_by_rank_alternative_all_random n m =
-  bench_unionfind_by_rank_alternative.compose n m bench_unionfind_by_rank_alternative.random bench_unionfind_by_rank_alternative.all
-
-entry unionfind_by_rank_alternative_all_linear n m =
-  bench_unionfind_by_rank_alternative.compose n m bench_unionfind_by_rank_alternative.linear bench_unionfind_by_rank_alternative.all
-
-entry unionfind_by_rank_alternative_all_single n m =
-  bench_unionfind_by_rank_alternative.compose n m bench_unionfind_by_rank_alternative.single bench_unionfind_by_rank_alternative.all
-
-entry unionfind_by_rank_alternative_all_inverse_single n m =
-  bench_unionfind_by_rank_alternative.compose n m bench_unionfind_by_rank_alternative.inverse_single bench_unionfind_by_rank_alternative.all
-
-entry unionfind_by_rank_alternative_halving_random n m =
-  bench_unionfind_by_rank_alternative.compose n m bench_unionfind_by_rank_alternative.random bench_unionfind_by_rank_alternative.halving
-
-entry unionfind_by_rank_alternative_halving_linear n m =
-  bench_unionfind_by_rank_alternative.compose n m bench_unionfind_by_rank_alternative.linear bench_unionfind_by_rank_alternative.halving
-
-entry unionfind_by_rank_alternative_halving_single n m =
-  bench_unionfind_by_rank_alternative.compose n m bench_unionfind_by_rank_alternative.single bench_unionfind_by_rank_alternative.halving
-
-entry unionfind_by_rank_alternative_halving_inverse_single n m =
-  bench_unionfind_by_rank_alternative.compose n m bench_unionfind_by_rank_alternative.inverse_single bench_unionfind_by_rank_alternative.halving
-
-entry unionfind_by_rank_alternative_reverse_halving_random n m =
-  bench_unionfind_by_rank_alternative.compose n m bench_unionfind_by_rank_alternative.random bench_unionfind_by_rank_alternative.reverse_halving
-
-entry unionfind_by_rank_alternative_reverse_halving_linear n m =
-  bench_unionfind_by_rank_alternative.compose n m bench_unionfind_by_rank_alternative.linear bench_unionfind_by_rank_alternative.reverse_halving
-
-entry unionfind_by_rank_alternative_reverse_halving_single n m =
-  bench_unionfind_by_rank_alternative.compose n m bench_unionfind_by_rank_alternative.single bench_unionfind_by_rank_alternative.reverse_halving
-
-entry unionfind_by_rank_alternative_reverse_halving_inverse_single n m =
-  bench_unionfind_by_rank_alternative.compose n m bench_unionfind_by_rank_alternative.inverse_single bench_unionfind_by_rank_alternative.reverse_halving
-
-entry unionfind_by_rank_alternative_chunked_random n m =
-  bench_unionfind_by_rank_alternative.compose n m bench_unionfind_by_rank_alternative.random (bench_unionfind_by_rank_alternative.chunked chunk_size)
-
-entry unionfind_by_rank_alternative_chunked_linear n m =
-  bench_unionfind_by_rank_alternative.compose n m bench_unionfind_by_rank_alternative.linear (bench_unionfind_by_rank_alternative.chunked chunk_size)
-
-entry unionfind_by_rank_alternative_chunked_single n m =
-  bench_unionfind_by_rank_alternative.compose n m bench_unionfind_by_rank_alternative.single (bench_unionfind_by_rank_alternative.chunked chunk_size)
-
-entry unionfind_by_rank_alternative_chunked_inverse_single n m =
-  bench_unionfind_by_rank_alternative.compose n m bench_unionfind_by_rank_alternative.inverse_single (bench_unionfind_by_rank_alternative.chunked chunk_size)
-
-entry example (n: i64) (m: i64) =
-  let (uf, hs) = #[trace] unionfind_by_rank_alternative_chunked_linear n m
-  let ds = map (unionfind_by_rank_alternative.distance uf) hs
-  in i64.maximum ds
-
--- ==
--- entry: unionfind_by_rank_alternative_all_bench unionfind_by_rank_alternative_halving_bench unionfind_by_rank_alternative_reverse_halving_bench unionfind_by_rank_alternative_chunked_bench
--- compiled script input { unionfind_by_rank_alternative_random 1000000i64 200000i64 }
--- compiled script input { unionfind_by_rank_alternative_linear 1000000i64 200000i64 }
--- compiled script input { unionfind_by_rank_alternative_single 1000000i64 200000i64 }
--- compiled script input { unionfind_by_rank_alternative_inverse_single 1000000i64 200000i64 }
-entry unionfind_by_rank_alternative_all_bench = bench_unionfind_by_rank_alternative.all
-entry unionfind_by_rank_alternative_halving_bench = bench_unionfind_by_rank_alternative.halving
-entry unionfind_by_rank_alternative_reverse_halving_bench = bench_unionfind_by_rank_alternative.reverse_halving
-entry unionfind_by_rank_alternative_chunked_bench = bench_unionfind_by_rank_alternative.chunked chunk_size
-
--- ==
--- entry: unionfind_by_rank_alternative_find
--- script input { unionfind_by_rank_alternative_all_random 10000000i64 10000000i64 }
--- script input { unionfind_by_rank_alternative_all_linear 10000000i64 10000000i64 }
--- script input { unionfind_by_rank_alternative_all_single 10000000i64 10000000i64 }
--- script input { unionfind_by_rank_alternative_all_inverse_single 10000000i64 10000000i64 }
--- script input { unionfind_by_rank_alternative_halving_random 10000000i64 10000000i64 }
--- script input { unionfind_by_rank_alternative_halving_linear 10000000i64 10000000i64 }
--- script input { unionfind_by_rank_alternative_halving_single 10000000i64 10000000i64 }
--- script input { unionfind_by_rank_alternative_halving_inverse_single 10000000i64 10000000i64 }
--- script input { unionfind_by_rank_alternative_reverse_halving_random 10000000i64 10000000i64 }
--- script input { unionfind_by_rank_alternative_reverse_halving_linear 10000000i64 10000000i64 }
--- script input { unionfind_by_rank_alternative_reverse_halving_single 10000000i64 10000000i64 }
--- script input { unionfind_by_rank_alternative_reverse_halving_inverse_single 10000000i64 10000000i64 }
--- script input { unionfind_by_rank_alternative_chunked_random 10000000i64 10000000i64 }
--- script input { unionfind_by_rank_alternative_chunked_linear 10000000i64 10000000i64 }
--- script input { unionfind_by_rank_alternative_chunked_single 10000000i64 10000000i64 }
--- script input { unionfind_by_rank_alternative_chunked_inverse_single 10000000i64 10000000i64 }
-entry unionfind_by_rank_alternative_find = bench_unionfind_by_rank_alternative.find 10
 
 module bench_unionfind_sequential_work_efficient = mk_bench unionfind_sequential_work_efficient
 
@@ -528,6 +434,54 @@ entry unionfind_sequential_work_efficient_single n m =
 entry unionfind_sequential_work_efficient_inverse_single n m =
   bench_unionfind_sequential_work_efficient.infer n m bench_unionfind_sequential_work_efficient.inverse_single
 
+entry unionfind_sequential_work_efficient_all_random n m =
+  bench_unionfind_sequential_work_efficient.compose n m bench_unionfind_sequential_work_efficient.random bench_unionfind_sequential_work_efficient.all
+
+entry unionfind_sequential_work_efficient_all_linear n m =
+  bench_unionfind_sequential_work_efficient.compose n m bench_unionfind_sequential_work_efficient.linear bench_unionfind_sequential_work_efficient.all
+
+entry unionfind_sequential_work_efficient_all_single n m =
+  bench_unionfind_sequential_work_efficient.compose n m bench_unionfind_sequential_work_efficient.single bench_unionfind_sequential_work_efficient.all
+
+entry unionfind_sequential_work_efficient_all_inverse_single n m =
+  bench_unionfind_sequential_work_efficient.compose n m bench_unionfind_sequential_work_efficient.inverse_single bench_unionfind_sequential_work_efficient.all
+
+entry unionfind_sequential_work_efficient_halving_random n m =
+  bench_unionfind_sequential_work_efficient.compose n m bench_unionfind_sequential_work_efficient.random bench_unionfind_sequential_work_efficient.halving
+
+entry unionfind_sequential_work_efficient_halving_linear n m =
+  bench_unionfind_sequential_work_efficient.compose n m bench_unionfind_sequential_work_efficient.linear bench_unionfind_sequential_work_efficient.halving
+
+entry unionfind_sequential_work_efficient_halving_single n m =
+  bench_unionfind_sequential_work_efficient.compose n m bench_unionfind_sequential_work_efficient.single bench_unionfind_sequential_work_efficient.halving
+
+entry unionfind_sequential_work_efficient_halving_inverse_single n m =
+  bench_unionfind_sequential_work_efficient.compose n m bench_unionfind_sequential_work_efficient.inverse_single bench_unionfind_sequential_work_efficient.halving
+
+entry unionfind_sequential_work_efficient_reverse_halving_random n m =
+  bench_unionfind_sequential_work_efficient.compose n m bench_unionfind_sequential_work_efficient.random bench_unionfind_sequential_work_efficient.reverse_halving
+
+entry unionfind_sequential_work_efficient_reverse_halving_linear n m =
+  bench_unionfind_sequential_work_efficient.compose n m bench_unionfind_sequential_work_efficient.linear bench_unionfind_sequential_work_efficient.reverse_halving
+
+entry unionfind_sequential_work_efficient_reverse_halving_single n m =
+  bench_unionfind_sequential_work_efficient.compose n m bench_unionfind_sequential_work_efficient.single bench_unionfind_sequential_work_efficient.reverse_halving
+
+entry unionfind_sequential_work_efficient_reverse_halving_inverse_single n m =
+  bench_unionfind_sequential_work_efficient.compose n m bench_unionfind_sequential_work_efficient.inverse_single bench_unionfind_sequential_work_efficient.reverse_halving
+
+entry unionfind_sequential_work_efficient_chunked_random n m =
+  bench_unionfind_sequential_work_efficient.compose n m bench_unionfind_sequential_work_efficient.random (bench_unionfind_sequential_work_efficient.chunked chunk_size)
+
+entry unionfind_sequential_work_efficient_chunked_linear n m =
+  bench_unionfind_sequential_work_efficient.compose n m bench_unionfind_sequential_work_efficient.linear (bench_unionfind_sequential_work_efficient.chunked chunk_size)
+
+entry unionfind_sequential_work_efficient_chunked_single n m =
+  bench_unionfind_sequential_work_efficient.compose n m bench_unionfind_sequential_work_efficient.single (bench_unionfind_sequential_work_efficient.chunked chunk_size)
+
+entry unionfind_sequential_work_efficient_chunked_inverse_single n m =
+  bench_unionfind_sequential_work_efficient.compose n m bench_unionfind_sequential_work_efficient.inverse_single (bench_unionfind_sequential_work_efficient.chunked chunk_size)
+
 -- ==
 -- entry: unionfind_sequential_work_efficient_all_bench unionfind_sequential_work_efficient_halving_bench unionfind_sequential_work_efficient_reverse_halving_bench unionfind_sequential_work_efficient_chunked_bench
 -- no_cuda no_opencl no_hip compiled script input { unionfind_sequential_work_efficient_random 100000i64 20000i64 }
@@ -538,3 +492,23 @@ entry unionfind_sequential_work_efficient_all_bench = bench_unionfind_sequential
 entry unionfind_sequential_work_efficient_halving_bench = bench_unionfind_sequential_work_efficient.halving
 entry unionfind_sequential_work_efficient_reverse_halving_bench = bench_unionfind_sequential_work_efficient.reverse_halving
 entry unionfind_sequential_work_efficient_chunked_bench = bench_unionfind_sequential_work_efficient.chunked chunk_size
+
+-- ==
+-- entry: unionfind_sequential_work_efficient_find
+-- no_cuda no_opencl no_hip compiled script input { unionfind_sequential_work_efficient_all_random 100000i64 100000i64 }
+-- no_cuda no_opencl no_hip compiled script input { unionfind_sequential_work_efficient_all_linear 100000i64 100000i64 }
+-- no_cuda no_opencl no_hip compiled script input { unionfind_sequential_work_efficient_all_single 100000i64 100000i64 }
+-- no_cuda no_opencl no_hip compiled script input { unionfind_sequential_work_efficient_all_inverse_single 100000i64 100000i64 }
+-- no_cuda no_opencl no_hip compiled script input { unionfind_sequential_work_efficient_halving_random 100000i64 100000i64 }
+-- no_cuda no_opencl no_hip compiled script input { unionfind_sequential_work_efficient_halving_linear 100000i64 100000i64 }
+-- no_cuda no_opencl no_hip compiled script input { unionfind_sequential_work_efficient_halving_single 100000i64 100000i64 }
+-- no_cuda no_opencl no_hip compiled script input { unionfind_sequential_work_efficient_halving_inverse_single 100000i64 100000i64 }
+-- no_cuda no_opencl no_hip compiled script input { unionfind_sequential_work_efficient_reverse_halving_random 100000i64 100000i64 }
+-- no_cuda no_opencl no_hip compiled script input { unionfind_sequential_work_efficient_reverse_halving_linear 100000i64 100000i64 }
+-- no_cuda no_opencl no_hip compiled script input { unionfind_sequential_work_efficient_reverse_halving_single 100000i64 100000i64 }
+-- no_cuda no_opencl no_hip compiled script input { unionfind_sequential_work_efficient_reverse_halving_inverse_single 100000i64 100000i64 }
+-- no_cuda no_opencl no_hip compiled script input { unionfind_sequential_work_efficient_chunked_random 100000i64 100000i64 }
+-- no_cuda no_opencl no_hip compiled script input { unionfind_sequential_work_efficient_chunked_linear 100000i64 100000i64 }
+-- no_cuda no_opencl no_hip compiled script input { unionfind_sequential_work_efficient_chunked_single 100000i64 100000i64 }
+-- no_cuda no_opencl no_hip compiled script input { unionfind_sequential_work_efficient_chunked_inverse_single 100000i64 100000i64 }
+entry unionfind_sequential_work_efficient_find = bench_unionfind_sequential_work_efficient.find 10
