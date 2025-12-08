@@ -37,7 +37,8 @@ module mk_norm_eq_count
   def norm_eq_count [m]
                     (n: i64)
                     (eqs: [m](i64, i64)) : [n]i64 =
-    let (uf, hs) = U.create n
+    let uf = U.create n
+    let hs = U.handles uf
     let eqs' = map (\(i, j) -> (hs[i % n], hs[j % n])) eqs
     let uf = U.union uf eqs'
     let (_, ps) = U.find uf hs
@@ -90,11 +91,10 @@ module mk_test = mk_test_params unionfind_sequential
 module test_unionfind = mk_test unionfind
 module test_unionfind_by_size = mk_test unionfind_by_size
 module test_unionfind_by_rank = mk_test unionfind_by_rank
-module test_unionfind_by_rank_alternative = mk_test unionfind_by_rank_alternative
 module test_unionfind_sequential_work_efficient = mk_test unionfind_sequential_work_efficient
 
 -- ==
--- entry: unionfind_test unionfind_by_size_test unionfind_by_rank_test unionfind_by_rank_alternative_test unionfind_sequential_work_efficient_test
+-- entry: unionfind_test unionfind_by_size_test unionfind_by_rank_test unionfind_sequential_work_efficient_test
 -- input { 10000i64 2000i64 }
 -- output { true }
 entry unionfind_test (num_vars: i64) (num_eqs: i64) : bool =
@@ -105,9 +105,6 @@ entry unionfind_by_size_test (num_vars: i64) (num_eqs: i64) : bool =
 
 entry unionfind_by_rank_test (num_vars: i64) (num_eqs: i64) : bool =
   test_unionfind_by_rank.test num_vars num_eqs
-
-entry unionfind_by_rank_alternative_test (num_vars: i64) (num_eqs: i64) : bool =
-  test_unionfind_by_rank_alternative.test num_vars num_eqs
 
 entry unionfind_sequential_work_efficient_test (num_vars: i64) (num_eqs: i64) : bool =
   test_unionfind_sequential_work_efficient.test num_vars num_eqs
