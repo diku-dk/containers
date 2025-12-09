@@ -30,9 +30,6 @@ module type unionfind = {
   -- | The union-find structure.
   type unionfind [n]
 
-  -- | Equality defined on handles.
-  val (==) : handle -> handle -> bool
-
   -- | Create an union-find structure of `n`@term handles where
   -- initially every element is not unioned with no other element then
   -- it self.
@@ -49,6 +46,17 @@ module type unionfind = {
 
   -- | Retrieve all handles.
   val handles [n] : unionfind [n] -> *[n]handle
+
+  -- | Lookup the handle found at an in bound index in the array
+  -- created by the `handles`@term function. If the index is not in
+  -- bound an error will be thrown.
+  val from_i64 [n] : unionfind [n] -> i64 -> handle
+
+  -- | Lookup the index of a handle found in the array created by the
+  -- `handles`@term function. If the handle is not from a union-find
+  -- structure that is less than or equal to `n`@term then an error
+  -- will be thrown.
+  val to_i64 [n] : unionfind [n] -> handle -> i64
 }
 
 local
@@ -79,7 +87,11 @@ module unionfind_by_size : unionfind = {
     , temporary_indices: [n]i64
     }
 
-  def (==) (a: handle) (b: handle) = a == b
+  def to_i64 [n] (_: unionfind [n]) (h: handle) : i64 =
+    assert (0 <= h && h <= n) h
+
+  def from_i64 [n] (_: unionfind [n]) (i: i64) : handle =
+    assert (0 <= i && i <= n) i
 
   def none : handle = i64.highest
 
@@ -203,7 +215,11 @@ module unionfind_by_rank : unionfind = {
     , ranks: [n]u8
     }
 
-  def (==) (a: handle) (b: handle) = a == b
+  def to_i64 [n] (_: unionfind [n]) (h: handle) : i64 =
+    assert (0 <= h && h <= n) h
+
+  def from_i64 [n] (_: unionfind [n]) (i: i64) : handle =
+    assert (0 <= i && i <= n) i
 
   def none : handle = i64.highest
 
@@ -318,7 +334,11 @@ module unionfind : unionfind = {
 
   type unionfind [n] = {parents: [n]handle}
 
-  def (==) (a: handle) (b: handle) = a == b
+  def to_i64 [n] (_: unionfind [n]) (h: handle) : i64 =
+    assert (0 <= h && h <= n) h
+
+  def from_i64 [n] (_: unionfind [n]) (i: i64) : handle =
+    assert (0 <= i && i <= n) i
 
   def none : handle = i64.highest
 
@@ -395,10 +415,13 @@ module unionfind : unionfind = {
     let (parents, eqs) = find_eqs_root parents eqs
     let eqs = map (\(a, b) -> if a < b then (a, b) else (b, a)) eqs
     let eqs = filter (\(a, b) -> a != b) eqs
-    let (parents, eqs) = left_maximal_union parents eqs
-    let (parents, eqs) = find_eqs_root parents eqs
-    let eqs = map swap eqs |> filter (\(a, b) -> a != b)
-    let (parents, _) = left_maximal_union parents eqs
+    let (parents, _) =
+      loop (parents, eqs)
+      while length eqs != 0 do
+        let (parents, eqs) = left_maximal_union parents eqs
+        let (parents, eqs) = find_eqs_root parents eqs
+        let eqs = map swap eqs |> filter (\(a, b) -> a != b)
+        in (parents, eqs)
     in {parents}
 }
 
@@ -410,7 +433,11 @@ module unionfind_sequential : unionfind = {
 
   def none : handle = i64.highest
 
-  def (==) (a: handle) (b: handle) = a == b
+  def to_i64 [n] (_: unionfind [n]) (h: handle) : i64 =
+    assert (0 <= h && h <= n) h
+
+  def from_i64 [n] (_: unionfind [n]) (i: i64) : handle =
+    assert (0 <= i && i <= n) i
 
   #[sequential]
   def handles [n] (_: unionfind [n]) : *[n]handle =
@@ -458,7 +485,11 @@ module unionfind_sequential_work_efficient : unionfind = {
   def handles [n] (_: unionfind [n]) : *[n]handle =
     iota n
 
-  def (==) (a: handle) (b: handle) = a == b
+  def to_i64 [n] (_: unionfind [n]) (h: handle) : i64 =
+    assert (0 <= h && h <= n) h
+
+  def from_i64 [n] (_: unionfind [n]) (i: i64) : handle =
+    assert (0 <= i && i <= n) i
 
   #[sequential]
   def create (n: i64) : *unionfind [n] =

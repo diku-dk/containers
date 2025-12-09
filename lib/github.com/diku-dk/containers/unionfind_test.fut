@@ -17,8 +17,8 @@ module mk_norm_eq_count
   : norm_eq_count = {
   type t = U.handle
 
-  def normalize [n] (hs: [n]t) : [n]i64 =
-    let eq = equal_opt (U.==)
+  def normalize [n] (uf: U.unionfind [n]) (hs: [n]t) : [n]i64 =
+    let eq = equal_opt (\a b -> U.to_i64 uf a == U.to_i64 uf b)
     let is =
       map (\h ->
              map some hs
@@ -41,8 +41,8 @@ module mk_norm_eq_count
     let hs = U.handles uf
     let eqs' = map (\(i, j) -> (hs[i % n], hs[j % n])) eqs
     let uf = U.union uf eqs'
-    let (_, ps) = U.find uf hs
-    let reps = normalize ps
+    let (uf, ps) = U.find uf hs
+    let reps = normalize uf ps
     in hist (+) 0 n reps (rep 1)
 }
 
