@@ -65,7 +65,7 @@ def region_label_unionfind [h] [w] (img: [h][w]u32) =
                     , u.from_i64 uf j
                     )))
   let uf = u.union uf eqs
-  let (uf, labels) = u.find uf (u.handles uf)
+  let labels = u.find' uf (u.handles uf)
   in unflatten (map (u.to_i64 uf) labels :> [h * w]i64)
 
 -- > :img (colourise_regions (region_label_unionfind ($loadimg "regions-hard.png")))
