@@ -56,7 +56,7 @@ def mk_equivalences [h] [w] (img: [h][w]u32) : ?[n].[n](i64, i64) =
 
 module u = unionfind
 
-def region_label_unionfind [h] [w] (img: [h][w]u32) =
+entry region_label_unionfind [h] [w] (img: [h][w]u32) =
   let uf = u.create (h * w)
   let eqs =
     copy (mk_equivalences img
@@ -73,3 +73,18 @@ def region_label_unionfind [h] [w] (img: [h][w]u32) =
 -- > :img mk_nasty 128
 
 -- > :img colourise_regions (region_label_unionfind (mk_nasty 128))
+
+entry mk_blobs (h: i64) (w: i64) : [h][w]u32 =
+  tabulate_2d h w (\i j ->
+                     let fh = f64.i64 h
+                     let fw = f64.i64 w
+                     let x = 1 / f64.i64 (i + 1)
+                     let y = 1 / f64.i64 (j + 1)
+                     let r = 5 * (f64.sin (fw / 3 + x * 100) + f64.sin (fh / 2 + y * 100))
+                     in 1000 * u32.f64 (f64.abs r))
+
+-- > :img mk_blobs 1000 1000
+
+-- ==
+-- entry: region_label_unionfind
+-- notest compiled script input { mk_blobs 1000i64 1000i64 }
