@@ -447,15 +447,18 @@ module unionfind : unionfind = {
     let (parents, eqs) = find_eqs_root parents eqs
     let eqs = map (\(a, b) -> if a < b then (a, b) else (b, a)) eqs
     let eqs = filter (\(a, b) -> a != b) eqs
-    let (parents, _) =
-      loop (parents, eqs)
+    let invert = true
+    let (parents, _, _) =
+      loop (parents, eqs, invert)
       while length eqs != 0 do
         let (parents, eqs) = left_maximal_union parents eqs
         let (parents, eqs) = find_eqs_root parents eqs
+        let f a = if invert then swap a else id a
         let eqs =
           map (\(a, b) -> if a < b then (a, b) else (b, a)) eqs
+          |> map f
           |> filter (\(a, b) -> a != b)
-        in (parents, eqs)
+        in (parents, eqs, not invert)
     in {parents}
 }
 
