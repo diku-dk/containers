@@ -97,6 +97,8 @@ module test_unionfind_sequential_work_efficient = mk_test unionfind_sequential_w
 -- entry: unionfind_test unionfind_by_size_test unionfind_by_rank_test unionfind_sequential_work_efficient_test
 -- input { 10000i64 2000i64 }
 -- output { true }
+-- input { 10000i64 40000i64 }
+-- output { true }
 entry unionfind_test (num_vars: i64) (num_eqs: i64) : bool =
   test_unionfind.test num_vars num_eqs
 
