@@ -1,6 +1,6 @@
--- | An implementation of binary computation tree.
+-- | An implementation of binary reduction tree.
 --
--- A binary computation is computed by taking an array and then
+-- A binary reduction is computed by taking an array and then
 -- pairwise apply a binary operator. Continue doing this until a
 -- single value is reached like in the tree reduction algorithm for
 -- computing reduction. This tree can then be used to ask queries
@@ -23,41 +23,41 @@
 -- analysis on the GPU. Master's thesis. Leiden University, Leiden,
 -- The Netherlands.  https://theses.liacs. nl/2052
 
--- | Determine the height of the computation tree from the array.
+-- | Determine the height of the reduction tree from the array.
 def height (n: i64) : i64 =
   let temp = i64.num_bits - i64.clz n
   in i64.i32 <| if i64.popc n == 1 then temp else temp + 1
 
--- | Determine the size from height of the computation tree.
+-- | Determine the size from height of the reduction tree.
 def size_from_height (h: i64) : i64 =
   (1 << h) - 1
 
--- | Determine the size of the computation tree from the array.
+-- | Determine the size of the reduction tree from the array.
 def size (n: i64) : i64 =
   height n |> size_from_height
 
--- | Determine the sibling of a node in the computation tree.
+-- | Determine the sibling of a node in the reduction tree.
 def sibling (i: i64) : i64 =
   i - i64.bool (i % 2 == 0) + i64.bool (i % 2 == 1)
 
--- | Determine the parent of a node in the computation tree.
+-- | Determine the parent of a node in the reduction tree.
 def parent (i: i64) : i64 =
   (i - 1) / 2i64
 
--- | Determine if the node is a left node in the computation tree.
+-- | Determine if the node is a left node in the reduction tree.
 def is_left (i: i64) : bool =
   i % 2 == 1i64
 
--- | Determine if the node is a right node in the computation tree.
+-- | Determine if the node is a right node in the reduction tree.
 def is_right (i: i64) : bool =
   i % 2 == 0i64
 
--- | Module type that specifies a computation tree.
-module type transparent_computation_tree = {
+-- | Module type that specifies a reduction tree.
+module type transparent_reduction_tree = {
   type tree [n] 't
 
   -- | Given a binary operation, a neutral element, and an array
-  -- compute the binary computation tree.
+  -- compute the binary reduction tree.
   --
   -- **Work:** *O(n)*
   --
@@ -100,7 +100,7 @@ module type transparent_computation_tree = {
   val from_array [n] 't : (array: [size n]t) -> tree [n] t
 }
 
-module transparent_computation_tree : transparent_computation_tree = {
+module transparent_reduction_tree : transparent_reduction_tree = {
   type tree [n] 't = {size: [n](), tree: [size n]t}
 
   def to_array [n] 't (tree: tree [n] t) : [size n]t =
