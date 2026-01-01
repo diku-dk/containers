@@ -11,9 +11,9 @@ $ futhark pkg sync
 
 ## Usage
 ```
-> import "lib/github.com/diku-dk/containers/bitset"
-> module bitset_u8 = mk_bitset u8
-> let capacity = i64.i32 6
-> let set = bitset_u8.from_array capacity [0, 1, 2]
-> bitset_u8.is_empty set
+[0]> import "lib/github.com/diku-dk/containers/bitset"
+[1]> let capacity = i64.i32 6
+[2]> let set = bitset.from_array capacity [0, 1, 2]
+[3]> bitset.is_empty set
+false
 ```

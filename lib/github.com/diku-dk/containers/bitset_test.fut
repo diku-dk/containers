@@ -75,7 +75,7 @@ entry test_delete_success (arr: []u8) : bool =
   all (\i ->
          let i' = i64.u8 i
          let singleton = bitset_u8.singleton capacity i'
-         let empty_set = bitset_u8.delete i' singleton
+         let empty_set = bitset_u8.delete (copy singleton) [i']
          in bitset_u8.size singleton == 1 && bitset_u8.size empty_set == 0)
       arr
 
@@ -87,7 +87,7 @@ entry test_delete_fail (arr: []u8) : bool =
          let i' = i64.u8 i
          let arr' = filter (!= i') (0...capacity)
          let singleton = bitset_u8.singleton capacity i'
-         let not_empty_sets = map (flip bitset_u8.delete singleton) arr'
+         let not_empty_sets = map (\j -> bitset_u8.delete (copy singleton) [j]) arr'
          in bitset_u8.size singleton == 1 && all ((== 1) <-< bitset_u8.size) not_empty_sets)
       arr
 
@@ -119,7 +119,7 @@ entry test_insert (arr: []u8) : bool =
          let i' = i64.u8 i
          let arr' = filter (!= i') (0...capacity)
          let set = bitset_u8.empty capacity
-         let new_set = bitset_u8.insert i' set
+         let new_set = bitset_u8.insert (copy set) [i']
          in bitset_u8.size set == 0
             && bitset_u8.size new_set == 1
             && bitset_u8.member i' new_set
