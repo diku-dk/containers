@@ -24,14 +24,14 @@ module type bitset = {
   -- **Work:** *O(n)*
   --
   -- **Span:** *O(1)*
-  val empty : (n: i64) -> bitset [s num_bits n]
+  val empty : (n: i64) -> *bitset [s num_bits n]
 
   -- | Makes a singleton bitset with a given capacity.
   --
   -- **Work:** *O(n)*
   --
   -- **Span:** *O(1)*
-  val singleton : (n: i64) -> i64 -> bitset [s num_bits n]
+  val singleton : (n: i64) -> i64 -> *bitset [s num_bits n]
 
   -- | Checks if a bitset is empty.
   --
@@ -42,17 +42,17 @@ module type bitset = {
 
   -- | Inserts a single bit in a bitset.
   --
-  -- **Work:** *O(1)*
+  -- **Work:** *O(m)*
   --
-  -- **Span:** *O(1)*
-  val insert [n] : i64 -> bitset [s num_bits n] -> bitset [s num_bits n]
+  -- **Span:** *O(m)* (likely *O(1)*, the span comes from reduce by index.)
+  val insert [m] [n] : *bitset [s num_bits n] -> [m]i64 -> bitset [s num_bits n]
 
   -- | Deletes a single bit in a bitset.
   --
   -- **Work:** *O(1)*
   --
-  -- **Span:** *O(1)*
-  val delete [n] : i64 -> bitset [s num_bits n] -> bitset [s num_bits n]
+  -- **Span:** *O(m)* (likely *O(1)*, the span comes from reduce by index.)
+  val delete [m] [n] : *bitset [s num_bits n] -> [m]i64 -> bitset [s num_bits n]
 
   -- | Checks if a bit is a member of a bitset.
   --
@@ -66,21 +66,21 @@ module type bitset = {
   -- **Work:** *O(n)*
   --
   -- **Span:** *O(1)*
-  val union [n] : bitset [s num_bits n] -> bitset [s num_bits n] -> bitset [s num_bits n]
+  val union [n] : bitset [s num_bits n] -> bitset [s num_bits n] -> *bitset [s num_bits n]
 
   -- | Bitset intersection.
   --
   -- **Work:** *O(n)*
   --
   -- **Span:** *O(1)*
-  val intersection [n] : bitset [s num_bits n] -> bitset [s num_bits n] -> bitset [s num_bits n]
+  val intersection [n] : bitset [s num_bits n] -> bitset [s num_bits n] -> *bitset [s num_bits n]
 
   -- | Bitset difference.
   --
   -- **Work:** *O(n)*
   --
   -- **Span:** *O(1)*
-  val difference [n] : bitset [s num_bits n] -> bitset [s num_bits n] -> bitset [s num_bits n]
+  val difference [n] : bitset [s num_bits n] -> bitset [s num_bits n] -> *bitset [s num_bits n]
 
   -- | Checks if a bitset is a subset of another.
   --
@@ -94,14 +94,14 @@ module type bitset = {
   -- **Work:** *O(n)*
   --
   -- **Span:** *O(1)*
-  val complement [n] : bitset [s num_bits n] -> bitset [s num_bits n]
+  val complement [n] : bitset [s num_bits n] -> *bitset [s num_bits n]
 
   -- | Sets the bitset capacity to a new value.
   --
   -- **Work:** *O(n)*
   --
   -- **Span:** *O(1)*
-  val set_capacity [m] : (n: i64) -> bitset [s num_bits m] -> bitset [s num_bits n]
+  val set_capacity [m] : (n: i64) -> bitset [s num_bits m] -> *bitset [s num_bits n]
 
   -- | Computes the size of the set i.e. the population count.
   --
@@ -121,23 +121,22 @@ module type bitset = {
   --
   -- **Work:** *O(m)*
   --
-  -- **Span:** *O(1)* in best case but O(m) in worst case with all
-  -- indices being the same.
-  val from_array [m] : (n: i64) -> [m]i64 -> bitset [s num_bits n]
+  -- **Span:** *O(m)* (likely *O(1)*, the span comes from reduce by index.)
+  val from_array [m] : (n: i64) -> [m]i64 -> *bitset [s num_bits n]
 
   -- | Converts an array of u64 to a bitset.
   --
   -- **Work:** *O(1)*
   --
   -- **Span:** *O(1)*
-  val from_bit_array [m] : (n: i64) -> (arr: [m]u64) -> bitset [s num_bits n]
+  val from_bit_array [m] : (n: i64) -> (arr: [m]u64) -> *bitset [s num_bits n]
 
   -- | Convert a bitset to an array of indices to a bitset.
   --
   -- **Work:** *O(n)*
   --
   -- **Span:** *O(log n)*
-  val to_array [n] : bitset [s num_bits n] -> []i64
+  val to_array [n] : bitset [s num_bits n] -> *[]i64
 }
 
 -- | Creates a bitset module depending on a intergral type.
@@ -150,7 +149,7 @@ module mk_bitset (I: integral) : bitset = {
 
   def zero : t = I.u64 0
 
-  def empty (n: i64) : bitset [s num_bits n] =
+  def empty (n: i64) : *bitset [s num_bits n] =
     replicate (s num_bits n) zero
 
   def find_bitset_index (i: i64) (n: i64) : (i64, i32) =
@@ -161,27 +160,25 @@ module mk_bitset (I: integral) : bitset = {
          let bit = i % num_bits
          in (j, i32.i64 bit)
 
-  def set_bit [n] ((i, bit): (i64, i32)) (set: bitset [s num_bits n]) (value: i32) : bitset [s num_bits n] =
-    copy set with [i] = I.set_bit bit set[i] value
+  def insert [n] [m] (set: *bitset [s num_bits n]) (is: [m]i64) : bitset [s num_bits n] =
+    let (is, bis) = map (flip find_bitset_index n) is |> unzip
+    let vs = map (\i -> I.set_bit i zero 1) bis
+    in reduce_by_index set (I.|) zero is vs
 
-  def insert [n] (i: i64) (set: bitset [s num_bits n]) : bitset [s num_bits n] =
-    let index = find_bitset_index i n
-    in if index.0 < 0 || index.1 < 0
+  def singleton (n: i64) (i: i64) : *bitset [s num_bits n] =
+    let set = empty n
+    let (j, bit) = find_bitset_index i n
+    in if j == -1 || bit == -1
        then set
-       else set_bit index set 1
-
-  def singleton (n: i64) (i: i64) : bitset [s num_bits n] =
-    empty n
-    |> insert i
+       else set with [j] = I.set_bit bit zero 1
 
   def is_empty [n] (set: bitset [s num_bits n]) : bool =
     all (I.== zero) set
 
-  def delete [n] (i: i64) (set: bitset [s num_bits n]) : bitset [s num_bits n] =
-    let index = find_bitset_index i n
-    in if index.0 < 0 || index.1 < 0
-       then set
-       else set_bit index set 0
+  def delete [n] [m] (set: *bitset [s num_bits n]) (is: [m]i64) : bitset [s num_bits n] =
+    let (is, bis) = map (flip find_bitset_index n) is |> unzip
+    let vs = map (\i -> I.not (I.set_bit i zero 1)) bis
+    in reduce_by_index set (I.&) zero is vs
 
   def member [n] (i: i64) (s: bitset [s num_bits n]) : bool =
     let (i, bit) = find_bitset_index i n
@@ -189,21 +186,24 @@ module mk_bitset (I: integral) : bitset = {
        then false
        else I.get_bit bit s[i] == 1
 
-  def union [n] (a: bitset [s num_bits n]) (b: bitset [s num_bits n]) : bitset [s num_bits n] =
+  def union [n] (a: bitset [s num_bits n]) (b: bitset [s num_bits n]) : *bitset [s num_bits n] =
     map2 (I.|) a b
 
-  def intersection [n] (a: bitset [s num_bits n]) (b: bitset [s num_bits n]) : bitset [s num_bits n] =
+  def intersection [n] (a: bitset [s num_bits n]) (b: bitset [s num_bits n]) : *bitset [s num_bits n] =
     map2 (I.&) a b
 
   def set_trailing_bits_zero [n] (set: bitset [s num_bits n]) : bitset [s num_bits n] =
-    let l = (n - 1) / num_bits + 1
-    let start = 1 + (n - 1) % num_bits
-    let to_keep = I.i64 (i64.not (i64.not 0 << start))
-    in if l == 0
-       then set
-       else copy set with [l - 1] = set[l - 1] I.& to_keep
+    let len = length set
+    let unused_bits = u64.i64 (num_bits * len - n)
+    let to_keep = u64.not ((1u64 << unused_bits) - 1u64)
+    in map2 (\i b ->
+               if i == len - 1 && unused_bits != 0
+               then b I.& I.u64 to_keep
+               else b)
+            (indices set)
+            set
 
-  def complement [n] (set: bitset [s num_bits n]) : bitset [s num_bits n] =
+  def complement [n] (set: bitset [s num_bits n]) : *bitset [s num_bits n] =
     map I.not set
     |> set_trailing_bits_zero
 
@@ -218,10 +218,10 @@ module mk_bitset (I: integral) : bitset = {
   def is_subset [n] (a: bitset [s num_bits n]) (b: bitset [s num_bits n]) : bool =
     (a `union` b) == b
 
-  def difference [n] (a: bitset [s num_bits n]) (b: bitset [s num_bits n]) : bitset [s num_bits n] =
+  def difference [n] (a: bitset [s num_bits n]) (b: bitset [s num_bits n]) : *bitset [s num_bits n] =
     a `intersection` complement b
 
-  def set_capacity [m] (n: i64) (set: bitset [s num_bits m]) : bitset [s num_bits n] =
+  def set_capacity [m] (n: i64) (set: bitset [s num_bits m]) : *bitset [s num_bits n] =
     let s' = empty n
     let len = length set
     in map (\i ->
@@ -229,17 +229,15 @@ module mk_bitset (I: integral) : bitset = {
            (indices s')
        |> set_trailing_bits_zero
 
-  def from_bit_array [m] (n: i64) (arr: [m]u64) : bitset [s num_bits n] =
+  def from_bit_array [m] (n: i64) (arr: [m]u64) : *bitset [s num_bits n] =
     map (I.u64) arr
     |> sized (s num_bits n)
     |> set_trailing_bits_zero
 
-  def from_array [m] (n: i64) (arr: [m]i64) : bitset [s num_bits n] =
-    let (is, bis) = map (flip find_bitset_index n) arr |> unzip
-    let vs = map (\i -> I.set_bit i zero 1) bis
-    in reduce_by_index (empty n) (I.|) zero is vs
+  def from_array [m] (n: i64) (arr: [m]i64) : *bitset [s num_bits n] =
+    copy (insert (empty n) arr)
 
-  def to_array [n] (s: bitset [s num_bits n]) : []i64 =
+  def to_array [n] (s: bitset [s num_bits n]) : *[]i64 =
     map2 (\i v ->
             let m = i * i64.i32 I.num_bits
             in map (\bit ->
@@ -252,3 +250,6 @@ module mk_bitset (I: integral) : bitset = {
     |> flatten
     |> filter (0 <=)
 }
+
+module bitset = mk_bitset u64
+module bitset_u32 = mk_bitset u32
