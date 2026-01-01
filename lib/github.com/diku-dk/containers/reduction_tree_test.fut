@@ -1,4 +1,4 @@
-import "computation_tree"
+import "reduction_tree"
 
 def backwards_linear_search [n] 't
                             (op: t -> t -> bool)
