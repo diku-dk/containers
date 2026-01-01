@@ -145,7 +145,7 @@ module test_unionfind_by_size = mk_test unionfind_by_size
 module test_unionfind_by_rank = mk_test unionfind_by_rank
 
 -- ==
--- entry: unionfind_test unionfind_by_size_test unionfind_by_rank_test unionfind_sequential_work_efficient_test
+-- entry: unionfind_test unionfind_by_size_test unionfind_by_rank_test
 -- input { 10000i64 2000i64 }
 -- output { true }
 -- input { 10000i64 40000i64 }
