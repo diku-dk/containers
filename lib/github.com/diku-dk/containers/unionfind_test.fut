@@ -2,6 +2,58 @@ import "unionfind"
 import "../sorts/merge_sort"
 import "opt"
 
+module unionfind_sequential : unionfind = {
+  type handle = i64
+
+  type unionfind [n] =
+    {parents: [n]handle}
+
+  def none : handle = i64.highest
+
+  def to_i64 [n] (_: unionfind [n]) (h: handle) : i64 =
+    assert (0 <= h && h <= n) h
+
+  def from_i64 [n] (_: unionfind [n]) (i: i64) : handle =
+    assert (0 <= i && i <= n) i
+
+  #[sequential]
+  def handles [n] (_: unionfind [n]) : *[n]handle =
+    iota n
+
+  #[sequential]
+  def create (n: i64) : *unionfind [n] =
+    {parents = rep none}
+
+  #[sequential]
+  def find_one [n] (uf: unionfind [n]) h =
+    loop h while uf.parents[h] != none do
+      uf.parents[h]
+
+  #[sequential]
+  def find [n] [u]
+           (uf: *unionfind [n])
+           (hs: [u]handle) : (*unionfind [n], [u]handle) =
+    let hs' = map (find_one uf) hs
+    in (uf, hs')
+
+  #[sequential]
+  def find' [n] [u]
+            (uf: unionfind [n])
+            (hs: [u]handle) : [u]handle =
+    map (find_one uf) hs
+
+  #[sequential]
+  def union [n] [u]
+            (uf: unionfind [n])
+            (eqs: [u](handle, handle)) : *unionfind [n] =
+    loop uf' = copy uf
+    for (h, h') in eqs do
+      let (i, p) = (find_one uf' h, find_one uf' h')
+      in if i == p
+         then uf'
+         else uf' with parents = (uf'.parents with [i] = p)
+}
+
 module type norm_eq_count = {
   -- | Normalized equivalence count will create an initial union find
   -- structures of size `n`@norm_eq_count then uses the

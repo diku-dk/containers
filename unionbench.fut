@@ -1,5 +1,77 @@
 import "lib/github.com/diku-dk/containers/unionfind"
 
+module unionfind_sequential_work_efficient : unionfind = {
+  type handle = i64
+
+  type unionfind [n] =
+    { parents: [n]handle
+    , ranks: [n]u8
+    }
+
+  def none : handle = i64.highest
+
+  #[sequential]
+  def handles [n] (_: unionfind [n]) : *[n]handle =
+    iota n
+
+  def to_i64 [n] (_: unionfind [n]) (h: handle) : i64 =
+    assert (0 <= h && h <= n) h
+
+  def from_i64 [n] (_: unionfind [n]) (i: i64) : handle =
+    assert (0 <= i && i <= n) i
+
+  #[sequential]
+  def create (n: i64) : *unionfind [n] =
+    {parents = rep none, ranks = rep 0}
+
+  #[sequential]
+  def find_one [n] (parents: *[n]handle) (h: handle) : (*[n]handle, handle) =
+    loop (parents, h) while parents[h] != none do
+      let parents[h] = if parents[parents[h]] != none then parents[parents[h]] else parents[h]
+      in (parents, parents[h])
+
+  #[sequential]
+  def find [n] [u]
+           ({parents, ranks}: *unionfind [n])
+           (hs: [u]handle) : (*unionfind [n], [u]handle) =
+    let hs' = copy hs
+    let (parents, hs) =
+      loop (parents, hs') for (i, h) in zip (indices hs) hs do
+        let (parents, h) = find_one parents h
+        let hs'[i] = h
+        in (parents, hs')
+    in ({parents, ranks}, hs)
+
+  #[sequential]
+  def find' [n] [u]
+            (uf: unionfind [n])
+            (hs: [u]handle) : [u]handle =
+    map (\h ->
+           loop h
+           while uf.parents[h] != none do
+             uf.parents[h])
+        hs
+
+  #[sequential]
+  def union [n] [u]
+            ({parents, ranks}: *unionfind [n])
+            (eqs: [u](handle, handle)) : *unionfind [n] =
+    let (parents, ranks) =
+      loop (parents, ranks)
+      for (h, h') in eqs do
+        let (parents, i) = find_one parents h
+        let (parents, p) = find_one parents h'
+        in if i == p
+           then (parents, ranks)
+           else let (i, p) = if ranks[i] <= ranks[p] then (i, p) else (p, i)
+                let ranks =
+                  if ranks[i] u8.== ranks[p]
+                  then ranks with [p] = ranks[p] + 1
+                  else ranks
+                in (parents with [i] = p, ranks)
+    in {parents, ranks}
+}
+
 module type bench = {
   type handle
   type unionfind [n]
