@@ -220,7 +220,7 @@ module mk_hyperloglog_plusplus
     let m = length hll.registers
     let m_f64 = f64.i64 m
     let est = calculate_estimate hll.registers hll.alpha
-    let corrected_est =
+    let est =
       if est <= 5.0 * m_f64
       then est - estimate_bias est p
       else est
@@ -230,8 +230,8 @@ module mk_hyperloglog_plusplus
             let threshold = f64.u64 threshold_data[p - 4]
             in if lc <= threshold
                then lc
-               else corrected_est
-       else corrected_est
+               else est
+       else est
 
   def merge [p]
             (hll: hyperloglog [2 ** p])
