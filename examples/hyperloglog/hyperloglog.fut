@@ -2,46 +2,6 @@ import "../../lib/github.com/diku-dk/containers/hyperloglog"
 import "../../lib/github.com/diku-dk/containers/key"
 import "../../lib/github.com/diku-dk/containers/hashkey"
 
-module i64key_simple_u32 : hashkey with key = i64 with hash = u32 with ctx = () = {
-  type~ ctx = ()
-
-  type key = i64
-
-  type const = ()
-
-  type hash = u32
-
-  type rng = ()
-
-  def rng_from_seed _ = ()
-
-  def rand () = ((), ())
-
-  def (==) ((), k) ((), k') = k i64.== k'
-
-  def hash () () k = u32.i64 k
-}
-
-module i64key_simple : hashkey with key = i64 with hash = u64 with ctx = () = {
-  type~ ctx = ()
-
-  type key = i64
-
-  type const = ()
-
-  type hash = u64
-
-  type rng = ()
-
-  def rng_from_seed _ = ()
-
-  def rand () = ((), ())
-
-  def (==) ((), k) ((), k') = k i64.== k'
-
-  def hash () () k = u64.i64 k
-}
-
 module hll = mk_hyperloglog i64key_u32
 module hllpp = mk_hyperloglog_plusplus i64key
 
