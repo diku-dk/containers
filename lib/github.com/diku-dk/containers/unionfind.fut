@@ -23,6 +23,10 @@
 --   `union_by_rank`@term but it has worse performance when
 --   benchmarking the union operation.
 
+import "hyperloglog"
+import "hashkey"
+import "key"
+
 module type unionfind = {
   -- | A handle is an element in the union-find structure.
   type handle
@@ -72,6 +76,38 @@ def bimap f g (a, b) = (f a, g b)
 
 local
 def swap 't (a, b) : (t, t) = (b, a)
+
+local
+def hash (a: (u64, u64)) (b: (u64, u64)) (x: u64) : u64 =
+  let y_mul_lo = a.0 * x
+  in u64.mul_hi a.1 x + b.1 + u64.bool (y_mul_lo < b.0)
+
+local
+module i64key_static
+  : hashkey
+    with key = i64
+    with hash = u64
+    with ctx = () = {
+  type ctx = ()
+  type key = i64
+  type const = ()
+  type hash = u64
+  type rng = ()
+
+  def rng_from_seed _ = ()
+
+  def rand () = ((), ())
+
+  def hash () () (n: key) : u64 =
+    let a0 = 0x8422d1795f837e8b
+    let a1 = 0x78f81f96f93e6ca9
+    let b0 = 0x643518302a112aa1
+    let b1 = 0x58fe49a7f968fbe7
+    in hash (a0, a1) (b0, b1) (u64.i64 n)
+
+  #[inline]
+  def (==) (_, x) (_, y) = x i64.== y
+}
 
 module unionfind_by_size : unionfind = {
   type handle = i64
@@ -343,6 +379,8 @@ module unionfind_by_rank : unionfind = {
 }
 
 module unionfind : unionfind = {
+  module hll = mk_hyperloglog_plusplus i64key
+
   type handle = i64
 
   type unionfind [n] = {parents: [n]handle}
@@ -421,10 +459,13 @@ module unionfind : unionfind = {
     let eqs = split new_eqs_elems |> uncurry zip
     in (new_parents, eqs)
 
-  def left_maximal_union [n] [u]
-                         (parents: *[n]handle)
-                         (eqs: [u](handle, handle)) : ?[m].(*[n]handle, [m](handle, handle)) =
+  def maximal_union [n] [u]
+                    (parents: *[n]handle)
+                    (eqs: [u](handle, handle)) : ?[m].(*[n]handle, [m](handle, handle)) =
     let (l, r) = unzip eqs
+    let unique_l = hll.insert () (hll.create 10) l |> hll.count
+    let unique_r = hll.insert () (hll.create 10) r |> hll.count
+    let (l, r) = if unique_l < unique_r then (r, l) else (l, r)
     let parents = reduce_by_index parents i64.min none l r
     let (eqs, done) =
       copy (partition (\(i, p) -> parents[i] != p) eqs)
@@ -434,134 +475,14 @@ module unionfind : unionfind = {
   def union [n] [u]
             ({parents}: *unionfind [n])
             (eqs: [u](handle, handle)) : *unionfind [n] =
-    let (parents, eqs) = find_eqs_root parents eqs
-    let eqs = map (\(a, b) -> if a < b then (a, b) else (b, a)) eqs
-    let eqs = filter (\(a, b) -> a != b) eqs
-    let invert = true
-    let (parents, _, _) =
-      loop (parents, eqs, invert)
-      while length eqs != 0 do
-        let (parents, eqs) = left_maximal_union parents eqs
-        let (parents, eqs) = find_eqs_root parents eqs
-        let f a = if invert then swap a else id a
-        let eqs =
-          map (\(a, b) -> if a < b then (a, b) else (b, a)) eqs
-          |> map f
-          |> filter (\(a, b) -> a != b)
-        in (parents, eqs, not invert)
-    in {parents}
-}
-
-module unionfind_wip : unionfind = {
-  type handle = i64
-
-  type unionfind [n] =
-    { parents: [n]handle
-    , lefts: [n]handle
-    , rights: [n]handle
-    }
-
-  def to_i64 [n] (_: unionfind [n]) (h: handle) : i64 =
-    assert (0 <= h && h <= n) h
-
-  def from_i64 [n] (_: unionfind [n]) (i: i64) : handle =
-    assert (0 <= i && i <= n) i
-
-  def none : handle = i64.highest
-
-  def handles [n] (_: unionfind [n]) : *[n]handle =
-    iota n
-
-  def create (n: i64) : *unionfind [n] =
-    {parents = rep none, lefts = rep none, rights = rep none}
-
-  def find_by_vector [n] [u]
-                     (parents: *[n]handle)
-                     (hs: [u]handle) : (*[n]handle, [u]handle) =
-    let ps =
-      map (\h ->
-             loop h
-             while parents[h] != none do
-               parents[h])
-          hs
-    in (parents, ps)
-
-  def find [n] [u]
-           ({parents, lefts, rights}: *unionfind [n])
-           (hs: [u]handle) : (*unionfind [n], [u]handle) =
-    let (new_parents, ps) = find_by_vector parents hs
-    in ({parents = new_parents, lefts, rights}, ps)
-
-  def find' [n] [u]
-            (uf: unionfind [n])
-            (hs: [u]handle) : [u]handle =
-    map (\h ->
-           loop h
-           while uf.parents[h] != none do
-             uf.parents[h])
-        hs
-
-  def normalize_step [m] [n]
-                     (is: [m]handle)
-                     (parents: *[n]handle)
-                     (ps: [m]handle) : (*[n]handle, [m]handle) =
-    let f h =
-      if parents[h] == none
-      then h
-      else if parents[parents[h]] == none
-      then parents[h]
-      else parents[parents[h]]
-    let ps' = map f ps
-    let new_parents = scatter parents is ps'
-    in (new_parents, ps')
-
-  def normalize [m] [n]
-                (parents: *[n]handle)
-                (is: [m]handle) : *[n]handle =
-    let ps = is
     let (parents, _) =
-      loop (parents, ps)
-      for _i < 64 - i64.clz m do
-        normalize_step is parents ps
-    in parents
-
-  def find_eqs_root [n] [u]
-                    (parents: *[n]handle)
-                    (eqs: [u](handle, handle)) : ( *[n]handle
-                                                 , [u](handle, handle)
-                                                 ) =
-    let eqs_elems = unzip eqs |> uncurry (++)
-    let (new_parents, new_eqs_elems) = find_by_vector parents eqs_elems
-    let eqs = split new_eqs_elems |> uncurry zip
-    in (new_parents, eqs)
-
-  def maximal_union [n] [u]
-                    (parents: *[n]handle)
-                    (eqs: [u](handle, handle)) : ?[m].(*[n]handle, [m](handle, handle)) =
-    let (l, r) = unzip eqs
-    let parents = reduce_by_index parents i64.min none l r
-    let (eqs, done) =
-      copy (partition (\(i, p) -> parents[i] != p) eqs)
-    let parents = normalize parents (map (.0) done)
-    in (parents, eqs)
-
-  def union [n] [u]
-            ({parents, lefts, rights}: *unionfind [n])
-            (eqs: [u](handle, handle)) : *unionfind [n] =
-    let (parents, eqs) = find_eqs_root parents eqs
-    let eqs = map (\(a, b) -> if a < b then (a, b) else (b, a)) eqs
-    let eqs = filter (\(a, b) -> a != b) eqs
-    let invert = true
-    let (parents, _, _) =
-      loop (parents, eqs, invert)
+      loop (parents, eqs)
       while length eqs != 0 do
-        let (parents, eqs) = maximal_union parents eqs
         let (parents, eqs) = find_eqs_root parents eqs
-        let f a = if invert then swap a else id a
         let eqs =
           map (\(a, b) -> if a < b then (a, b) else (b, a)) eqs
-          |> map f
           |> filter (\(a, b) -> a != b)
-        in (parents, eqs, not invert)
+        let (parents, eqs) = maximal_union parents eqs
+        in (parents, eqs)
     in {parents}
 }
