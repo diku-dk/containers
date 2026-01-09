@@ -161,10 +161,10 @@ module unionfind_by_size : unionfind = {
              uf.parents[h])
         hs
 
-  def normalize_step [m] [n]
-                     (is: [m]handle)
-                     (parents: *[n]handle)
-                     (ps: [m]handle) : (*[n]handle, [m]handle) =
+  def compression_step [m] [n]
+                       (is: [m]handle)
+                       (parents: *[n]handle)
+                       (ps: [m]handle) : (*[n]handle, [m]handle) =
     let f h =
       if parents[h] == none
       then h
@@ -175,14 +175,14 @@ module unionfind_by_size : unionfind = {
     let new_parents = scatter parents is ps'
     in (new_parents, ps')
 
-  def normalize [m] [n]
-                (parents: *[n]handle)
-                (is: [m]handle) : (*[n]handle, [m]handle) =
+  def compression [m] [n]
+                  (parents: *[n]handle)
+                  (is: [m]handle) : (*[n]handle, [m]handle) =
     let ps = is
     let (new_parents, ps) =
       loop (parents, ps)
       for _i < 64 - i64.clz m do
-        normalize_step is parents ps
+        compression_step is parents ps
     in (new_parents, ps)
 
   def left_maximal_union [n] [u]
@@ -204,7 +204,7 @@ module unionfind_by_size : unionfind = {
       |> bimap (map (.1)) (map (.1))
     let (is, ps) = unzip done
     let parents = scatter parents is ps
-    let (new_parents, new_ps) = normalize parents is
+    let (new_parents, new_ps) = compression parents is
     let children_sizes = map (\i -> sizes[i]) is
     let new_sizes = reduce_by_index sizes (+) 0 new_ps children_sizes
     let new_eqs = copy eqs
@@ -297,10 +297,10 @@ module unionfind_by_rank : unionfind = {
              uf.parents[h])
         hs
 
-  def normalize_step [m] [n]
-                     (is: [m]handle)
-                     (parents: *[n]handle)
-                     (ps: [m]handle) : (*[n]handle, [m]handle) =
+  def compression_step [m] [n]
+                       (is: [m]handle)
+                       (parents: *[n]handle)
+                       (ps: [m]handle) : (*[n]handle, [m]handle) =
     let f h =
       if parents[h] == none
       then h
@@ -311,14 +311,14 @@ module unionfind_by_rank : unionfind = {
     let new_parents = scatter parents is ps'
     in (new_parents, ps')
 
-  def normalize [m] [n]
-                (parents: *[n]handle)
-                (is: [m]handle) : (*[n]handle, [m]handle) =
+  def compression [m] [n]
+                  (parents: *[n]handle)
+                  (is: [m]handle) : (*[n]handle, [m]handle) =
     let ps = is
     let (new_parents, ps) =
       loop (parents, ps)
       for _i < 64 - i64.clz m do
-        normalize_step is parents ps
+        compression_step is parents ps
     in (new_parents, ps)
 
   def left_maximal_union [n] [u]
@@ -333,7 +333,7 @@ module unionfind_by_rank : unionfind = {
     let (new_eqs, done) =
       copy (partition (\(i, p) -> parents[i] != p) eqs)
     let is = map (.0) done
-    let (new_parents, new_ps) = normalize parents is
+    let (new_parents, new_ps) = compression parents is
     let new_ranks_done =
       copy
       <| map2 (\l p ->
@@ -425,10 +425,10 @@ module unionfind : unionfind = {
              uf.parents[h])
         hs
 
-  def normalize_step [m] [n]
-                     (is: [m]handle)
-                     (parents: *[n]handle)
-                     (ps: [m]handle) : (*[n]handle, [m]handle) =
+  def compression_step [m] [n]
+                       (is: [m]handle)
+                       (parents: *[n]handle)
+                       (ps: [m]handle) : (*[n]handle, [m]handle) =
     let f h =
       if parents[h] == none
       then h
@@ -439,21 +439,21 @@ module unionfind : unionfind = {
     let new_parents = scatter parents is ps'
     in (new_parents, ps')
 
-  def normalize [m] [n]
-                (parents: *[n]handle)
-                (is: [m]handle) : *[n]handle =
+  def compression [m] [n]
+                  (parents: *[n]handle)
+                  (is: [m]handle) : *[n]handle =
     let ps = is
     let (parents, _) =
       loop (parents, ps)
       for _i < 64 - i64.clz m do
-        normalize_step is parents ps
+        compression_step is parents ps
     in parents
 
-  def find_eqs_root [n] [u]
-                    (parents: *[n]handle)
-                    (eqs: [u](handle, handle)) : ( *[n]handle
-                                                 , [u](handle, handle)
-                                                 ) =
+  def find_pairs [n] [u]
+                 (parents: *[n]handle)
+                 (eqs: [u](handle, handle)) : ( *[n]handle
+                                              , [u](handle, handle)
+                                              ) =
     let eqs_elems = unzip eqs |> uncurry (++)
     let (new_parents, new_eqs_elems) = find_by_vector parents eqs_elems
     let eqs = split new_eqs_elems |> uncurry zip
@@ -469,7 +469,7 @@ module unionfind : unionfind = {
     let parents = reduce_by_index parents i64.min none l r
     let (eqs, done) =
       copy (partition (\(i, p) -> parents[i] != p) eqs)
-    let parents = normalize parents (map (.0) done)
+    let parents = compression parents (map (.0) done)
     in (parents, eqs)
 
   def union [n] [u]
@@ -478,7 +478,7 @@ module unionfind : unionfind = {
     let (parents, _) =
       loop (parents, eqs)
       while length eqs != 0 do
-        let (parents, eqs) = find_eqs_root parents eqs
+        let (parents, eqs) = find_pairs parents eqs
         let eqs =
           map (\(a, b) -> if a < b then (a, b) else (b, a)) eqs
           |> filter (\(a, b) -> a != b)
