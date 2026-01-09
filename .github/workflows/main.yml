@@ -31,6 +31,6 @@ jobs:
 
     - run: futhark pkg sync
 
-    - run: futhark test --pass-compiler-option=--Werror -C *.fut
+    - run: futhark test --pass-compiler-option=--Werror -C lib/github.com/diku-dk/containers/*.fut
 
     - run: futhark test --pass-compiler-option=--Werror lib/github.com/diku-dk/containers/*_test.fut
