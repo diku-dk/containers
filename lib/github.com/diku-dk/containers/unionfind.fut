@@ -42,12 +42,12 @@ module type unionfind = {
   -- | Given an array of handles find the representative of each
   -- handle and give back the new union-find structure with the
   -- representatives.
-  val find [n] [u] : *unionfind [n] -> [u]handle -> (*unionfind [n], [u]handle)
+  val find [n] [u] : *unionfind [n] -> [u]handle -> *(unionfind [n], [u]handle)
 
   -- | Given an array of handles find the representative of each
   -- handle. The unionfind structure will remain unchanged, this may
   -- ruin asymptotic garantees.
-  val find' [n] [u] : unionfind [n] -> [u]handle -> [u]handle
+  val find' [n] [u] : unionfind [n] -> [u]handle -> *[u]handle
 
   -- | Perform an union between multiple handles, every tuple pair
   -- will be unioned to have the same representative.
@@ -59,7 +59,7 @@ module type unionfind = {
   -- | Lookup the handle found at an in bound index in the array
   -- created by the `handles`@term function. If the index is not in
   -- bound an error will be thrown.
-  val from_i64 [n] : unionfind [n] -> i64 -> handle
+  val from_i64 [n] : unionfind [n] -> i64 -> *handle
 
   -- | Lookup the index of a handle found in the array created by the
   -- `handles`@term function. If the handle is not from a union-find
@@ -137,7 +137,7 @@ module unionfind_by_size : unionfind = {
 
   def find_by_vector [n] [u]
                      (parents: *[n]handle)
-                     (hs: [u]handle) : (*[n]handle, [u]handle) =
+                     (hs: [u]handle) : *([n]handle, [u]handle) =
     ( parents
     , map (\h ->
              loop h
@@ -148,13 +148,13 @@ module unionfind_by_size : unionfind = {
 
   def find [n] [u]
            ({parents, sizes, temporary_indices}: *unionfind [n])
-           (hs: [u]handle) : (*unionfind [n], [u]handle) =
+           (hs: [u]handle) : *(unionfind [n], [u]handle) =
     let (new_parents, ps) = find_by_vector parents hs
     in ({parents = new_parents, sizes, temporary_indices}, ps)
 
   def find' [n] [u]
             (uf: unionfind [n])
-            (hs: [u]handle) : [u]handle =
+            (hs: [u]handle) : *[u]handle =
     map (\h ->
            loop h
            while uf.parents[h] != none do
@@ -273,7 +273,7 @@ module unionfind_by_rank : unionfind = {
 
   def find_by_vector [n] [u]
                      (parents: *[n]handle)
-                     (hs: [u]handle) : (*[n]handle, [u]handle) =
+                     (hs: [u]handle) : *([n]handle, [u]handle) =
     ( parents
     , map (\h ->
              loop h
@@ -284,13 +284,13 @@ module unionfind_by_rank : unionfind = {
 
   def find [n] [u]
            ({parents, ranks}: *unionfind [n])
-           (hs: [u]handle) : (*unionfind [n], [u]handle) =
+           (hs: [u]handle) : *(unionfind [n], [u]handle) =
     let (new_parents, ps) = find_by_vector parents hs
     in ({parents = new_parents, ranks}, ps)
 
   def find' [n] [u]
             (uf: unionfind [n])
-            (hs: [u]handle) : [u]handle =
+            (hs: [u]handle) : *[u]handle =
     map (\h ->
            loop h
            while uf.parents[h] != none do
@@ -401,7 +401,7 @@ module unionfind : unionfind = {
 
   def find_by_vector [n] [u]
                      (parents: *[n]handle)
-                     (hs: [u]handle) : (*[n]handle, [u]handle) =
+                     (hs: [u]handle) : *([n]handle, [u]handle) =
     let ps =
       map (\h ->
              loop h
@@ -412,13 +412,13 @@ module unionfind : unionfind = {
 
   def find [n] [u]
            ({parents}: *unionfind [n])
-           (hs: [u]handle) : (*unionfind [n], [u]handle) =
+           (hs: [u]handle) : *(unionfind [n], [u]handle) =
     let (new_parents, ps) = find_by_vector parents hs
     in ({parents = new_parents}, ps)
 
   def find' [n] [u]
             (uf: unionfind [n])
-            (hs: [u]handle) : [u]handle =
+            (hs: [u]handle) : *[u]handle =
     map (\h ->
            loop h
            while uf.parents[h] != none do
