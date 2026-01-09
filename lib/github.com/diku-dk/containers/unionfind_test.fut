@@ -13,7 +13,7 @@ module unionfind_sequential : unionfind = {
   def to_i64 [n] (_: unionfind [n]) (h: handle) : i64 =
     assert (0 <= h && h <= n) h
 
-  def from_i64 [n] (_: unionfind [n]) (i: i64) : handle =
+  def from_i64 [n] (_: unionfind [n]) (i: i64) : *handle =
     assert (0 <= i && i <= n) i
 
   #[sequential]
@@ -39,7 +39,7 @@ module unionfind_sequential : unionfind = {
   #[sequential]
   def find' [n] [u]
             (uf: unionfind [n])
-            (hs: [u]handle) : [u]handle =
+            (hs: [u]handle) : *[u]handle =
     map (find_one uf) hs
 
   #[sequential]

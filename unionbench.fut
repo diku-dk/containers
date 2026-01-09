@@ -45,7 +45,7 @@ module unionfind_sequential_work_efficient : unionfind = {
   #[sequential]
   def find' [n] [u]
             (uf: unionfind [n])
-            (hs: [u]handle) : [u]handle =
+            (hs: [u]handle) : *[u]handle =
     map (\h ->
            loop h
            while uf.parents[h] != none do
