@@ -116,16 +116,19 @@ module transparent_reduction_tree : transparent_reduction_tree = {
     let offsets = iota n |> map (+ offset)
     let tree = scatter (replicate tree_size ne) offsets arr
     let arr = copy tree[offset:]
-    let (tree, _, _) =
-      loop (tree, arr, level) = (tree, arr, h - 2)
+    let (tree, _, _, _) =
+      loop (tree, arr: *[tree_size - offset]t, level, new_size) =
+             (tree, arr, h - 2, length arr)
       while level >= 0 do
-        let new_size = length arr / 2
+        let new_size = new_size / 2
         let new_arr =
-          tabulate new_size (\i -> arr[2 * i] `op` arr[2 * i + 1])
+          scatter arr
+                  (iota new_size)
+                  (tabulate new_size (\i -> arr[2 * i] `op` arr[2 * i + 1]))
         let offset = size_from_height level
         let offsets = iota new_size |> map (+ offset)
-        let new_tree = scatter tree offsets new_arr
-        in (new_tree, new_arr, level - 1)
+        let new_tree = scatter tree offsets (take new_size new_arr)
+        in (new_tree, new_arr, level - 1, new_size)
     in from_array (tree :> [size n]t)
 
   def previous [n] 't
