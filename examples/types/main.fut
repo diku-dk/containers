@@ -51,13 +51,18 @@ def constraint [n] [m]
 
 def constraints [n] (exps: [n]exp) =
   let shape = map num_type_equivs exps
-  let offsets = exscan (+) 0 shape
   let size = i64.sum shape
-  let tvs = map num_type_vars exps |> i64.sum |> iota
+  let num_tvs = map num_type_vars exps
+  let offsets = exscan (+) 0 num_tvs
+  let tvs = i64.sum num_tvs |> iota
   let seg_is =
     scatter (replicate size 0)
-            (offsets)
+            (exscan (+) 0 shape)
             (map (i64.bool <-< bool.i64) (indices offsets))
     |> scan (+) 0
   let is = tabulate size (\i -> i - offsets[seg_is[i]])
+  let tvars =
+    #[trace]
+    exscan (+) 0 num_tvs
+    |> map2 (\e o -> (e, #tvar tvs[o] : typ)) exps
   in map2 (constraint tvs offsets exps) seg_is is
