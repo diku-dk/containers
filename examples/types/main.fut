@@ -3,7 +3,6 @@ import "../../lib/github.com/diku-dk/containers/unionfind"
 type vname = i64
 type tname = i64
 type e = i64
-type t = i64
 
 type exp =
     #var vname
@@ -12,9 +11,9 @@ type exp =
 
 type typ =
     #tvar tname
-  | #tarrow t t
+  | #tarrow tname tname
 
-type constraint = (typ, typ)
+type constraint = (tname, tname)
 
 def num_type_vars (exp: exp) : i64 =
   match exp
@@ -26,7 +25,7 @@ def num_type_equivs (exp: exp) : i64 =
   match exp
   case #var _ -> 0
   case #lam _ _ -> 0
-  case #app _ _ -> 3
+  case #app _ _ -> 2
 
 def exscan f ne xs =
   map2 (\i x -> if i == 0 then ne else x)
@@ -41,13 +40,23 @@ def constraint [n] [m]
                (i: i64) : constraint =
   let o = offsets[seg_i]
   in match (exps[o], i)
-     case (#app _ _, 0) ->
-       (#tvar tvs[o + 0], #tarrow tvs[o + 1] tvs[o + 2])
-     case (#app e0 _, 1) ->
-       (#tvar tvs[o + 1], #tvar tvs[offsets[e0] + 0])
-     case (#app _ e1, 2) ->
-       (#tvar tvs[o + 2], #tvar tvs[offsets[e1] + 0])
+     -- (#tvar tvs[o + 0], #tarrow tvs[o + 1] tvs[o + 2])
+     case (#app e0 _, 0) ->
+       (tvs[o + 1], tvs[offsets[e0] + 0])
+     case (#app _ e1, 1) ->
+       (tvs[o + 2], tvs[offsets[e1] + 0])
      case _ -> assert false ([] :> []constraint)[0]
+
+def typeof [n] [m]
+           (tvs: [m]tname)
+           (offsets: [n]i64)
+           (seg_i: i64)
+           (exp: exp) : (exp, typ) =
+  let o = offsets[seg_i]
+  in match exp
+     case #var e -> (#var e, #tvar tvs[o + 0])
+     case #lam v e -> (#lam v e, #tvar tvs[o + 0])
+     case #app e0 e1 -> (#app e0 e1, #tarrow tvs[o + 1] tvs[o + 2])
 
 def constraints [n] (exps: [n]exp) =
   let shape = map num_type_equivs exps
@@ -61,8 +70,6 @@ def constraints [n] (exps: [n]exp) =
             (map (i64.bool <-< bool.i64) (indices offsets))
     |> scan (+) 0
   let is = tabulate size (\i -> i - offsets[seg_is[i]])
-  let tvars =
-    #[trace]
-    exscan (+) 0 num_tvs
-    |> map2 (\e o -> (e, #tvar tvs[o] : typ)) exps
-  in map2 (constraint tvs offsets exps) seg_is is
+  let types = map2 (typeof tvs offsets) (indices exps) exps
+  let cons = map2 (constraint tvs offsets exps) seg_is is
+  in (cons, types)
