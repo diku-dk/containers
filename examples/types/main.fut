@@ -40,7 +40,7 @@ def constraint [n] [m]
                (seg_i: i64)
                (i: i64) : constraint =
   let o = offsets[seg_i]
-  in match (#[trace] (exps[o], i))
+  in match (exps[o], i)
      case (#app _ _, 0) ->
        (#tvar tvs[o + 0], #tarrow tvs[o + 1] tvs[o + 2])
      case (#app e0 _, 1) ->
