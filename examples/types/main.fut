@@ -1,5 +1,4 @@
 import "../../lib/github.com/diku-dk/containers/unionfind"
-import "../../lib/github.com/diku-dk/segmented/segmented"
 
 type vname = i64
 type tname = i64
@@ -29,29 +28,36 @@ def num_type_equivs (exp: exp) : i64 =
   case #lam _ _ -> 0
   case #app _ _ -> 3
 
-def type_var_ranges [n] (exps: [n]exp) : [n](tname, tname) =
-  let num_vars = map num_type_vars exps
-  let starts = scan (+) 0 num_vars
-  in map2 (\i s ->
-             if i == 0 then (0, s) else (starts[i - 1], starts[i]))
-          (iota n)
-          starts
+def exscan f ne xs =
+  map2 (\i x -> if i == 0 then ne else x)
+       (indices xs)
+       (rotate (-1) (scan f ne xs))
 
-def constraint [n]
-               (exps_vars: [n]tname)
-               (e: exp)
-               (t: tname) : constraint =
-  let a = 0
-  let b = 1
-  let c = 2
-  in match (e, t)
-     case (#app _ _, 0) -> (#tvar a, #tarrow b c)
-     case (#app e0 _, 1) -> (#tvar b, #tvar exps_vars[e0])
-     case (#app _ e1, 2) -> (#tvar c, #tvar exps_vars[e1])
+def constraint [n] [m]
+               (tvs: [m]tname)
+               (offsets: [n]i64)
+               (exps: [n]exp)
+               (seg_i: i64)
+               (i: i64) : constraint =
+  let o = offsets[seg_i]
+  in match (#[trace] (exps[o], i))
+     case (#app _ _, 0) ->
+       (#tvar tvs[o + 0], #tarrow tvs[o + 1] tvs[o + 2])
+     case (#app e0 _, 1) ->
+       (#tvar tvs[o + 1], #tvar tvs[offsets[e0] + 0])
+     case (#app _ e1, 2) ->
+       (#tvar tvs[o + 2], #tvar tvs[offsets[e1] + 0])
      case _ -> assert false ([] :> []constraint)[0]
 
-def constraints [n] (exps: [n]exp) : []constraint =
-  let ranges = type_var_ranges exps
-  let exps_type_vars = map (.0) ranges
-  let _repiota = replicated_iota (map (\(t, t') -> t' - t) ranges)
-  in [][0]
+def constraints [n] (exps: [n]exp) =
+  let shape = map num_type_equivs exps
+  let offsets = exscan (+) 0 shape
+  let size = i64.sum shape
+  let tvs = map num_type_vars exps |> i64.sum |> iota
+  let seg_is =
+    scatter (replicate size 0)
+            (offsets)
+            (map (i64.bool <-< bool.i64) (indices offsets))
+    |> scan (+) 0
+  let is = tabulate size (\i -> i - offsets[seg_is[i]])
+  in map2 (constraint tvs offsets exps) seg_is is
