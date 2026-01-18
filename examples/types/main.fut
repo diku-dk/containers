@@ -40,7 +40,6 @@ def constraint [n] [m]
                (i: i64) : constraint =
   let o = offsets[seg_i]
   in match (exps[o], i)
-     -- (#tvar tvs[o + 0], #tarrow tvs[o + 1] tvs[o + 2])
      case (#app e0 _, 0) ->
        (tvs[o + 1], tvs[offsets[e0] + 0])
      case (#app _ e1, 1) ->
@@ -54,9 +53,15 @@ def typeof [n] [m]
            (exp: exp) : (exp, typ) =
   let o = offsets[seg_i]
   in match exp
-     case #var e -> (#var e, #tvar tvs[o + 0])
-     case #lam v e -> (#lam v e, #tvar tvs[o + 0])
-     case #app e0 e1 -> (#app e0 e1, #tarrow tvs[o + 1] tvs[o + 2])
+     case #var v -> (#var v, #tvar tvs[o + 0])
+     case #lam v e -> (#lam v e, #tarrow tvs[o + 0] tvs[offsets[e + 0]])
+     case #app e0 e1 -> (#app e0 e1, #tvar tvs[o + 0])
+
+def unpack_var (exp: exp) =
+  match exp
+  case #var v -> v
+  case #lam v _ -> v
+  case #app _ _ -> -1
 
 def constraints [n] (exps: [n]exp) =
   let shape = map num_type_equivs exps
