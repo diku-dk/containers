@@ -20,13 +20,13 @@ def num_type_vars (exp: exp) : i64 =
   match exp
   case #var _ -> 1
   case #lam _ _ -> 1
-  case #app _ _ -> 3
+  case #app _ _ -> 1
 
 def num_type_equivs (exp: exp) : i64 =
   match exp
   case #var _ -> 0
   case #lam _ _ -> 0
-  case #app _ _ -> 3
+  case #app _ _ -> 1
 
 def exscan f ne xs =
   map2 (\i x -> if i == 0 then ne else x)
@@ -42,17 +42,9 @@ def constraint [n] [m]
   let o = offsets[seg_i]
   in match (exps[o], i)
      -- t(e0 e1) = tvs[o]
-     -- a = tvs[o + 1]
-     -- b = tvs[o + 2]
-     case (#app e0 _, 0) ->
-       -- t(e0) ~ a -> b
-       (#tvar tvs[offsets[e0]], #tarrow tvs[o + 1] tvs[o + 2])
-     case (#app _ e1, 1) ->
-       -- t(e1) ~ a
-       (#tvar tvs[offsets[e1]], #tvar tvs[o + 1])
-     case (#app _ _, 2) ->
-       -- t(e0 e1) ~ b
-       (#tvar tvs[o], #tvar tvs[o + 2])
+     case (#app e0 e1, 0) ->
+       -- t(e0) ~ t(e1) -> t(e0 e1)
+       (#tvar tvs[offsets[e0]], #tarrow tvs[offsets[e1]] tvs[o])
      case _ -> assert false ([] :> []constraint)[0]
 
 def constraints [n] (exps: [n]exp) =
