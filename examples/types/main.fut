@@ -34,8 +34,8 @@ def num_type_vars (exp: exp) : i64 =
 
 def num_type_equivs (exp: exp) : i64 =
   match exp
-  case #var _ -> 0
-  case #lam _ _ -> 0
+  case #var _ -> 1
+  case #lam _ _ -> 1
   case #app _ _ -> 1
 
 def exscan f ne xs =
@@ -43,33 +43,39 @@ def exscan f ne xs =
        (indices xs)
        (rotate (-1) (scan f ne xs))
 
-def constraint [n] [m]
-               (tvs: [m]tname)
-               (offsets: [n]i64)
+def var_to_tname (n: i64) (v: vname) : tname =
+  n + v
+
+def index_to_tname (i: i64) : tname = i
+
+def constraint [n]
                (exps: [n]exp)
                (seg_i: i64)
                (i: i64) : constraint =
-  let o = offsets[seg_i]
-  in match (exps[o], i)
-     case (#app e0 e1, 0) ->
-       -- t(e0) ~ t(e1) -> t(e0 e1)
-       (#tvar tvs[offsets[e0]], #tarrow tvs[offsets[e1]] tvs[o])
-     case _ -> assert false ([] :> []constraint)[0]
+  match (exps[seg_i], i)
+  case (#app e0 e1, 0) ->
+    -- t(e0) ~ t(e1) -> t(e0 e1)
+    (#tvar (index_to_tname e0), #tarrow (index_to_tname e1) (index_to_tname seg_i))
+  case (#lam v e, 0) ->
+    -- t(\v -> e) ~ t(v) -> t(e)
+    (#tvar (index_to_tname seg_i), #tarrow (var_to_tname n v) (index_to_tname e))
+  case (#var v, 0) ->
+    -- t(v) ~ t(e)
+    (#tvar (var_to_tname n v), #tvar (index_to_tname seg_i))
+  case _ -> assert false ([] :> []constraint)[0]
 
 def constraints [n] (exps: [n]exp) =
   let shape = map num_type_equivs exps
   let size = i64.sum shape
   let num_tvs = map num_type_vars exps
   let offsets = exscan (+) 0 num_tvs
-  let tvs = i64.sum num_tvs |> iota
   let seg_is =
     scatter (replicate size 0)
             (exscan (+) 0 shape)
             (map (i64.bool <-< bool.i64) (indices offsets))
     |> scan (+) 0
   let is = tabulate size (\i -> i - offsets[seg_is[i]])
-  let _ = #[trace] tabulate n (\i -> (exps[i], #tvar tvs[offsets[i]] : typ))
-  in map2 (constraint tvs offsets exps) seg_is is
+  in map2 (constraint exps) seg_is is
 
 def cmp (t: typ) (t': typ) : bool =
   match (t, t')
