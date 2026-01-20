@@ -119,10 +119,10 @@ module unionfind_by_size : unionfind = {
     }
 
   def to_i64 [n] (_: unionfind [n]) (h: handle) : i64 =
-    assert (0 <= h && h <= n) h
+    assert (0 <= h && h < n) h
 
   def from_i64 [n] (_: unionfind [n]) (i: i64) : handle =
-    assert (0 <= i && i <= n) i
+    assert (0 <= i && i < n) i
 
   def none : handle = i64.highest
 
@@ -256,10 +256,10 @@ module unionfind_by_rank : unionfind = {
     }
 
   def to_i64 [n] (_: unionfind [n]) (h: handle) : i64 =
-    assert (0 <= h && h <= n) h
+    assert (0 <= h && h < n) h
 
   def from_i64 [n] (_: unionfind [n]) (i: i64) : handle =
-    assert (0 <= i && i <= n) i
+    assert (0 <= i && i < n) i
 
   def none : handle = i64.highest
 
@@ -386,10 +386,10 @@ module unionfind : unionfind = {
   type unionfind [n] = {parents: [n]handle}
 
   def to_i64 [n] (_: unionfind [n]) (h: handle) : i64 =
-    assert (0 <= h && h <= n) h
+    assert (0 <= h && h < n) h
 
   def from_i64 [n] (_: unionfind [n]) (i: i64) : handle =
-    assert (0 <= i && i <= n) i
+    assert (0 <= i && i < n) i
 
   def none : handle = i64.highest
 
