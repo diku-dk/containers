@@ -26,23 +26,6 @@ type typ =
 
 type constraint = (typ, typ)
 
-def num_type_vars (exp: exp) : i64 =
-  match exp
-  case #var _ -> 1
-  case #lam _ _ -> 1
-  case #app _ _ -> 1
-
-def num_type_equivs (exp: exp) : i64 =
-  match exp
-  case #var _ -> 1
-  case #lam _ _ -> 1
-  case #app _ _ -> 1
-
-def exscan f ne xs =
-  map2 (\i x -> if i == 0 then ne else x)
-       (indices xs)
-       (rotate (-1) (scan f ne xs))
-
 def var_to_tname (n: i64) (v: vname) : tname =
   n + v
 
