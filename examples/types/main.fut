@@ -27,12 +27,12 @@ type constraint = (typ, typ)
 
 -- | All expressions is assigned a type variable name based on its
 -- index.
-def index_to_tname (i: i64) : tname =
+def exp_tname (i: e) : tname =
   i
 
 -- | All expression variable names is assigned a type variable based
 -- on its name.
-def var_to_tname (n: i64) (v: vname) : tname =
+def var_tname (n: i64) (v: vname) : tname =
   n + v
 
 -- | Generate a constraint based on an subexpression.
@@ -42,26 +42,17 @@ def constraint [n]
   match exps[i]
   case #app e0 e1 ->
     -- t(e0) ~ t(e1) -> t(e0 e1)
-    (#tvar (index_to_tname e0), #tarrow (index_to_tname e1) (index_to_tname i))
-  case #lam v e ->
+    (#tvar (exp_tname e0), #tarrow (exp_tname e1) (exp_tname i))
+  case #lam x e ->
     -- t(\v -> e) ~ t(v) -> t(e)
-    (#tvar (index_to_tname i), #tarrow (var_to_tname n v) (index_to_tname e))
-  case #var v ->
+    (#tvar (exp_tname i), #tarrow (var_tname n x) (exp_tname e))
+  case #var x ->
     -- t(v) ~ t(e)
-    (#tvar (index_to_tname i), #tvar (var_to_tname n v))
+    (#tvar (exp_tname i), #tvar (var_tname n x))
 
 -- | Generate all constraints for an expression.
 def constraints [n] (exps: [n]exp) =
   tabulate n (constraint exps)
-
--- | Less than or equal ordering on types.
-def cmp (t: typ) (t': typ) : bool =
-  match (t, t')
-  case (#tarrow _ _, #tvar _) -> false
-  case (#tvar _, #tarrow _ _) -> true
-  case (#tvar a, #tvar a') -> a <= a'
-  case (#tarrow a b, #tarrow a' b') ->
-    if a == a' then b <= b' else a <= a'
 
 -- | Equality on types.
 def eq (t: typ) (t': typ) : bool =
