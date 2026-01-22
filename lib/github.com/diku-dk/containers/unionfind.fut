@@ -136,6 +136,74 @@ def compression [m] [n]
       compression_step none is parents ps
   in (new_parents, ps)
 
+module unionfind : unionfind = {
+  type handle = i64
+
+  type unionfind [n] = {parents: [n]handle}
+
+  def to_i64 [n] (_: unionfind [n]) (h: handle) : i64 =
+    assert (0 <= h && h < n) h
+
+  def from_i64 [n] (_: unionfind [n]) (i: i64) : handle =
+    assert (0 <= i && i < n) i
+
+  def none : handle = i64.highest
+
+  def handles [n] (_: unionfind [n]) : *[n]handle =
+    iota n
+
+  def create (n: i64) : *unionfind [n] =
+    {parents = rep none}
+
+  def find [n] [u]
+           ({parents}: *unionfind [n])
+           (hs: [u]handle) : *(unionfind [n], [u]handle) =
+    let (new_parents, ps) = find_by_vector none parents hs
+    in ({parents = new_parents}, ps)
+
+  def find' [n] [u]
+            (uf: unionfind [n])
+            (hs: [u]handle) : *[u]handle =
+    find_by_vector' none uf.parents hs
+
+  def order [n] [u]
+            (parents: *[n]handle)
+            (eqs: [u](handle, handle)) : ( *[n]handle
+                                         , [u](handle, handle)
+                                         ) =
+    let eqs_elems = unzip eqs |> uncurry (++)
+    let (new_parents, new_eqs_elems) = find_by_vector none parents eqs_elems
+    let eqs = split new_eqs_elems |> uncurry zip
+    in (new_parents, eqs)
+
+  def maximal_union [n] [u]
+                    (parents: *[n]handle)
+                    (eqs: [u](handle, handle)) : ?[m].(*[n]handle, [m](handle, handle)) =
+    let (vs, us) = unzip eqs
+    let unique_vs = hll.insert () (hll.create 10) vs |> hll.count
+    let unique_us = hll.insert () (hll.create 10) us |> hll.count
+    let (vs, us) = if unique_vs < unique_us then (us, vs) else (vs, us)
+    let parents = reduce_by_index parents i64.min none vs us
+    let (eqs, done) =
+      copy (partition (\(i, p) -> parents[i] != p) eqs)
+    let parents = compression none parents (map (.0) done) |> (.0)
+    in (parents, eqs)
+
+  def union [n] [u]
+            ({parents}: *unionfind [n])
+            (eqs: [u](handle, handle)) : *unionfind [n] =
+    let (parents, _) =
+      loop (parents, eqs)
+      while length eqs != 0 do
+        let (parents, eqs) = order parents eqs
+        let eqs =
+          map (\(v, u) -> if v < u then (v, u) else (u, v)) eqs
+          |> filter (\(v, u) -> v != u)
+        let (parents, eqs) = maximal_union parents eqs
+        in (parents, eqs)
+    in {parents}
+}
+
 module unionfind_by_size : unionfind = {
   type handle = i64
 
@@ -327,78 +395,9 @@ module unionfind_by_rank : unionfind = {
       while not (null eqs) do
         let (parents, eqs) = order parents ranks eqs
         let eqs = filter (\(l, r) -> l != r) eqs
-        let (parents, ranks, eqs) =
-          maximal_union parents ranks eqs
+        let (parents, ranks, eqs) = maximal_union parents ranks eqs
         in (parents, ranks, eqs)
     in { parents = new_parents
        , ranks = new_ranks
        }
-}
-
-module unionfind : unionfind = {
-  type handle = i64
-
-  type unionfind [n] = {parents: [n]handle}
-
-  def to_i64 [n] (_: unionfind [n]) (h: handle) : i64 =
-    assert (0 <= h && h < n) h
-
-  def from_i64 [n] (_: unionfind [n]) (i: i64) : handle =
-    assert (0 <= i && i < n) i
-
-  def none : handle = i64.highest
-
-  def handles [n] (_: unionfind [n]) : *[n]handle =
-    iota n
-
-  def create (n: i64) : *unionfind [n] =
-    {parents = rep none}
-
-  def find [n] [u]
-           ({parents}: *unionfind [n])
-           (hs: [u]handle) : *(unionfind [n], [u]handle) =
-    let (new_parents, ps) = find_by_vector none parents hs
-    in ({parents = new_parents}, ps)
-
-  def find' [n] [u]
-            (uf: unionfind [n])
-            (hs: [u]handle) : *[u]handle =
-    find_by_vector' none uf.parents hs
-
-  def order [n] [u]
-            (parents: *[n]handle)
-            (eqs: [u](handle, handle)) : ( *[n]handle
-                                         , [u](handle, handle)
-                                         ) =
-    let eqs_elems = unzip eqs |> uncurry (++)
-    let (new_parents, new_eqs_elems) = find_by_vector none parents eqs_elems
-    let eqs = split new_eqs_elems |> uncurry zip
-    in (new_parents, eqs)
-
-  def maximal_union [n] [u]
-                    (parents: *[n]handle)
-                    (eqs: [u](handle, handle)) : ?[m].(*[n]handle, [m](handle, handle)) =
-    let (vs, us) = unzip eqs
-    let unique_vs = hll.insert () (hll.create 10) vs |> hll.count
-    let unique_us = hll.insert () (hll.create 10) us |> hll.count
-    let (vs, us) = if unique_vs < unique_us then (us, vs) else (vs, us)
-    let parents = reduce_by_index parents i64.min none vs us
-    let (eqs, done) =
-      copy (partition (\(i, p) -> parents[i] != p) eqs)
-    let parents = compression none parents (map (.0) done) |> (.0)
-    in (parents, eqs)
-
-  def union [n] [u]
-            ({parents}: *unionfind [n])
-            (eqs: [u](handle, handle)) : *unionfind [n] =
-    let (parents, _) =
-      loop (parents, eqs)
-      while length eqs != 0 do
-        let (parents, eqs) = order parents eqs
-        let eqs =
-          map (\(v, u) -> if v < u then (v, u) else (u, v)) eqs
-          |> filter (\(v, u) -> v != u)
-        let (parents, eqs) = maximal_union parents eqs
-        in (parents, eqs)
-    in {parents}
 }
