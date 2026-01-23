@@ -556,10 +556,10 @@ entry unionfind_sequential_work_efficient_chunked_inverse_single n m =
 
 -- ==
 -- entry: unionfind_sequential_work_efficient_all_bench unionfind_sequential_work_efficient_halving_bench unionfind_sequential_work_efficient_reverse_halving_bench unionfind_sequential_work_efficient_chunked_bench
--- no_cuda no_opencl no_hip compiled script input { unionfind_sequential_work_efficient_random 100000i64 20000i64 }
--- no_cuda no_opencl no_hip compiled script input { unionfind_sequential_work_efficient_linear 100000i64 20000i64 }
--- no_cuda no_opencl no_hip compiled script input { unionfind_sequential_work_efficient_single 100000i64 20000i64 }
--- no_cuda no_opencl no_hip compiled script input { unionfind_sequential_work_efficient_inverse_single 100000i64 20000i64 }
+-- no_cuda no_opencl no_hip no_multicore compiled script input { unionfind_sequential_work_efficient_random 100000i64 20000i64 }
+-- no_cuda no_opencl no_hip no_multicore compiled script input { unionfind_sequential_work_efficient_linear 100000i64 20000i64 }
+-- no_cuda no_opencl no_hip no_multicore compiled script input { unionfind_sequential_work_efficient_single 100000i64 20000i64 }
+-- no_cuda no_opencl no_hip no_multicore compiled script input { unionfind_sequential_work_efficient_inverse_single 100000i64 20000i64 }
 entry unionfind_sequential_work_efficient_all_bench = bench_unionfind_sequential_work_efficient.all
 entry unionfind_sequential_work_efficient_halving_bench = bench_unionfind_sequential_work_efficient.halving
 entry unionfind_sequential_work_efficient_reverse_halving_bench = bench_unionfind_sequential_work_efficient.reverse_halving
@@ -567,20 +567,20 @@ entry unionfind_sequential_work_efficient_chunked_bench = bench_unionfind_sequen
 
 -- ==
 -- entry: unionfind_sequential_work_efficient_find
--- no_cuda no_opencl no_hip compiled script input { unionfind_sequential_work_efficient_all_random 100000i64 100000i64 }
--- no_cuda no_opencl no_hip compiled script input { unionfind_sequential_work_efficient_all_linear 100000i64 100000i64 }
--- no_cuda no_opencl no_hip compiled script input { unionfind_sequential_work_efficient_all_single 100000i64 100000i64 }
--- no_cuda no_opencl no_hip compiled script input { unionfind_sequential_work_efficient_all_inverse_single 100000i64 100000i64 }
--- no_cuda no_opencl no_hip compiled script input { unionfind_sequential_work_efficient_halving_random 100000i64 100000i64 }
--- no_cuda no_opencl no_hip compiled script input { unionfind_sequential_work_efficient_halving_linear 100000i64 100000i64 }
--- no_cuda no_opencl no_hip compiled script input { unionfind_sequential_work_efficient_halving_single 100000i64 100000i64 }
--- no_cuda no_opencl no_hip compiled script input { unionfind_sequential_work_efficient_halving_inverse_single 100000i64 100000i64 }
--- no_cuda no_opencl no_hip compiled script input { unionfind_sequential_work_efficient_reverse_halving_random 100000i64 100000i64 }
--- no_cuda no_opencl no_hip compiled script input { unionfind_sequential_work_efficient_reverse_halving_linear 100000i64 100000i64 }
--- no_cuda no_opencl no_hip compiled script input { unionfind_sequential_work_efficient_reverse_halving_single 100000i64 100000i64 }
--- no_cuda no_opencl no_hip compiled script input { unionfind_sequential_work_efficient_reverse_halving_inverse_single 100000i64 100000i64 }
--- no_cuda no_opencl no_hip compiled script input { unionfind_sequential_work_efficient_chunked_random 100000i64 100000i64 }
--- no_cuda no_opencl no_hip compiled script input { unionfind_sequential_work_efficient_chunked_linear 100000i64 100000i64 }
--- no_cuda no_opencl no_hip compiled script input { unionfind_sequential_work_efficient_chunked_single 100000i64 100000i64 }
--- no_cuda no_opencl no_hip compiled script input { unionfind_sequential_work_efficient_chunked_inverse_single 100000i64 100000i64 }
+-- no_cuda no_opencl no_hip no_multicore compiled script input { unionfind_sequential_work_efficient_all_random 100000i64 100000i64 }
+-- no_cuda no_opencl no_hip no_multicore compiled script input { unionfind_sequential_work_efficient_all_linear 100000i64 100000i64 }
+-- no_cuda no_opencl no_hip no_multicore compiled script input { unionfind_sequential_work_efficient_all_single 100000i64 100000i64 }
+-- no_cuda no_opencl no_hip no_multicore compiled script input { unionfind_sequential_work_efficient_all_inverse_single 100000i64 100000i64 }
+-- no_cuda no_opencl no_hip no_multicore compiled script input { unionfind_sequential_work_efficient_halving_random 100000i64 100000i64 }
+-- no_cuda no_opencl no_hip no_multicore compiled script input { unionfind_sequential_work_efficient_halving_linear 100000i64 100000i64 }
+-- no_cuda no_opencl no_hip no_multicore compiled script input { unionfind_sequential_work_efficient_halving_single 100000i64 100000i64 }
+-- no_cuda no_opencl no_hip no_multicore compiled script input { unionfind_sequential_work_efficient_halving_inverse_single 100000i64 100000i64 }
+-- no_cuda no_opencl no_hip no_multicore compiled script input { unionfind_sequential_work_efficient_reverse_halving_random 100000i64 100000i64 }
+-- no_cuda no_opencl no_hip no_multicore compiled script input { unionfind_sequential_work_efficient_reverse_halving_linear 100000i64 100000i64 }
+-- no_cuda no_opencl no_hip no_multicore compiled script input { unionfind_sequential_work_efficient_reverse_halving_single 100000i64 100000i64 }
+-- no_cuda no_opencl no_hip no_multicore compiled script input { unionfind_sequential_work_efficient_reverse_halving_inverse_single 100000i64 100000i64 }
+-- no_cuda no_opencl no_hip no_multicore compiled script input { unionfind_sequential_work_efficient_chunked_random 100000i64 100000i64 }
+-- no_cuda no_opencl no_hip no_multicore compiled script input { unionfind_sequential_work_efficient_chunked_linear 100000i64 100000i64 }
+-- no_cuda no_opencl no_hip no_multicore compiled script input { unionfind_sequential_work_efficient_chunked_single 100000i64 100000i64 }
+-- no_cuda no_opencl no_hip no_multicore compiled script input { unionfind_sequential_work_efficient_chunked_inverse_single 100000i64 100000i64 }
 entry unionfind_sequential_work_efficient_find = bench_unionfind_sequential_work_efficient.find 10

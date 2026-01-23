@@ -269,26 +269,27 @@ module unionfind_by_size : unionfind = {
 
   def order [n] [u]
             (parents: *[n]handle)
-            (sizes: [n]i64)
-            (eqs: [u](handle, handle)) : ( *[n]handle
-                                         , [u](handle, handle)
-                                         ) =
+            (sizes: *[n]i64)
+            (eqs: [u](handle, handle)) : ?[m].( *[n]handle
+                                              , *[n]i64
+                                              , [m](handle, handle)
+                                              ) =
     let eqs_elems = unzip eqs |> uncurry (++)
     let (new_parents, new_eqs_elems) = find_by_vector none parents eqs_elems
-    let eqs =
+    let (_, value_eqs, rank_eqs) =
       split new_eqs_elems
       |> uncurry zip
-      |> map (\(v, u) -> if v < u then (v, u) else (u, v))
-    let (value_eqs, size_eqs) = partition (\(v, u) -> sizes[v] == sizes[u]) eqs
-    let size_eqs =
-      map (\(v, u) -> if sizes[v] < sizes[u] then (v, u) else (v, u))
-          size_eqs
+      |> map (\(v, u) ->
+                if sizes[v] == sizes[u]
+                then if v < u then (v, u) else (u, v)
+                else if sizes[v] < sizes[u] then (v, u) else (u, v))
+      |> partition2 (uncurry (==)) (\(v, u) -> sizes[v] == sizes[u])
     let (vs, us) = unzip value_eqs
     let unique_vs = hll.insert () (hll.create 10) vs |> hll.count
     let unique_us = hll.insert () (hll.create 10) us |> hll.count
     let value_eqs = if unique_vs < unique_us then zip us vs else zip vs us
-    let eqs = value_eqs ++ size_eqs |> sized u
-    in (new_parents, eqs)
+    let eqs = value_eqs ++ rank_eqs
+    in (new_parents, sizes, eqs)
 
   def union [n] [u]
             ({parents, sizes, temporary_indices}: *unionfind [n])
@@ -296,8 +297,7 @@ module unionfind_by_size : unionfind = {
     let (new_parents, new_sizes, new_temporary_indices, _) =
       loop (parents, sizes, temporary_indices, eqs)
       while not (null eqs) do
-        let (parents, eqs) = order parents sizes eqs
-        let eqs = filter (\(l, r) -> l != r) eqs
+        let (parents, sizes, eqs) = order parents sizes eqs
         let (parents, sizes, temporary_indices, eqs) =
           maximal_union parents sizes temporary_indices eqs
         in (parents, sizes, temporary_indices, eqs)
@@ -366,26 +366,27 @@ module unionfind_by_rank : unionfind = {
 
   def order [n] [u]
             (parents: *[n]handle)
-            (ranks: [n]u8)
-            (eqs: [u](handle, handle)) : ( *[n]handle
-                                         , [u](handle, handle)
-                                         ) =
+            (ranks: *[n]u8)
+            (eqs: [u](handle, handle)) : ?[m].( *[n]handle
+                                              , *[n]u8
+                                              , [m](handle, handle)
+                                              ) =
     let eqs_elems = unzip eqs |> uncurry (++)
     let (new_parents, new_eqs_elems) = find_by_vector none parents eqs_elems
-    let eqs =
+    let (_, value_eqs, rank_eqs) =
       split new_eqs_elems
       |> uncurry zip
-      |> map (\(v, u) -> if v < u then (v, u) else (u, v))
-    let (value_eqs, rank_eqs) = partition (\(v, u) -> ranks[v] == ranks[u]) eqs
-    let rank_eqs =
-      map (\(v, u) -> if ranks[v] < ranks[u] then (v, u) else (v, u))
-          rank_eqs
+      |> map (\(v, u) ->
+                if ranks[v] == ranks[u]
+                then if v < u then (v, u) else (u, v)
+                else if ranks[v] < ranks[u] then (v, u) else (u, v))
+      |> partition2 (uncurry (==)) (\(v, u) -> ranks[v] == ranks[u])
     let (vs, us) = unzip value_eqs
     let unique_vs = hll.insert () (hll.create 10) vs |> hll.count
     let unique_us = hll.insert () (hll.create 10) us |> hll.count
     let value_eqs = if unique_vs < unique_us then zip us vs else zip vs us
-    let eqs = value_eqs ++ rank_eqs |> sized u
-    in (new_parents, eqs)
+    let eqs = value_eqs ++ rank_eqs
+    in (new_parents, ranks, eqs)
 
   def union [n] [u]
             ({parents, ranks}: *unionfind [n])
@@ -393,8 +394,7 @@ module unionfind_by_rank : unionfind = {
     let (new_parents, new_ranks, _) =
       loop (parents, ranks, eqs)
       while not (null eqs) do
-        let (parents, eqs) = order parents ranks eqs
-        let eqs = filter (\(l, r) -> l != r) eqs
+        let (parents, ranks, eqs) = order parents ranks eqs
         let (parents, ranks, eqs) = maximal_union parents ranks eqs
         in (parents, ranks, eqs)
     in { parents = new_parents
