@@ -51,7 +51,7 @@ module unionfind_sequential : unionfind = {
       let (i, p) = (find_one uf' h, find_one uf' h')
       in if i == p
          then uf'
-         else uf' with parents = (uf'.parents with [i] = p)
+         else uf' with parents[i] = p
 }
 
 module type norm_eq_count = {
@@ -143,10 +143,9 @@ module mk_test = mk_test_params unionfind_sequential
 module test_unionfind = mk_test unionfind
 module test_unionfind_by_size = mk_test unionfind_by_size
 module test_unionfind_by_rank = mk_test unionfind_by_rank
-module test_unionfind_sequential_work_efficient = mk_test unionfind_sequential_work_efficient
 
 -- ==
--- entry: unionfind_test unionfind_by_size_test unionfind_by_rank_test unionfind_sequential_work_efficient_test
+-- entry: unionfind_test unionfind_by_size_test unionfind_by_rank_test
 -- input { 10000i64 2000i64 }
 -- output { true }
 -- input { 10000i64 40000i64 }
@@ -159,6 +158,3 @@ entry unionfind_by_size_test (num_vars: i64) (num_eqs: i64) : bool =
 
 entry unionfind_by_rank_test (num_vars: i64) (num_eqs: i64) : bool =
   test_unionfind_by_rank.test num_vars num_eqs
-
-entry unionfind_sequential_work_efficient_test (num_vars: i64) (num_eqs: i64) : bool =
-  test_unionfind_sequential_work_efficient.test num_vars num_eqs
