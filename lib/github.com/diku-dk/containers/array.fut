@@ -137,7 +137,8 @@ module mk_array_key_params
                flags
                |> map (\(a, b) -> (i64.bool a, i64.bool b))
                |> scan add2 (0, 0)
-             let (unique_size, continue_size) = scan_res[length elems - 1]
+             let count = scatter [(0, 0)] (map (\i -> if i == length scan_res - 1 then 0 else -1) (indices scan_res)) scan_res
+             let (unique_size, continue_size) = count[0]
              let (unique_is, continue_is) =
                scan_res
                |> map2 (\(f0, f1) (i0, i1) ->
@@ -149,7 +150,7 @@ module mk_array_key_params
                        flags
                |> unzip
              let new_uniques = scatter uniques unique_is elems
-             let new_elems = scatter (copy elems) continue_is elems
+             let new_elems = scatter (#[scratch] copy elems) continue_is elems
              in ( new_uniques
                 , new_elems[:continue_size]
                 , old_size + unique_size
@@ -233,7 +234,8 @@ module mk_array_key_params
                flags
                |> map (\(a, b) -> (i64.bool a, i64.bool b))
                |> scan add2 (0, 0)
-             let (unique_size, continue_size) = scan_res[length not_reduced_keys - 1]
+             let count = scatter [(0, 0)] (map (\i -> if i == length scan_res - 1 then 0 else -1) (indices scan_res)) scan_res
+             let (unique_size, continue_size) = count[0]
              let (unique_is, continue_is) =
                scan_res
                |> map2 (\(f0, f1) (i0, i1) ->
@@ -246,8 +248,8 @@ module mk_array_key_params
                |> unzip
              let new_reduced_keys = scatter reduced_keys unique_is not_reduced_keys
              let new_reduced_values = scatter reduced_values unique_is temp_reduced_values
-             let new_not_reduced_keys = scatter (copy not_reduced_keys) continue_is not_reduced_keys
-             let new_not_reduced_values = scatter (copy not_reduced_values) continue_is not_reduced_values
+             let new_not_reduced_keys = scatter (#[scratch] copy not_reduced_keys) continue_is not_reduced_keys
+             let new_not_reduced_values = scatter (#[scratch] copy not_reduced_values) continue_is not_reduced_values
              in ( new_reduced_keys
                 , new_reduced_values
                 , new_not_reduced_keys[:continue_size]
