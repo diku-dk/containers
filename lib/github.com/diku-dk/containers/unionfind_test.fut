@@ -51,7 +51,7 @@ module unionfind_sequential : unionfind = {
       let (i, p) = (find_one uf' h, find_one uf' h')
       in if i == p
          then uf'
-         else uf' with parents = (uf'.parents with [i] = p)
+         else uf' with parents[i] = p
 }
 
 module type norm_eq_count = {
