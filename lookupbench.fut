@@ -68,11 +68,11 @@ def construct_hashset_u32 arr =
   hashset_u32.from_array () arr
 
 def construct_eytzinger arr =
-  blocked_radix_sort_int 256 i64.num_bits i64.get_bit arr
+  radix_sort_int i64.num_bits i64.get_bit arr
   |> eytzinger
 
 def construct_sort [n] (arr: [n]i64) : [n]i64 =
-  blocked_radix_sort_int 256 i64.num_bits i64.get_bit arr
+  radix_sort_int i64.num_bits i64.get_bit arr
 
 -- ==
 -- entry: bench_sort_construct bench_eytzinger_construct
