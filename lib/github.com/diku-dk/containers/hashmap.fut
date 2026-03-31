@@ -101,7 +101,7 @@ module type two_level_hashmap = {
   -- associative and commutative operation. Keys that are not present
   -- in the map is not added.
   --
-  -- **Work:** *O(n + u ✕ W(op))*
+  -- **Expected Work:** *O(n + u ✕ W(op))*
   --
   -- **Span:** *O(u)* in the worst case but O(1) in the best case.
   val adjust [n] [f] [m] [u] 'v :
@@ -113,7 +113,7 @@ module type two_level_hashmap = {
 
   -- | Map a function over the hashmap values.
   --
-  -- **Work:** *O(n ✕ W(g))*
+  -- **Expected Work:** *O(n ✕ W(g))*
   --
   -- **Span:** *O(S(g))*
   val map [n] [f] [m] 'v 't :
@@ -121,7 +121,7 @@ module type two_level_hashmap = {
 
   -- | Map a function over the hashmap values.
   --
-  -- **Work:** *O(n ✕ W(g))*
+  -- **Expected Work:** *O(n ✕ W(g))*
   --
   -- **Span:** *O(S(g))*
   val map_with_key [n] [f] [m] 'v 't :
@@ -139,7 +139,7 @@ module type two_level_hashmap = {
   -- | Updates the value of the hash map using the key with the
   -- smallest index. No new keys are added.
   --
-  -- **Work:** *O(n + u)*
+  -- **Expected Work:** *O(n + u)*
   --
   -- **Span:** *O(u)* in the worst case but O(1) in the best case.
   val update [n] [f] [m] [u] 'v :
@@ -231,12 +231,13 @@ module mk_two_level_hashmap
   -- | The hashmap data type.
   type map 'ctx [n] [f] [m] 'v =
     { ctx: ctx
-    , key_values: [n](key, v)
-    , offsets: [f]int
-    , lookup_keys: [f]key
+    , size: [n]()
+    , keys: [f]key
+    , values: [f]v
     , level_one_const: const
     , level_two_consts: [m]const
     , level_two: [n][3]int
+    , filler: (key, i64)
     , rng: rng
     }
 
@@ -245,12 +246,13 @@ module mk_two_level_hashmap
     let r = key.rng_from_seed [123]
     let (r', c) = key.rand r
     in { ctx
-       , key_values = []
-       , offsets = []
-       , lookup_keys = []
+       , size = []
+       , keys = []
+       , values = []
        , level_one_const = c
        , level_two_consts = []
        , level_two = []
+       , filler = #[blank] [][0]
        , rng = r'
        }
 
@@ -298,7 +300,7 @@ module mk_two_level_hashmap
                         k
     in if neg_one I.== i
        then false
-       else let k' = hmap.lookup_keys[I.to_i64 i]
+       else let k' = hmap.keys[I.to_i64 i]
             in (hmap.ctx, k') key.== (ctx, k)
 
   def not_member [n] [f] [m] 'v
@@ -321,9 +323,8 @@ module mk_two_level_hashmap
                         k
     in if i I.== neg_one
        then neg_one
-       else let o = hmap.offsets[I.to_i64 i]
-            let (k', _) = hmap.key_values[I.to_i64 o]
-            in if (hmap.ctx, k') key.== (ctx, k) then o else neg_one
+       else let k' = hmap.keys[I.to_i64 i]
+            in if (hmap.ctx, k') key.== (ctx, k) then i else neg_one
 
   def lookup [n] [f] [m] 'v
              (ctx: ctx)
@@ -338,8 +339,8 @@ module mk_two_level_hashmap
                         k
     in if i I.== neg_one
        then #none
-       else let o = hmap.offsets[I.to_i64 i]
-            let (k', v) = hmap.key_values[I.to_i64 o]
+       else let k' = hmap.keys[I.to_i64 i]
+            let v = hmap.values[I.to_i64 i]
             in if (hmap.ctx, k') key.== (ctx, k)
                then some v
                else #none
@@ -426,6 +427,7 @@ module mk_two_level_hashmap
                        (ctx: ctx)
                        (key_values: [n](key, v)) : ?[f][m].map ctx [n] [f] [m] v =
     let keys = map (.0) key_values
+    let values = map (.1) key_values
     let r = key.rng_from_seed [123, i32.i64 n]
     -- The level one hash function is determined here.
     let (r, level_one_const) = key.rand r
@@ -488,26 +490,22 @@ module mk_two_level_hashmap
                             level_two
                             flat_size
     let js = map hash2 keys
-    let lookup_keys_dest =
-      replicate flat_size' (if n == 0 then #[blank] key_values[0] else key_values[0], false)
-    let lookup_keys_is_valid =
-      scatter lookup_keys_dest js (zip key_values (rep true))
-    let lookup_keys = map ((.0) <-< (.0)) lookup_keys_is_valid
-    let reordered =
-      -- Reorder the keys so they match the combined hash functions.
-      lookup_keys_is_valid
-      |> filter (.1)
-      |> map (.0)
-      |> sized n
-    let offsets =
-      -- The offsets into the keys array.
-      scatter (replicate flat_size' zero)
-              (map (hash2 <-< (.0)) reordered)
-              (map I.i64 (iota n))
+    let filler =
+      if n == 0
+      then (#[blank] keys[0], -1)
+      else (keys[0], js[0])
+    let dest =
+      replicate flat_size' (if n == 0
+                            then (#[blank] keys[0], #[blank] values[0])
+                            else (keys[0], values[0]))
+    let (new_keys, new_values) =
+      scatter dest js (zip keys values)
+      |> unzip
     in { ctx
-       , key_values = reordered
-       , lookup_keys = lookup_keys
-       , offsets = offsets
+       , size = rep ()
+       , keys = new_keys
+       , values = new_values
+       , filler = filler
        , level_one_const = level_one_const
        , level_two_consts = level_two_consts
        , level_two = level_two
@@ -520,10 +518,10 @@ module mk_two_level_hashmap
     let (keys, values) = unzip key_values
     let js = map (I.to_i64 <-< lookup_index hmap.ctx hmap) keys
     -- The smallest indices for each key-value pair.
-    let is = hist i64.min i64.highest n js (indices key_values)
-    let (keys', vs') = unzip hmap.key_values
+    let is = hist i64.min i64.highest f js (indices key_values)
+    let vs' = hmap.values
     let vs = map2 (\i v -> if i != i64.highest then values[i] else v) is vs'
-    in hmap with key_values = zip keys' vs
+    in hmap with values = vs
 
   def from_array_rep_nodup [n] 'v
                            (ctx: ctx)
@@ -554,9 +552,8 @@ module mk_two_level_hashmap
              (key_values: [u](key, v)) =
     let (keys, values) = unzip key_values
     let is = map (I.to_i64 <-< lookup_index hmap.ctx hmap) keys
-    let keys' = map (.0) hmap.key_values
-    let vs = reduce_by_index (map (.1) hmap.key_values) op ne is values
-    in hmap with key_values = zip keys' vs
+    let vs = reduce_by_index (copy hmap.values) op ne is values
+    in hmap with values = vs
 
   def from_array_hist [u] 'v
                       (ctx: ctx)
@@ -567,11 +564,16 @@ module mk_two_level_hashmap
     let hmap = from_array_rep ctx keys ne
     in adjust op ne hmap key_values
 
-  def to_array [n] [f] [m] 'v (hmap: map ctx [n] [f] [m] v) : [](key, v) =
-    hmap.key_values
+  def to_array [n] [f] [m] 'v (hmap: map ctx [n] [f] [m] v) : [n](key, v) =
+    let keq a b = (hmap.ctx, a) key.== (hmap.ctx, b)
+    let (k', i') = hmap.filler
+    in zip3 (iota f) hmap.keys hmap.values
+       |> filter (\(i, k, _) -> not (keq k k') || i == i')
+       |> map (\(_, k, v) -> (k, v))
+       |> sized n
 
-  def size [n] [f] [m] 'v (hmap: map ctx [n] [f] [m] v) =
-    length hmap.key_values
+  def size [n] [f] [m] 'v (_: map ctx [n] [f] [m] v) =
+    n
 
   def context [n] [f] [m] 'v (hmap: map ctx [n] [f] [m] v) =
     hmap.ctx
@@ -614,17 +616,31 @@ module mk_two_level_hashmap
     in adjust op ne hmap' (key_values ++ key_values') with rng = rng
 
   def reduce [n] [f] [m] 'v (op: v -> v -> v) (ne: v) (hmap: map ctx [n] [f] [m] v) : v =
-    reduce_comm op ne (map (.1) hmap.key_values)
+    let keq a b = (hmap.ctx, a) key.== (hmap.ctx, b)
+    let (k', i') = hmap.filler
+    in reduce_comm op ne (map3 (\i k v -> if not (keq k k') || i == i' then v else ne)
+                            (iota f)
+                            hmap.keys
+                            hmap.values)
 
   def map_with_key [n] [f] [m] 'v 't
                    (g: key -> v -> t)
                    (hmap: map ctx [n] [f] [m] v) : map ctx [n] [f] [m] t =
-    let keys = map (.0) hmap.key_values
-    let vs = map (\(k, v) -> g k v) hmap.key_values
+    let keq a b = (hmap.ctx, a) key.== (hmap.ctx, b)
+    let (k', i') = hmap.filler
+    let vs =
+      map3 (\i k v ->
+              if not (keq k k') || i == i'
+              then g k v
+              else #[blank] g k v)
+           (iota f)
+           hmap.keys
+           hmap.values
     in { ctx = hmap.ctx
-       , key_values = zip keys vs
-       , lookup_keys = hmap.lookup_keys
-       , offsets = hmap.offsets
+       , size = hmap.size
+       , keys = hmap.keys
+       , values = vs
+       , filler = hmap.filler
        , level_one_const = hmap.level_one_const
        , level_two_consts = hmap.level_two_consts
        , level_two = hmap.level_two
