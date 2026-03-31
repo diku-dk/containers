@@ -473,6 +473,7 @@ module mk_two_level_hashmap
       level_two_shape
       |> exscan (I.+) zero
       |> (\(a, b) -> (a, map2 (\f o -> if f I.== zero then zero else o) level_two_shape b))
+    let flat_size' = if n == 0 then 0 else I.to_i64 flat_size
     let level_two =
       transpose [ level_two_offsets
                 , level_two_shape
@@ -487,24 +488,22 @@ module mk_two_level_hashmap
                             level_two
                             flat_size
     let js = map hash2 keys
+    let lookup_keys_dest =
+      replicate flat_size' (if n == 0 then #[blank] key_values[0] else key_values[0], false)
+    let lookup_keys_is_valid =
+      scatter lookup_keys_dest js (zip key_values (rep true))
+    let lookup_keys = map ((.0) <-< (.0)) lookup_keys_is_valid
     let reordered =
       -- Reorder the keys so they match the combined hash functions.
-      iota n
-      |> map I.i64
-      |> scatter (replicate (I.to_i64 flat_size) neg_one) js
-      |> filter (\o -> zero I.<= o && o I.< I.i64 n)
-      |> map (\o -> key_values[I.to_i64 o])
+      lookup_keys_is_valid
+      |> filter (.1)
+      |> map (.0)
       |> sized n
     let offsets =
       -- The offsets into the keys array.
-      scatter (replicate (I.to_i64 flat_size) zero)
+      scatter (replicate flat_size' zero)
               (map (hash2 <-< (.0)) reordered)
-              (map (I.i64) (iota n))
-    let lookup_keys_dest =
-      if n == 0
-      then sized (I.to_i64 flat_size) []
-      else replicate (I.to_i64 flat_size) keys[0]
-    let lookup_keys = scatter lookup_keys_dest js keys
+              (map I.i64 (iota n))
     in { ctx
        , key_values = reordered
        , lookup_keys = lookup_keys
