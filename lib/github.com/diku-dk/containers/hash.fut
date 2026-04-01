@@ -470,3 +470,47 @@ module mk_universal_hashing
 
 module universal_u32 = mk_universal_hashing u128 u32
 module universal = mk_universal_hashing u192 u64
+
+-- | A module which contains the FNV hash function.
+module type fnv_hashing = {
+  -- | Type that is hashed to and from.
+  type u
+
+  -- | Hash a single value using a get function which gets the nth byte..
+  val hash 't : (get: i64 -> t -> u8) -> (num: i64) -> (x: t) -> u
+}
+
+module mk_fnv_hashing
+  (I: integral)
+  (C: {
+    type u
+    val offset_basis : u
+    val prime : u
+  }
+  with u = I.t)
+  : fnv_hashing with u = I.t = {
+  type u = I.t
+
+  #[inline]
+  def hash 't
+           (get: i64 -> t -> u8)
+           (num: i64)
+           (x: t) : u =
+    loop h = C.offset_basis
+    for i in 0..<num do
+      let byte = get i x
+      let h' = h I.^ I.u8 byte
+      in h' I.* C.prime
+}
+
+module fnv_u32 = mk_fnv_hashing u32 {
+  type u = u32
+  def offset_basis : u32 = 2166136261
+  def prime : u32 = 16777619
+}
+
+module fnv = mk_fnv_hashing u64 {
+  type u = u64
+  def offset_basis : u64 = 14695981039346656037
+  def prime : u64 = 1099511628211
+}
