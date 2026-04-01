@@ -1,5 +1,5 @@
 -- | Definitions of modules that implement both the `hashkey`@mtype@"hashkey"
-1;4000;46c-- and `ordkey`@mtype@"ordkey" module types for a variety of types.
+-- and `ordkey`@mtype@"ordkey" module types for a variety of types.
 
 import "../cpprandom/random"
 open import "hashkey"
