@@ -314,12 +314,12 @@ module mk_static_int_key_u32
   def (<=) (_, x) (_, y) = x P.<= y
 }
 
-module static_u8key_u32 : key with ctx = () with key = u8 with hash = u32 with const = () = mk_static_int_key_u32 u8
-module static_u16key_u32 : key with ctx = () with key = u16 with hash = u32 with const = () = mk_static_int_key_u32 u16
-module static_u32key_u32 : key with ctx = () with key = u32 with hash = u32 with const = () = mk_static_int_key_u32 u32
-module static_u64key_u32 : key with ctx = () with key = u64 with hash = u32 with const = () = mk_static_int_key_u32 u64
+module static_u8key_u32 : key with ctx = () with key = u8 with hash = u32 with const = () with rng = () = mk_static_int_key_u32 u8
+module static_u16key_u32 : key with ctx = () with key = u16 with hash = u32 with const = () with rng = () = mk_static_int_key_u32 u16
+module static_u32key_u32 : key with ctx = () with key = u32 with hash = u32 with const = () with rng = () = mk_static_int_key_u32 u32
+module static_u64key_u32 : key with ctx = () with key = u64 with hash = u32 with const = () with rng = () = mk_static_int_key_u32 u64
 
-module static_i8key_u32 : key with ctx = () with key = i8 with hash = u32 with const = () = mk_static_int_key_u32 i8
-module static_i16key_u32 : key with ctx = () with key = i16 with hash = u32 with const = () = mk_static_int_key_u32 i16
-module static_i32key_u32 : key with ctx = () with key = i32 with hash = u32 with const = () = mk_static_int_key_u32 i32
-module static_i64key_u32 : key with ctx = () with key = i64 with hash = u32 with const = () = mk_static_int_key_u32 i64
+module static_i8key_u32 : key with ctx = () with key = i8 with hash = u32 with const = () with rng = () = mk_static_int_key_u32 i8
+module static_i16key_u32 : key with ctx = () with key = i16 with hash = u32 with const = () with rng = () = mk_static_int_key_u32 i16
+module static_i32key_u32 : key with ctx = () with key = i32 with hash = u32 with const = () with rng = () = mk_static_int_key_u32 i32
+module static_i64key_u32 : key with ctx = () with key = i64 with hash = u32 with const = () with rng = () = mk_static_int_key_u32 i64
