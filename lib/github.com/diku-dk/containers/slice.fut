@@ -248,7 +248,8 @@ module mk_static_slice_key
     with ctx = []K.key
     with key = slice.slice K.key
     with hash = u64
-    with const = () = {
+    with const = ()
+    with rng = () = {
   type key = slice.slice K.key
   type hash = u64
   type~ ctx = ?[l].[l]K.key
@@ -280,7 +281,8 @@ module mk_static_slice_key_u32
     with ctx = []K.key
     with key = slice.slice K.key
     with hash = u32
-    with const = () = {
+    with const = ()
+    with rng = () = {
   type key = slice.slice K.key
   type hash = u32
   type~ ctx = ?[l].[l]K.key

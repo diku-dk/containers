@@ -238,7 +238,7 @@ module mk_static_int_key
     val (<=) : t -> t -> bool
     val num_bits : i32
   })
-  : key with ctx = () with key = P.t with hash = u64 with const = () = {
+  : key with ctx = () with key = P.t with hash = u64 with const = () with rng = () = {
   type key = P.t
   type ctx = ()
   type hash = u64
@@ -286,7 +286,7 @@ module mk_static_int_key_u32
     val (<=) : t -> t -> bool
     val num_bits : i32
   })
-  : key with ctx = () with key = P.t with hash = u32 with const = () = {
+  : key with ctx = () with key = P.t with hash = u32 with const = () with rng = () = {
   type key = P.t
   type ctx = ()
   type hash = u32
