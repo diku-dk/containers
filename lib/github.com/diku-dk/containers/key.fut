@@ -1,5 +1,5 @@
 -- | Definitions of modules that implement both the `hashkey`@mtype@"hashkey"
--- and `ordkey`@mtype@"ordkey" module types for a variety of types.
+1;4000;46c-- and `ordkey`@mtype@"ordkey" module types for a variety of types.
 
 import "../cpprandom/random"
 open import "hashkey"
@@ -266,15 +266,15 @@ module mk_static_int_key
   def (<=) (_, x) (_, y) = x P.<= y
 }
 
-module static_u8key : key with ctx = () with key = u8 with hash = u64 with const = () = mk_static_int_key u8
-module static_u16key : key with ctx = () with key = u16 with hash = u64 with const = () = mk_static_int_key u16
-module static_u32key : key with ctx = () with key = u32 with hash = u64 with const = () = mk_static_int_key u32
-module static_u64key : key with ctx = () with key = u64 with hash = u64 with const = () = mk_static_int_key u64
+module static_u8key : key with ctx = () with key = u8 with hash = u64 with const = () with rng = () = mk_static_int_key u8
+module static_u16key : key with ctx = () with key = u16 with hash = u64 with const = () with rng = () = mk_static_int_key u16
+module static_u32key : key with ctx = () with key = u32 with hash = u64 with const = () with rng = () = mk_static_int_key u32
+module static_u64key : key with ctx = () with key = u64 with hash = u64 with const = () with rng = () = mk_static_int_key u64
 
-module static_i8key : key with ctx = () with key = i8 with hash = u64 with const = () = mk_static_int_key i8
-module static_i16key : key with ctx = () with key = i16 with hash = u64 with const = () = mk_static_int_key i16
-module static_i32key : key with ctx = () with key = i32 with hash = u64 with const = () = mk_static_int_key i32
-module static_i64key : key with ctx = () with key = i64 with hash = u64 with const = () = mk_static_int_key i64
+module static_i8key : key with ctx = () with key = i8 with hash = u64 with const = () with rng = () = mk_static_int_key i8
+module static_i16key : key with ctx = () with key = i16 with hash = u64 with const = () with rng = () = mk_static_int_key i16
+module static_i32key : key with ctx = () with key = i32 with hash = u64 with const = () with rng = () = mk_static_int_key i32
+module static_i64key : key with ctx = () with key = i64 with hash = u64 with const = () with rng = () = mk_static_int_key i64
 
 local
 module mk_static_int_key_u32
