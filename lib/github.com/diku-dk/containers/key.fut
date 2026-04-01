@@ -227,3 +227,99 @@ module i8key_u32 : key with ctx = () with key = i8 with hash = u32 = mk_int_key_
 module i16key_u32 : key with ctx = () with key = i16 with hash = u32 = mk_int_key_u32 i16
 module i32key_u32 : key with ctx = () with key = i32 with hash = u32 = mk_int_key_u32 i32
 module i64key_u32 : key with ctx = () with key = i64 with hash = u32 = mk_int_key_u32_64bit i64
+
+local
+module mk_static_int_key
+  (P: {
+    type t
+
+    val to_i64 : t -> i64
+    val (==) : t -> t -> bool
+    val (<=) : t -> t -> bool
+    val num_bits : i32
+  })
+  : key with ctx = () with key = P.t with hash = u64 with const = () = {
+  type key = P.t
+  type ctx = ()
+  type hash = u64
+  type const = ()
+  type rng = ()
+
+  def rng_from_seed [n] (_seed: [n]i32) : rng = ()
+
+  def rand (r: rng) : (rng, const) = (r, ())
+
+  local
+  #[inline]
+  def num_bytes = i64.i32 (P.num_bits / 8)
+
+  #[inline]
+  def hash _ (_: const) (x: key) : hash =
+    let x_u64 = u64.i64 (P.to_i64 x)
+    let get_byte (i: i64) (_: u64): u8 = u8.u64 ((x_u64 >> (u64.i64 i * 8)) & 0xFF)
+    in fnv.hash get_byte num_bytes x_u64
+
+  #[inline]
+  def (==) (_, x) (_, y) = x P.== y
+
+  #[inline]
+  def (<=) (_, x) (_, y) = x P.<= y
+}
+
+module static_u8key : key with ctx = () with key = u8 with hash = u64 with const = () = mk_static_int_key u8
+module static_u16key : key with ctx = () with key = u16 with hash = u64 with const = () = mk_static_int_key u16
+module static_u32key : key with ctx = () with key = u32 with hash = u64 with const = () = mk_static_int_key u32
+module static_u64key : key with ctx = () with key = u64 with hash = u64 with const = () = mk_static_int_key u64
+
+module static_i8key : key with ctx = () with key = i8 with hash = u64 with const = () = mk_static_int_key i8
+module static_i16key : key with ctx = () with key = i16 with hash = u64 with const = () = mk_static_int_key i16
+module static_i32key : key with ctx = () with key = i32 with hash = u64 with const = () = mk_static_int_key i32
+module static_i64key : key with ctx = () with key = i64 with hash = u64 with const = () = mk_static_int_key i64
+
+local
+module mk_static_int_key_u32
+  (P: {
+    type t
+
+    val to_i64 : t -> i64
+    val (==) : t -> t -> bool
+    val (<=) : t -> t -> bool
+    val num_bits : i32
+  })
+  : key with ctx = () with key = P.t with hash = u32 with const = () = {
+  type key = P.t
+  type ctx = ()
+  type hash = u32
+  type const = ()
+  type rng = ()
+
+  def rng_from_seed [n] (_seed: [n]i32) : rng = ()
+
+  def rand (r: rng) : (rng, const) = (r, ())
+
+  local
+  #[inline]
+  def num_bytes = i64.i32 (P.num_bits / 8)
+
+  #[inline]
+  def hash _ (_: const) (x: key) : hash =
+    let x_u64 = u64.i64 (P.to_i64 x)
+    let get_byte (i: i64) (_: u64): u8 = u8.u64 ((x_u64 >> (u64.i64 i * 8)) & 0xFF)
+    in fnv_u32.hash get_byte num_bytes x_u64
+
+  #[inline]
+  def (==) (_, x) (_, y) = x P.== y
+
+  #[inline]
+  def (<=) (_, x) (_, y) = x P.<= y
+}
+
+module static_u8key_u32 : key with ctx = () with key = u8 with hash = u32 with const = () = mk_static_int_key_u32 u8
+module static_u16key_u32 : key with ctx = () with key = u16 with hash = u32 with const = () = mk_static_int_key_u32 u16
+module static_u32key_u32 : key with ctx = () with key = u32 with hash = u32 with const = () = mk_static_int_key_u32 u32
+module static_u64key_u32 : key with ctx = () with key = u64 with hash = u32 with const = () = mk_static_int_key_u32 u64
+
+module static_i8key_u32 : key with ctx = () with key = i8 with hash = u32 with const = () = mk_static_int_key_u32 i8
+module static_i16key_u32 : key with ctx = () with key = i16 with hash = u32 with const = () = mk_static_int_key_u32 i16
+module static_i32key_u32 : key with ctx = () with key = i32 with hash = u32 with const = () = mk_static_int_key_u32 i32
+module static_i64key_u32 : key with ctx = () with key = i64 with hash = u32 with const = () = mk_static_int_key_u32 i64

@@ -79,7 +79,7 @@ module mk_encoder_params
 
   #[inline]
   def num (ts: t) : i64 =
-    if U.num_bits != I.num_bits
+    if num_i_per_u != 0
     then (length ts + num_i_per_u - 1) / num_i_per_u
     else length ts * num_u_per_i
 
@@ -106,6 +106,8 @@ module mk_encoder_params
 
 module mk_encoder = mk_encoder_params u64
 module mk_encoder_u32 = mk_encoder_params u32
+module mk_encoder_u16 = mk_encoder_params u16
+module mk_encoder_u8 = mk_encoder_params u8
 
 -- | Create a `key`@mtype@"key" for slices of some specific element type. The
 -- element type must also be provided with a `key`@mtype module for which the
@@ -236,4 +238,69 @@ module mk_slice_key_u32
     let data = slice.get x ctx
     let n = E.num data
     in universal_u32.hash_string a[0] a[1] a[2] E.get n data
+}
+
+-- | Create a `key`@mtype@"key" for slices using FNV hashing.
+module mk_static_slice_key
+  (K: ordkey with ctx = ())
+  (E: encoder with t = []K.key with u = u8)
+  : key
+    with ctx = []K.key
+    with key = slice.slice K.key
+    with hash = u64
+    with const = () = {
+  type key = slice.slice K.key
+  type hash = u64
+  type~ ctx = ?[l].[l]K.key
+  type const = ()
+  type rng = ()
+
+  def rng_from_seed [n] (_seed: [n]i32) : rng = ()
+
+  def rand (r: rng) : (rng, const) = (r, ())
+
+  #[inline]
+  def (<=) (xctx: ctx, x: key) (yctx: ctx, y: key) =
+    array.le (\x y -> ((), x) K.<= ((), y)) (slice.get x xctx) (slice.get y yctx)
+
+  #[inline]
+  def (==) (xctx: ctx, x: key) (yctx: ctx, y: key) =
+    array.eq (\x y -> ((), x) K.== ((), y)) (slice.get x xctx) (slice.get y yctx)
+
+  #[inline]
+  def hash (ctx: []K.key) (_: const) (x: key) : hash =
+    let data = slice.get x ctx
+    in fnv.hash E.get (E.num data) data
+}
+
+module mk_static_slice_key_u32
+  (K: ordkey with ctx = ())
+  (E: encoder with t = []K.key with u = u8)
+  : key
+    with ctx = []K.key
+    with key = slice.slice K.key
+    with hash = u32
+    with const = () = {
+  type key = slice.slice K.key
+  type hash = u32
+  type~ ctx = ?[l].[l]K.key
+  type const = ()
+  type rng = ()
+
+  def rng_from_seed [n] (_seed: [n]i32) : rng = ()
+
+  def rand (r: rng) : (rng, const) = (r, ())
+
+  #[inline]
+  def (<=) (xctx: ctx, x: key) (yctx: ctx, y: key) =
+    array.le (\x y -> ((), x) K.<= ((), y)) (slice.get x xctx) (slice.get y yctx)
+
+  #[inline]
+  def (==) (xctx: ctx, x: key) (yctx: ctx, y: key) =
+    array.eq (\x y -> ((), x) K.== ((), y)) (slice.get x xctx) (slice.get y yctx)
+
+  #[inline]
+  def hash (ctx: []K.key) (_: const) (x: key) : hash =
+    let data = slice.get x ctx
+    in fnv_u32.hash E.get (E.num data) data
 }
