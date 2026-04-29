@@ -177,7 +177,7 @@ module mk_bitset (I: integral) : bitset = {
 
   def delete [n] [m] (set: *bitset [s num_bits n]) (is: [m]i64) : bitset [s num_bits n] =
     let (is, bis) = map (flip find_bitset_index n) is |> unzip
-    let vs = map (\i -> I.not (I.set_bit i zero 1)) bis
+    let vs = map (\i -> I.not (I.set_bit i zero 0)) bis
     in reduce_by_index set (I.&) zero is vs
 
   def member [n] (i: i64) (s: bitset [s num_bits n]) : bool =
