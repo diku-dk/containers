@@ -49,7 +49,7 @@ module type bitset = {
 
   -- | Deletes a single bit in a bitset.
   --
-  -- **Work:** *O(1)*
+  -- **Work:** *O(m)*
   --
   -- **Span:** *O(m)* (likely *O(1)*, the span comes from reduce by index.)
   val delete [m] [n] : *bitset [s num_bits n] -> [m]i64 -> bitset [s num_bits n]
@@ -86,7 +86,7 @@ module type bitset = {
   --
   -- **Work:** *O(n)*
   --
-  -- **Span:** *O(1)*
+  -- **Span:** *O(log n)*
   val is_subset [n] : bitset [s num_bits n] -> bitset [s num_bits n] -> bool
 
   -- | Finds the complement of a bitset.
