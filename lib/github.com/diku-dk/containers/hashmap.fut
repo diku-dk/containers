@@ -44,17 +44,17 @@ module type two_level_hashmap = {
 
   -- | Given a key-value array construct a hashmap.
   --
-  -- **Expected Work:** *O(n + u)*
+  -- **Expected Work:** *O(u)*
   --
-  -- **Expected Span:** *O(log n)*
+  -- **Expected Span:** *O((log u)**2)* (Assuming best case for hist)
   val from_array [u] 'v :
     ctx -> [u](key, v) -> ?[n][f][m].map ctx [n] [f] [m] v
 
   -- | Create hashmap with default value.
   --
-  -- **Expected Work:** *O(n)*
+  -- **Expected Work:** *O(u)*
   --
-  -- **Expected Span:** *O(log n)*
+  -- **Expected Span:** *O((log u)**2)* (Assuming best case for hist)
   val from_array_rep [u] 'v :
     ctx
     -> [u]key
@@ -64,9 +64,9 @@ module type two_level_hashmap = {
   -- | Create hashmap where duplicates are reduced with an commutative
   -- and associative operation.
   --
-  -- **Expected Work:** *O(n + u ✕ W(op))*
+  -- **Expected Work:** *O(u)*
   --
-  -- **Expected Span:** *O(log n)* (Assuming best case for hist)
+  -- **Expected Span:** *O((log u)**2)* (Assuming best case for hist)
   val from_array_hist [u] 'v :
     ctx
     -> (v -> v -> v)
@@ -78,9 +78,9 @@ module type two_level_hashmap = {
   -- duplicates then the function call will never finish. It does less
   -- work than the safe variant.
   --
-  -- **Expected Work:** *O(n + u)*
+  -- **Expected Work:** *O(u)*
   --
-  -- **Expected Span:** *O(log n)*
+  -- **Expected Span:** *O((log u)**2)*
   val from_array_nodup [n] 'v :
     ctx -> [n](key, v) -> ?[f][m].map ctx [n] [f] [m] v
 
@@ -88,9 +88,9 @@ module type two_level_hashmap = {
   -- then the function call will never finish. It does less work than
   -- the safe variant.
   --
-  -- **Expected Work:** *O(n)*
+  -- **Expected Work:** *O(u)*
   --
-  -- **Expected Span:** *O(log n)*
+  -- **Expected Span:** *O((log u)**2)*
   val from_array_rep_nodup [n] 'v :
     ctx
     -> [n]key
@@ -166,7 +166,7 @@ module type two_level_hashmap = {
   --
   -- **Expected Work:** *O(n + u)*
   --
-  -- **Expected Span:** *O(log (n + u))*
+  -- **Expected Span:** *O((log (n + u))**2)* (Assuming best case for hist)
   val insert [n] [f] [m] [u] 'v :
     ctx
     -> map ctx [n] [f] [m] v
@@ -179,7 +179,7 @@ module type two_level_hashmap = {
   --
   -- **Expected Work:** *O(n' + (n + u) ✕ W(op))*
   --
-  -- **Expected Span:** *O(log (n + u))* (Assuming best case for hist)
+  -- **Expected Span:** *O((log (n + u))**2)* (Assuming best case for hist)
   val insert_with [n] [f] [m] [u] 'v :
     ctx
     -> (v -> v -> v)
