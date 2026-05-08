@@ -80,7 +80,7 @@ module type two_level_hashmap = {
   --
   -- **Expected Work:** *O(u)*
   --
-  -- **Expected Span:** *O((log u)**2)*
+  -- **Expected Span:** *O(log u)*
   val from_array_nodup [n] 'v :
     ctx -> [n](key, v) -> ?[f][m].map ctx [n] [f] [m] v
 
@@ -90,7 +90,7 @@ module type two_level_hashmap = {
   --
   -- **Expected Work:** *O(u)*
   --
-  -- **Expected Span:** *O((log u)**2)*
+  -- **Expected Span:** *O(log u)*
   val from_array_rep_nodup [n] 'v :
     ctx
     -> [n]key
@@ -619,9 +619,9 @@ module mk_two_level_hashmap
     let keq a b = (hmap.ctx, a) key.== (hmap.ctx, b)
     let (k', i') = hmap.filler
     in reduce_comm op ne (map3 (\i k v -> if not (keq k k') || i == i' then v else ne)
-                            (iota f)
-                            hmap.keys
-                            hmap.values)
+                               (iota f)
+                               hmap.keys
+                               hmap.values)
 
   def map_with_key [n] [f] [m] 'v 't
                    (g: key -> v -> t)
