@@ -1,4 +1,4 @@
-import "lib/github.com/diku-dk/containers/unionfind"
+import "lib/github.com/diku-dk/containers/set/unionfind"
 
 module unionfind_sequential_work_efficient : unionfind = {
   type handle = i64
