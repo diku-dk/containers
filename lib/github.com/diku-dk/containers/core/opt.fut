@@ -50,10 +50,9 @@ module opt = {
   def some 'a (a: a) : opt a =
     #some a
 
-
   -- | A `#none` value, symmetric with `some`.
   def none 'a : opt a = #none
-  
+
   -- | `is_some a` is true if the constructor is `#some`.
   def is_some 'a (a: opt a) : bool =
     match a

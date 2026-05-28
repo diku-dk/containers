@@ -30,7 +30,7 @@ module type list = {
   val sub [n] 'a : list [n] a -> i64 -> a
 
   -- Concatenate two lists.  Work *O(n)*, span *O(1)*.
-  val ++ [n] [m] 'a : list [n] a -> list [m] a -> list [n + m] a
+  val (++) [n] [m] 'a : list [n] a -> list [m] a -> list [n + m] a
 
   -- | Apply function to every element of list.
   val map [n] 'a 'b : (a -> b) -> list [n] a -> list [n] b

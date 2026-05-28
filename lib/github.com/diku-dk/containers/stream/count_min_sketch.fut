@@ -82,7 +82,6 @@ module type count_min_sketch = {
 module mk_count_min_sketch
   (K: hashkey with hash = u64)
   : count_min_sketch with t = K.key with ctx = K.ctx = {
-
   type t = K.key
   type~ ctx = K.ctx
 
@@ -91,7 +90,7 @@ module mk_count_min_sketch
     , consts: [d]K.const
     }
 
-    def hash64 (x: u64) : u64 =
+  def hash64 (x: u64) : u64 =
     let x = (x ^ (x >> 30)) * 0xbf58476d1ce4e5b9u64
     let x = (x ^ (x >> 27)) * 0x94d049bb133111ebu64
     in x ^ (x >> 31)
@@ -99,16 +98,16 @@ module mk_count_min_sketch
   def create (d: i64) (w: i64) : ?[d'][w'].sketch [d'] [w'] =
     let consts =
       tabulate d (\i ->
-        let h = i32.u64 (hash64 (u64.i64 (1 + i)))
-        in K.rng_from_seed [h] |> K.rand |> (.1))
+                    let h = i32.u64 (hash64 (u64.i64 (1 + i)))
+                    in K.rng_from_seed [h] |> K.rand |> (.1))
     in { counts = replicate d (replicate w 0)
        , consts = consts
        }
 
-    def insert [n] [d] [w]
-               (ctx: ctx)
-               ({counts, consts}: *sketch [d] [w])
-               (vs: [n]t) : *sketch [d] [w] =
+  def insert [n] [d] [w]
+             (ctx: ctx)
+             ({counts, consts}: *sketch [d] [w])
+             (vs: [n]t) : *sketch [d] [w] =
     let is = tabulate_2d d n (\row col -> (row, i64.u64 (K.hash ctx consts[row] vs[col]) % w))
     let counts = reduce_by_index_2d counts (+) 0 (flatten is) (replicate (d * n) 1)
     in {counts, consts}
@@ -119,8 +118,9 @@ module mk_count_min_sketch
             (v: t) : i64 =
     map2 (\c row ->
             let i = i64.u64 (K.hash ctx c v) % w
-            in row[i]
-         ) sketch.consts sketch.counts
+            in row[i])
+         sketch.consts
+         sketch.counts
     |> i64.minimum
 
   def merge [d] [w]
