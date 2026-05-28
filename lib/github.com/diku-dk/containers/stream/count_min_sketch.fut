@@ -29,7 +29,7 @@ module type count_min_sketch = {
 
   -- | The Count-Min Sketch structure with `d` hash functions and `w`
   -- buckets.
-  type~ sketch [d] [w]
+  type sketch [d] [w]
 
   -- | Create a Count-Min Sketch.
   --
@@ -73,13 +73,6 @@ module type count_min_sketch = {
     -> sketch [d] [w]
     -> sketch [d] [w]
 
-  -- | Reset all counters to zero, preserving hash constants.
-  --
-  -- **Work:** *O(d * w)*
-  --
-  -- **Span:** *O(1)*
-  val clear [d] [w] : sketch [d] [w] -> sketch [d] [w]
-
   -- | Total count of all inserted elements.
   --
   -- **Work:** *O(w)*
@@ -94,7 +87,7 @@ module mk_count_min_sketch
   type t = K.key
   type~ ctx = K.ctx
 
-  type~ sketch [d] [w] =
+  type sketch [d] [w] =
     { counts: [d][w]i64
     , consts: [d]K.const
     }
@@ -117,8 +110,10 @@ module mk_count_min_sketch
              (ctx: ctx)
              ({counts, consts}: *sketch [d] [w])
              (vs: [n]t) : *sketch [d] [w] =
-    let is = tabulate_2d d n (\row col -> (row, i64.u64 (K.hash ctx consts[row] vs[col]) % w))
-    let counts = reduce_by_index_2d counts (+) 0 (flatten is) (replicate (d * n) 1)
+    let is =
+      tabulate_2d d n (\row col -> (row, i64.u64 (K.hash ctx consts[row] vs[col]) % w))
+    let counts =
+      reduce_by_index_2d counts (+) 0 (flatten is) (replicate (d * n) 1)
     in {counts, consts}
 
   def query [d] [w]
@@ -136,9 +131,6 @@ module mk_count_min_sketch
             (s: sketch [d] [w])
             (s': sketch [d] [w]) : sketch [d] [w] =
     s with counts = map2 (map2 (+)) s.counts s'.counts
-
-  def clear [d] [w] (s: sketch [d] [w]) : sketch [d] [w] =
-    s with counts = replicate d (replicate w 0)
 
   def total [d] [w] (s: sketch [d] [w]) : i64 =
     s.counts[0] |> i64.sum

@@ -9,6 +9,25 @@
 -- efficient as it should be. The implementations are also not
 -- thoroughly tested so use at own discretion.
 --
+-- **Accuracy**
+--
+-- Both implementations share the same asymptotic relative standard
+-- error:
+--
+-- > σ ≈ 1.04 / sqrt(m) where m = 2^b (Flajolet et al. [1], Fig 1.)
+--
+-- | `b` | `m = 2^b` | Relative std. error |
+-- | --- | --------- | ------------------- |
+-- |   4 |        16 |               ~26%  |
+-- |   8 |       256 |               ~6.5% |
+-- |  10 |      1024 |              ~3.25% |
+-- |  12 |      4096 |             ~1.625% |
+-- |  16 |     65536 |               ~0.4% |
+--
+-- HyperLogLog++ improves on this with empirical bias correction for
+-- small to medium cardinalities, substantially reducing error below
+-- the asymptotic bound in those ranges.
+--
 -- [1] Philippe Flajolet, Éric Fusy, Olivier Gandouet, Frédéric
 -- Meunier. HyperLogLog: the analysis of a near-optimal cardinality
 -- estimation algorithm. AofA: Analysis of Algorithms, Jun 2007, Juan
