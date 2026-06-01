@@ -3,10 +3,10 @@
 -- This module contains modules and functions for manipulating arrays. Which
 -- might be something like deduplication or a generalized reduction by a key.
 
-import "../sorts/radix_sort"
-import "../segmented/segmented"
-import "hashkey"
-import "opt"
+import "../../sorts/radix_sort"
+import "../../segmented/segmented"
+import "../core/hashkey"
+import "../core/opt"
 
 local
 -- | Fairly simple functions on arrays. Implemented by the module `array`@term.
@@ -40,7 +40,7 @@ module array : array = {
               else #none)
            (take minlen a)
            (take minlen b)
-    in match first_some cmp
+    in match opt.first_some cmp
        case #some res -> res
        case #none -> n i64.<= m
 }

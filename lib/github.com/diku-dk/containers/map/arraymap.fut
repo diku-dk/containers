@@ -2,12 +2,12 @@
 --
 -- Requires an ordering on the elements to provide relatively efficient lookups.
 
-import "../sorts/merge_sort"
-import "../segmented/segmented"
-import "opt"
-import "array"
+import "../../sorts/merge_sort"
+import "../../segmented/segmented"
+import "../core/opt"
+import "../array/array"
 import "map"
-import "ordkey"
+import "../core/ordkey"
 
 local
 def binary_search [n] 't (eq: t -> t -> bool) (lte: t -> t -> bool) (xs: [n]t) (x: t) : i64 =

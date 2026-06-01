@@ -1,8 +1,8 @@
 -- | ignore
 
 import "map"
-import "opt"
-import "hash"
+import "../core/opt"
+import "../core/hash"
 
 module mk_map_test (M: map with ctx = () with key = i64)
   : {
@@ -21,7 +21,7 @@ module mk_map_test (M: map with ctx = () with key = i64)
     let vs = map (+ 10) (iota n)
     let xs = iota n
     let h = M.from_array () (zip xs vs)
-    let v = map (from_opt (-1) <-< \x -> M.lookup () x h) xs
+    let v = map (opt.from (-1) <-< \x -> M.lookup () x h) xs
     in all (\x -> M.member () x h) xs
        && all (\x -> any (== x) v) vs
 
@@ -29,7 +29,7 @@ module mk_map_test (M: map with ctx = () with key = i64)
     let xs = iota n
     let h = M.from_array () (zip xs (iota n))
     let idxs = (n..<n + 1)
-    let v = map (from_opt (-1) <-< \x -> M.lookup () x h) idxs
+    let v = map (opt.from (-1) <-< \x -> M.lookup () x h) idxs
     in all (\x -> M.not_member () x h) idxs
        && all (== (-1)) v
 
@@ -97,12 +97,11 @@ module mk_map_test (M: map with ctx = () with key = i64)
     in i64.sum p == n * 3
 }
 
-import "../cpprandom/random"
-import "hashmap"
-import "key"
+import "../core/opt"
+import "../core/key"
 import "eytzinger"
+import "hashmap"
 import "arraymap"
-import "opt"
 
 module hashmap = mk_hashmap i64key
 module hashmap_tests = mk_map_test hashmap

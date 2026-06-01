@@ -6,7 +6,7 @@
 --
 -- * `mk_arraymap`@term@"arraymap"
 
-import "opt"
+import "../core/opt"
 
 -- | A general module type for a key-value map. Specific implementation of this
 -- module may provide additional functionality, and may in particular deviate

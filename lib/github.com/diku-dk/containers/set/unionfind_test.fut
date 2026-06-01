@@ -1,6 +1,6 @@
 import "unionfind"
-import "../sorts/merge_sort"
-import "opt"
+import "../../sorts/merge_sort"
+import "../core/opt"
 
 module unionfind_sequential : unionfind = {
   type handle = i64
@@ -70,14 +70,14 @@ module mk_norm_eq_count
   type t = U.handle
 
   def normalize [n] (uf: U.unionfind [n]) (hs: [n]t) : [n]i64 =
-    let eq = equal_opt (\a b -> U.to_i64 uf a == U.to_i64 uf b)
+    let eq = opt.equal (\a b -> U.to_i64 uf a == U.to_i64 uf b)
     let is =
       map (\h ->
-             map some hs
+             map opt.some hs
              |> zip (indices hs)
              |> reduce_comm (\a b ->
                                if a.0 != -1 && b.0 != -1
-                               then if a.1 `eq` some h
+                               then if a.1 `eq` opt.some h
                                     then a
                                     else b
                                else a)
