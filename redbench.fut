@@ -1,11 +1,11 @@
 import "lib/github.com/diku-dk/cpprandom/random"
 import "lib/github.com/diku-dk/sorts/radix_sort"
 import "lib/github.com/diku-dk/segmented/segmented"
-import "lib/github.com/diku-dk/containers/hashset"
-import "lib/github.com/diku-dk/containers/array"
-import "lib/github.com/diku-dk/containers/hashmap"
-import "lib/github.com/diku-dk/containers/key"
-import "lib/github.com/diku-dk/containers/hash"
+import "lib/github.com/diku-dk/containers/set/hashset"
+import "lib/github.com/diku-dk/containers/array/array"
+import "lib/github.com/diku-dk/containers/map/hashmap"
+import "lib/github.com/diku-dk/containers/core/key"
+import "lib/github.com/diku-dk/containers/core/hash"
 
 module array_key = mk_array_key i64key
 module hashset = mk_hashset i64key

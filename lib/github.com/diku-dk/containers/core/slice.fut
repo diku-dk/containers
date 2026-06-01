@@ -5,7 +5,7 @@
 -- is particularly advanced or difficult to implement, but it is useful as a
 -- common interface for other containers.
 
-import "array"
+import "../array/array"
 import "key"
 import "hash"
 

@@ -1,7 +1,5 @@
 -- | Internal library used for universal hashing.
 
-import "../cpprandom/random"
-
 -- | Unsigned integral type to use for hashing of built in integers.
 module type uint = {
   -- | Unsigned integral type.

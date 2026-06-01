@@ -1,13 +1,13 @@
 import "lib/github.com/diku-dk/segmented/segmented"
-import "lib/github.com/diku-dk/containers/hashkey"
-import "lib/github.com/diku-dk/containers/key"
-import "lib/github.com/diku-dk/containers/hashmap"
-import "lib/github.com/diku-dk/containers/hashset"
+import "lib/github.com/diku-dk/containers/core/hashkey"
+import "lib/github.com/diku-dk/containers/core/key"
+import "lib/github.com/diku-dk/containers/map/hashmap"
+import "lib/github.com/diku-dk/containers/set/hashset"
 import "lib/github.com/diku-dk/cpprandom/random"
 import "lib/github.com/diku-dk/sorts/radix_sort"
-import "lib/github.com/diku-dk/containers/array"
-import "lib/github.com/diku-dk/containers/slice"
-import "lib/github.com/diku-dk/containers/hash"
+import "lib/github.com/diku-dk/containers/array/array"
+import "lib/github.com/diku-dk/containers/core/slice"
+import "lib/github.com/diku-dk/containers/core/hash"
 
 module encoder = mk_encoder u8
 module slice_key = mk_slice_key u8key encoder

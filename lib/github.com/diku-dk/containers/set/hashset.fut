@@ -6,8 +6,8 @@
 -- duplicate keys.
 
 import "set"
-import "hashmap"
-import "hashkey"
+import "../map/hashmap"
+import "../core/hashkey"
 
 -- | An implementation of sets built on two level hashsets.
 -- The key used must have a universal hash function.

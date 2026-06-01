@@ -1,8 +1,8 @@
 import "lib/github.com/diku-dk/sorts/radix_sort"
-import "lib/github.com/diku-dk/containers/hashset"
-import "lib/github.com/diku-dk/containers/key"
+import "lib/github.com/diku-dk/containers/set/hashset"
+import "lib/github.com/diku-dk/containers/core/key"
 import "lib/github.com/diku-dk/cpprandom/random"
-import "lib/github.com/diku-dk/containers/hash"
+import "lib/github.com/diku-dk/containers/core/hash"
 
 module hashset = mk_hashset i64key
 

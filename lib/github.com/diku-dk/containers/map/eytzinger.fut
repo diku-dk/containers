@@ -2,12 +2,12 @@
 --
 -- Requires an ordering on the elements to provide relatively efficient lookups.
 
-import "../sorts/merge_sort"
-import "../segmented/segmented"
-import "opt"
-import "array"
+import "../../sorts/merge_sort"
+import "../../segmented/segmented"
+import "../core/opt"
+import "../core/ordkey"
+import "../array/array"
 import "map"
-import "ordkey"
 
 module type eytzinger_unlifted = {
   type key

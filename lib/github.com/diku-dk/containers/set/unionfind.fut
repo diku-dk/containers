@@ -23,9 +23,9 @@
 --   `union_by_rank`@term but it has worse performance when
 --   benchmarking the union operation.
 
-import "hyperloglog"
-import "hashkey"
-import "key"
+import "../stream/hyperloglog"
+import "../core/hashkey"
+import "../core/key"
 
 module type unionfind = {
   -- | A handle is an element in the union-find structure.

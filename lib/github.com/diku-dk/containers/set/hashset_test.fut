@@ -1,8 +1,8 @@
 -- | ignore
 
 import "hashset"
-import "key"
-import "hash"
+import "../core/key"
+import "../core/hash"
 
 module hashset = mk_hashset i64key
 

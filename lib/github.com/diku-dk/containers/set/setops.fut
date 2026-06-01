@@ -1,7 +1,7 @@
 -- | Set-like operations on arrays of values interpreted as sets
 
-import "../sorts/radix_sort"
-import "opt"
+import "../../sorts/radix_sort"
+import "../core/opt"
 
 local
 -- | The setops module type.  This module type is declared `local`, which means
@@ -73,7 +73,7 @@ module setops : setops = {
        |> radix_sort_by_key (\(x, _) -> f x) i64.num_bits i64.get_bit
        |> map (\(x, n) -> (#some x, n))
        |> scan (\(x, n) (y, m) ->
-                  if equal_opt (\a b -> f a == f b) x y
+                  if opt.equal (\a b -> f a == f b) x y
                   then (merge_opt mrg x y, n + m)
                   else (y, m))
                (#none, 0)
@@ -109,7 +109,7 @@ module setops : setops = {
              then #some (xs[i].0)
              else #none)
           (indices xs)
-    in ks |> filter is_some
+    in ks |> filter opt.is_some
        |> map (unsome (\_ -> a[0]))
 
   def union [m] [n] (a: [m]i64) (b: [n]i64) : ?[k].[k]i64 =

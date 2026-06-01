@@ -2,11 +2,11 @@
 --
 -- Implementations of the `map`@mtype@"map" module type using hash-based data structures.
 
-import "../segmented/segmented"
-import "opt"
-import "hash"
-import "hashkey"
-import "array"
+import "../../segmented/segmented"
+import "../core/opt"
+import "../core/hash"
+import "../core/hashkey"
+import "../array/array"
 import "map"
 
 -- | A module type that more directly exposes the implementation details of the
@@ -342,7 +342,7 @@ module mk_two_level_hashmap
        else let k' = hmap.keys[I.to_i64 i]
             let v = hmap.values[I.to_i64 i]
             in if (hmap.ctx, k') key.== (ctx, k)
-               then some v
+               then opt.some v
                else #none
 
   -- | Given an array of keys with index into an irregular array
@@ -980,7 +980,7 @@ module mk_open_addressing_hashmap
     let i = lookup_index ctx k hmap
     in if i == -1
        then #none
-       else some hmap.values[i]
+       else #some hmap.values[i]
 
   def update [n] [f] [u] 'v
              (hmap: map ctx [n] [f] v)

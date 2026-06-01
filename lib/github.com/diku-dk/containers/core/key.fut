@@ -1,7 +1,6 @@
 -- | Definitions of modules that implement both the `hashkey`@mtype@"hashkey"
 -- and `ordkey`@mtype@"ordkey" module types for a variety of types.
 
-import "../cpprandom/random"
 open import "hashkey"
 open import "ordkey"
 import "hash"

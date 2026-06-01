@@ -1,10 +1,10 @@
 -- | ignore
 
-import "../sorts/radix_sort"
-import "../segmented/segmented"
+import "../../sorts/radix_sort"
+import "../../segmented/segmented"
 import "array"
-import "key"
-import "hash"
+import "../core/key"
+import "../core/hash"
 
 module array = mk_array_key i64key
 def seed = i64key.rng_from_seed [1]
