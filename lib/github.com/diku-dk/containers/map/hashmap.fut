@@ -219,7 +219,7 @@ module mk_two_level_hashmap
   type key = key.key
   type const = key.const
   type~ ctx = key.ctx
-  module array = mk_array_key_params I U K
+  module array_key = mk_array_key_params I U K
 
   def neg_one = I.i64 (-1)
   def zero = I.i64 0
@@ -533,7 +533,7 @@ module mk_two_level_hashmap
                      (ctx: ctx)
                      (keys: [u]key)
                      (ne: v) : ?[n][f][m].map ctx [n] [f] [m] v =
-    let (_rng, keys) = array.dedup ctx (key.rng_from_seed [i32.i64 u]) keys
+    let (_rng, keys) = array_key.dedup ctx (key.rng_from_seed [i32.i64 u]) keys
     in from_array_rep_nodup ctx keys ne
 
   def from_array [u] 'v
@@ -591,7 +591,7 @@ module mk_two_level_hashmap
            key_values
            |> map (.0)
            |> filter (\k -> not_member ctx k hmap)
-           |> array.dedup ctx (hmap.rng)
+           |> array_key.dedup ctx (hmap.rng)
          let keys' = map (.0) key_values'
          let filler = if u < n then key_values'[0].1 else key_values[0].1
          let keys'' = keys ++ keys'
@@ -609,7 +609,7 @@ module mk_two_level_hashmap
       key_values
       |> map (.0)
       |> filter (\k -> not_member ctx k hmap)
-      |> array.dedup ctx (hmap.rng)
+      |> array_key.dedup ctx (hmap.rng)
     let keys' = map (.0) key_values'
     let keys'' = keys ++ keys'
     let hmap' = from_array_rep_nodup ctx keys'' ne

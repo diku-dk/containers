@@ -2,11 +2,11 @@
 
 import "../../sorts/radix_sort"
 import "../../segmented/segmented"
-import "array"
 import "../core/key"
 import "../core/hash"
+import "array"
 
-module array = mk_array_key i64key
+module array_key = mk_array_key i64key
 def seed = i64key.rng_from_seed [1]
 
 local
@@ -39,7 +39,7 @@ local
 def count_occourences [n] (arr: [n]i64) : [](i64, i64) =
   replicate n 1
   |> zip arr
-  |> array.reduce_by_key () seed (+) 0i64
+  |> array_key.reduce_by_key () seed (+) 0i64
   |> (.1)
 
 -- ==
@@ -78,9 +78,49 @@ entry test_dedup [n] [m] (arrs: [n][m]i64) : bool =
          let size = length sort_dedups
          let sort_dedups = sized size sort_dedups
          let counts =
-           array.dedup () seed arr
+           array_key.dedup () seed arr
            |> (.1)
            |> radix_sort_int i64.num_bits i64.get_bit
            |> sized size
          in map2 (==) sort_dedups counts |> and)
       arrs
+
+-- ==
+-- property: partition_unordered_true_elems partition_unordered_false_elems partition_at_dest_true_elems partition_at_dest_false_elems
+
+#[prop]
+entry partition_unordered_true_elems [n] (as: [n]i32) : bool =
+  let p x = x % 2 == 0
+  let (true_builtin, _) = partition p as
+  let (true_unordered, _) = array.partition_unordered p as
+  let m = length true_builtin
+  in length true_builtin == length true_unordered
+     && and (map2 (i32.==) (sized m true_builtin) (sized m true_unordered))
+
+#[prop]
+entry partition_unordered_false_elems [n] (as: [n]i32) : bool =
+  let p x = x % 2 == 0
+  let (_, false_builtin) = partition p as
+  let (_, false_unordered) = array.partition_unordered p as
+  let m = length false_builtin
+  in length false_builtin == length false_unordered
+     && and (map2 (i32.==) (sized m false_builtin) (reverse (sized m false_unordered)))
+
+#[prop]
+entry partition_at_dest_true_elems [n] (as: [n]i32) : bool =
+  let p x = x % 2 == 0
+  let (true_builtin, _) = partition p as
+  let (dest, _, m) =
+    array.partition_at_dest (replicate n as[0]) (replicate n as[0]) p as
+  in length true_builtin == m
+     && and (map2 (i32.==) (sized m true_builtin) dest[:m])
+
+#[prop]
+entry partition_at_dest_false_elems [n] (as: [n]i32) : bool =
+  let p x = x % 2 == 0
+  let (_, false_builtin) = partition p as
+  let (_, dest', count) =
+    array.partition_at_dest (replicate n as[0]) (replicate n as[0]) p as
+  let m = n - count
+  in length false_builtin == m
+     && and (map2 (i32.==) (sized m false_builtin) dest'[:m])

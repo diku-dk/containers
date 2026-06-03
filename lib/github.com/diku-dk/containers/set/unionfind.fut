@@ -23,6 +23,7 @@
 --   `union_by_rank`@term but it has worse performance when
 --   benchmarking the union operation.
 
+import "../array/array"
 import "../stream/hyperloglog"
 import "../core/hashkey"
 import "../core/key"
@@ -185,7 +186,7 @@ module unionfind : unionfind = {
     let (vs, us) = if unique_vs < unique_us then (us, vs) else (vs, us)
     let parents = reduce_by_index parents i64.min none vs us
     let (eqs, done) =
-      copy (partition (\(i, p) -> parents[i] != p) eqs)
+      copy (array.partition_unordered (\(i, p) -> parents[i] != p) eqs)
     let parents = compression none parents (map (.0) done) |> (.0)
     in (parents, eqs)
 
@@ -256,7 +257,7 @@ module unionfind_by_size : unionfind = {
       reduce_by_index temporary_indices i64.min i64.highest lefts eq_is
     let (done, eqs) =
       zip (indices eqs) eqs
-      |> partition (\(i, (l, _)) -> i == temporary_indices[l])
+      |> array.partition_unordered (\(i, (l, _)) -> i == temporary_indices[l])
       |> bimap (map (.1)) (map (.1))
     let (is, ps) = unzip done
     let parents = scatter parents is ps
@@ -352,7 +353,7 @@ module unionfind_by_rank : unionfind = {
     let (ls, rs) = unzip eqs
     let parents = reduce_by_index parents i64.min none ls rs
     let (new_eqs, done) =
-      copy (partition (\(i, p) -> parents[i] != p) eqs)
+      copy (array.partition_unordered (\(i, p) -> parents[i] != p) eqs)
     let is = map (.0) done
     let (new_parents, new_ps) = compression none parents is
     let new_ranks_done =
