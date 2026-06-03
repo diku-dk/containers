@@ -17,6 +17,34 @@ module type array = {
 
   -- | Lexicographical less-or-equal comparison of two arrays.
   val le [n] [m] 't : (lte: t -> t -> bool) -> [n]t -> [m]t -> bool
+
+  -- | Partition but where elements that evaluate to false under the
+  -- predicate put in the output array in reversed order. Does
+  -- approximately *2n* IO operations.
+  --
+  -- **Work:** *O(n ✕ W(p))*
+  --
+  -- **Span:** *O(log(n) ✕ W(p))*
+  val partition_unordered [n] 'a :
+    (p: a -> bool)
+    -> (as: [n]a) -> ?[k].([k]a, [n - k]a)
+
+  -- | Partition but it is possible to specify the destination array
+  -- where they will be written in a contiguously from the start of
+  -- the destination array. This does approximately 2n IO operations
+  -- and can be better suited for fusion in certain cases. It evalautes
+  -- to the destination arrays with the number of elements that
+  -- evaluated to true.
+  --
+  -- **Work:** *O(n ✕ W(p))*
+  --
+  -- **Span:** *O(log(n) ✕ W(p))*
+  val partition_at_dest [n] [m] [k] 'a :
+    (dest: *[m]a)
+    -> (dest': *[k]a)
+    -> (p: a -> bool)
+    -> (as: [n]a)
+    -> ([m]a, [k]a, i64)
 }
 
 module array : array = {
@@ -43,6 +71,69 @@ module array : array = {
     in match opt.first_some cmp
        case #some res -> res
        case #none -> n i64.<= m
+
+  -- | Partition but where elements that evaluate to false under the
+  -- predicate put in the output array in reversed order. Does
+  -- approximately *2n* IO operations.
+  --
+  -- **Work:** *O(n ✕ W(p))*
+  --
+  -- **Span:** *O(log(n) ✕ W(p))*
+  def partition_unordered [n] 'a
+                          (p: a -> bool)
+                          (as: [n]a) : ?[k].([k]a, [n - k]a) =
+    let to_index f (o0, o1) = if f then o0 - 1i64 else n - o1
+    let add2 (a0, b0) (a1, b1) = (a0 + a1, b0 + b1)
+    let t_flags = map p as
+    let f_flags = map (\x -> !x) t_flags
+    let flags =
+      map2 (\x y ->
+              ( i64.bool x
+              , i64.bool y
+              ))
+           t_flags
+           f_flags
+    let offsets = scan add2 (0, 0) flags
+    let idxs = map2 to_index t_flags offsets
+    let count =
+      scatter [(0, 0)]
+              (map (\j -> if j == n - 1 then 0 else -1) (0..1..<n))
+              offsets
+    let res = scatter (#[scratch] [as][0]) idxs as
+    in (res[0:count[0].0], res[count[0].0:n])
+
+  -- | Partition but it is possible to specify the destination array
+  -- where they will be written in a contiguously from the start of
+  -- the destination array. This does approximately 2n IO operations
+  -- and can be better suited for fusion in certain cases. It evalautes
+  -- to the destination arrays with the number of elements that
+  -- evaluated to true.
+  --
+  -- **Work:** *O(n ✕ W(p))*
+  --
+  -- **Span:** *O(log(n) ✕ W(p))*
+  def partition_at_dest [n] [m] [k] 'a
+                        (dest: *[m]a)
+                        (dest': *[k]a)
+                        (p: a -> bool)
+                        (as: [n]a) : ([m]a, [k]a, i64) =
+    let to_index f (o0, _) = if f then o0 - 1i64 else -1
+    let to_index' f (_, o1) = if f then -1 else o1 - 1i64
+    let add2 (a0, b0) (a1, b1) = (a0 + a1, b0 + b1)
+    let t_flags = map p as
+    let f_flags = map (\x -> !x) t_flags
+    let flags =
+      map2 (\x y -> (i64.bool x, i64.bool y)) t_flags f_flags
+    let offsets = scan add2 (0, 0) flags
+    let idxs = map2 to_index t_flags offsets
+    let idxs' = map2 to_index' t_flags offsets
+    let count =
+      scatter [(0, 0)]
+              (map (\j -> if j == n - 1 then 0 else -1) (0..1..<n))
+              offsets
+    let dest = scatter dest idxs as
+    let dest' = scatter dest' idxs' as
+    in (dest, dest', count[0].0)
 }
 
 -- | A module type for functions on arrays of keys. Use `mk_array_key`@term
