@@ -8,7 +8,6 @@ import "../../segmented/segmented"
 import "../core/hashkey"
 import "../core/opt"
 
-local
 -- | Fairly simple functions on arrays. Implemented by the module `array`@term.
 module type array = {
   -- | True if the provided arrays have the same size and the same elements as
