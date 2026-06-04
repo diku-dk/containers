@@ -97,7 +97,7 @@ module mk_hyperloglog
   def const = K.rng_from_seed [123] |> K.rand |> (.1)
 
   type hyperloglog [m] =
-    { registers: [m]i64
+    { registers: [m]i8
     , alpha: f64
     }
 
@@ -114,11 +114,11 @@ module mk_hyperloglog
     , alpha = get_alpha (2 ** b)
     }
 
-  def get_rho (max_width: i64) (w: u32) : i64 =
+  def get_rho (max_width: i64) (w: u32) : i8 =
     if w == 0
-    then max_width + 1
+    then i8.i64 (max_width + 1)
     else let bit_length = i64.i32 u32.num_bits - i64.i32 (u32.clz w)
-         in max_width - bit_length + 1
+         in i8.i64 (max_width - bit_length + 1)
 
   def insert [n] [b]
              (ctx: ctx)
@@ -132,14 +132,14 @@ module mk_hyperloglog
     let ws = map (>> b_u32) hs
     let ranks = map (get_rho max_width) ws
     let registers =
-      reduce_by_index registers i64.max i64.lowest is ranks
+      reduce_by_index registers i8.max i8.lowest is ranks
     in {registers, alpha}
 
   def count [b] (hll: hyperloglog [2 ** b]) : f64 =
     let m = length hll.registers
     let m_f64 = f64.i64 m
     let indicator =
-      map ((2 **) <-< f64.i64 <-< i64.neg) hll.registers
+      map ((2 **) <-< f64.i8 <-< i8.neg) hll.registers
       |> f64.sum
     let raw_est = hll.alpha * m_f64 * m_f64 / indicator
     let v = map (i64.bool <-< (== 0)) hll.registers |> i64.sum
@@ -161,7 +161,7 @@ module mk_hyperloglog
             (hll: hyperloglog [2 ** b])
             (hll': hyperloglog [2 ** b]) : hyperloglog [2 ** b] =
     let merged_registers =
-      map2 i64.max hll.registers hll'.registers
+      map2 i8.max hll.registers hll'.registers
     in {registers = merged_registers, alpha = hll.alpha}
 }
 
@@ -174,7 +174,7 @@ module mk_hyperloglog_plusplus
   def const = K.rng_from_seed [123] |> K.rand |> (.1)
 
   type hyperloglog [m] =
-    { registers: [m]i64
+    { registers: [m]i8
     , alpha: f64
     }
 
@@ -199,9 +199,9 @@ module mk_hyperloglog_plusplus
     let p_u64 = u64.i64 p
     let is = map (\x -> i64.u64 (x >> (64 - p_u64))) hs
     let ws = map (\h -> (h << p_u64) | (1 << (p_u64 - 1))) hs
-    let ranks = map (\w -> i64.i32 (u64.clz w) + 1) ws
+    let ranks = map (\w -> i8.i32 (u64.clz w) + 1) ws
     let registers =
-      reduce_by_index registers i64.max i64.lowest is ranks
+      reduce_by_index registers i8.max i8.lowest is ranks
     in {registers, alpha}
 
   def estimate_bias (est: f64) (p: i64) : f64 =
@@ -225,13 +225,13 @@ module mk_hyperloglog_plusplus
   def linear_counting (m: f64) (v: i64) : f64 =
     m * f64.log (m / f64.i64 v)
 
-  def count_zeros [m] (registers: [m]i64) : i64 =
+  def count_zeros [m] (registers: [m]i8) : i64 =
     map (i64.bool <-< (== 0)) registers |> i64.sum
 
-  def calculate_estimate [m] (registers: [m]i64) (alpha: f64) : f64 =
+  def calculate_estimate [m] (registers: [m]i8) (alpha: f64) : f64 =
     let m_f64 = f64.i64 (length registers)
     let indicator =
-      map ((2 **) <-< f64.i64 <-< i64.neg) registers
+      map ((2 **) <-< f64.i8 <-< i8.neg) registers
       |> f64.sum
     in alpha * m_f64 * m_f64 / indicator
 
@@ -256,6 +256,6 @@ module mk_hyperloglog_plusplus
             (hll: hyperloglog [2 ** p])
             (hll': hyperloglog [2 ** p]) : hyperloglog [2 ** p] =
     let merged_registers =
-      map2 i64.max hll.registers hll'.registers
+      map2 i8.max hll.registers hll'.registers
     in {registers = merged_registers, alpha = hll.alpha}
 }
