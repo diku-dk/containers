@@ -1,4 +1,4 @@
-import "../../lib/github.com/diku-dk/containers/unionfind"
+import "../../lib/github.com/diku-dk/containers/set/unionfind"
 
 -- | Name of a expression variable.
 type vname = i64

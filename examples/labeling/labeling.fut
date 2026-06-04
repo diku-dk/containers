@@ -1,4 +1,4 @@
-import "../../lib/github.com/diku-dk/containers/unionfind"
+import "../../lib/github.com/diku-dk/containers/set/unionfind"
 
 -- Start with some utility definitions for handling directions and positions.
 
