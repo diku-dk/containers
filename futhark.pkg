@@ -1,7 +1,7 @@
 package github.com/diku-dk/containers/
 
 require {
-  github.com/diku-dk/sorts 0.7.0 #5ae92d8de2bc3a5e0a8c30a93181c3632621d3da
-  github.com/diku-dk/cpprandom 1.4.1 #c95459a4f362a56293cbefe71ef8dcb78b7a333e
-  github.com/diku-dk/segmented 0.5.0 #a5722ce70634fba752d44c375c3b114718064310
+  github.com/diku-dk/sorts 0.7.3 #a473651d67d8ed0fafcea315f0226676721e2bdf
+  github.com/diku-dk/cpprandom 1.5.0 #ec96adc06f7a91040b2c1f7f9fdc56b9b2e9f3a3
+  github.com/diku-dk/segmented 0.5.3 #c96450f95a1e43e0906366a1dab45cb18220a643
 }
