@@ -63,7 +63,7 @@ module type transparent_reduction_tree = {
   --
   -- **Span:** *O(log n)*
   val make [n] 't :
-    (op: t -> t -> t) -> (ne: t) -> (arr: [n]t) -> tree [n] t
+    (op: t -> t -> t) -> (ne: t) -> (arr: [n]t) -> *tree [n] t
 
   -- | Given a binary relation, a tree, and an index find the first
   -- element with a smaller index which satisfies the relation. If it
@@ -106,10 +106,10 @@ module transparent_reduction_tree : transparent_reduction_tree = {
   def to_array [n] 't (tree: tree [n] t) : [size n]t =
     tree.tree
 
-  def from_array [n] 't (tree: [size n]t) : tree [n] t =
-    {size = rep (), tree}
+  def from_array [n] 't (tree: [size n]t) : *tree [n] t =
+    {size = rep (), tree = copy tree}
 
-  def make [n] 't (op: t -> t -> t) (ne: t) (arr: [n]t) : tree [n] t =
+  def make [n] 't (op: t -> t -> t) (ne: t) (arr: [n]t) : *tree [n] t =
     let h = height n
     let tree_size = size_from_height h
     let offset = size_from_height (h - 1)

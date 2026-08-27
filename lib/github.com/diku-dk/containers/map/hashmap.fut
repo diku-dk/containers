@@ -275,7 +275,7 @@ module mk_two_level_hashmap
                         (flat_size: int)
                         (k: key) : int =
     if n == 0
-    then neg_one
+    then copy neg_one
     else -- The offset to get the level two hash function.
          let o = U.((key.hash ctx level_one_const k) %% i64 n)
          let arr = level_two[U.to_i64 o]
@@ -322,9 +322,9 @@ module mk_two_level_hashmap
                         (I.i64 f)
                         k
     in if i I.== neg_one
-       then neg_one
+       then copy neg_one
        else let k' = hmap.keys[I.to_i64 i]
-            in if (hmap.ctx, k') key.== (ctx, k) then i else neg_one
+            in if (hmap.ctx, k') key.== (ctx, k) then i else copy neg_one
 
   def lookup [n] [f] [m] 'v
              (ctx: ctx)
