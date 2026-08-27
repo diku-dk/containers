@@ -160,12 +160,12 @@ module type array_key = {
     -> (v -> v -> v)
     -> v
     -> [n](key, v)
-    -> ?[m].(rng, [m](key, v))
+    -> ?[m].(*rng, *[m](key, v))
 
   -- | Removes duplicate elements from an array as defined by the equality
   -- relation of the key. This implementation works much like `reduce_by_key`
   -- but saves some steps which makes it faster.
-  val dedup [n] : ctx -> rng -> [n]key -> ?[m].(rng, [m]key)
+  val dedup [n] : ctx -> rng -> [n]key -> ?[m].(*rng, *[m]key)
 }
 
 module mk_array_key_params
@@ -186,9 +186,9 @@ module mk_array_key_params
   def to_int : uint -> int =
     I.i64 <-< U.to_i64
 
-  def dedup [n] (ctx: ctx) (r: rng) (arr: [n]key) : ?[m].(rng, [m]key) =
+  def dedup [n] (ctx: ctx) (r: rng) (arr: [n]key) : ?[m].(*rng, *[m]key) =
     if n == 0
-    then (r, [])
+    then (copy r, [])
     else let keq a b = (ctx, a) key.== (ctx, b)
          let add2 (a0, a1) (b0, b1) = (a0 + b0, a1 + b1)
          let dest = replicate n arr[0]
@@ -198,7 +198,7 @@ module mk_array_key_params
                 , old_size
                 , old_rng
                 ) =
-                  (dest, arr, 0, r)
+                  (dest, arr, 0, copy r)
            while length elems != 0 do
              let (new_rng, consts) = K.rand old_rng
              let size = i64.max 4096 (length elems)
@@ -253,9 +253,9 @@ module mk_array_key_params
                     (r: rng)
                     (op: v -> v -> v)
                     (ne: v)
-                    (arr: [n](key, v)) : (rng, [](key, v)) =
+                    (arr: [n](key, v)) : (*rng, *[](key, v)) =
     if n == 0
-    then (r, [])
+    then (copy r, [])
     else let keq a b = (ctx, a) key.== (ctx, b)
          let add2 (a0, a1) (b0, b1) = (a0 + b0, a1 + b1)
          let reduced_keys_dest = replicate n arr[0].0
@@ -278,7 +278,7 @@ module mk_array_key_params
                   , copy not_reduced_keys_init
                   , copy not_reduced_values_init
                   , 0
-                  , r
+                  , copy r
                   )
            while length not_reduced_keys != 0 do
              let (new_rng, consts) = K.rand old_rng

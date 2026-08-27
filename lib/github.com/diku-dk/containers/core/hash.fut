@@ -19,24 +19,24 @@ module type uint = {
   val prime : t
 
   -- | Bitwise and with prime.
-  val and_prime : t -> t
+  val and_prime : t -> *t
 
   -- | Addition.
-  val (+) : t -> t -> t
+  val (+) : t -> t -> *t
 
   -- | Addition between t and u.
-  val add_small : t -> u -> t
+  val add_small : t -> u -> *t
 
   -- | Multiplication with the precondition that t is less than the
   -- mersenne prime.
-  val (*) : t -> t -> t
+  val (*) : t -> t -> *t
 
   -- | Multiplication between t and u with the precondition that t is
   -- less than the mersenne prime.
-  val mul_small : t -> u -> t
+  val mul_small : t -> u -> *t
 
   -- | Subtraction.
-  val (-) : t -> t -> t
+  val (-) : t -> t -> *t
 
   -- | Greater than or equal to the mersenne prime.
   val geq_prime : t -> bool
@@ -45,10 +45,10 @@ module type uint = {
   val (==) : t -> t -> bool
 
   -- | Bitwise right shift by mersenne prime
-  val shift_prime : t -> t
+  val shift_prime : t -> *t
 
   -- | Converts u to t.
-  val from_u : u -> t
+  val from_u : u -> *t
 
   -- | Converts u to t.
   val to_u : t -> u
@@ -57,7 +57,7 @@ module type uint = {
   val n : i64
 
   -- | Converts an array of u64 to t.
-  val from_u64 : [n]u64 -> t
+  val from_u64 : [n]u64 -> *t
 
   -- | Converts t to an array of u64.
   val to_u64 : t -> [n]u64
@@ -497,7 +497,7 @@ module mk_fnv_hashing
            (get: i64 -> t -> u8)
            (num: i64)
            (x: t) : u =
-    loop h = C.offset_basis
+    loop h = copy C.offset_basis
     for i in 0..<num do
       let byte = get i x
       let h' = h I.^ I.u8 byte
