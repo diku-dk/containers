@@ -191,7 +191,7 @@ module mk_bitset (I: integral) : bitset = {
   def intersection [n] (a: bitset [cap num_bits n]) (b: bitset [cap num_bits n]) : *bitset [cap num_bits n] =
     map2 (I.&) a b
 
-  def set_trailing_bits_zero [n] (set: bitset [cap num_bits n]) : bitset [cap num_bits n] =
+  def set_trailing_bits_zero [n] (set: bitset [cap num_bits n]) : *bitset [cap num_bits n] =
     let len = length set
     let unused_bits = u64.i64 (num_bits * len - n)
     let to_keep = u64.not ((1u64 << unused_bits) - 1u64)
