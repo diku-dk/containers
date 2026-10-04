@@ -44,14 +44,14 @@ module type bitset = {
   -- **Work:** *O(m)*
   --
   -- **Span:** *O(m)* (likely *O(1)*, the span comes from reduce by index.)
-  val insert [m] [n] : *bitset [cap num_bits n] -> [m]i64 -> bitset [cap num_bits n]
+  val insert [m] [n] : *bitset [cap num_bits n] -> [m]i64 -> *bitset [cap num_bits n]
 
   -- | Deletes a single bit in a bitset.
   --
   -- **Work:** *O(m)*
   --
   -- **Span:** *O(m)* (likely *O(1)*, the span comes from reduce by index.)
-  val delete [m] [n] : *bitset [cap num_bits n] -> [m]i64 -> bitset [cap num_bits n]
+  val delete [m] [n] : *bitset [cap num_bits n] -> [m]i64 -> *bitset [cap num_bits n]
 
   -- | Checks if a bit is a member of a bitset.
   --
@@ -159,7 +159,7 @@ module mk_bitset (I: integral) : bitset = {
          let bit = i % num_bits
          in (j, i32.i64 bit)
 
-  def insert [n] [m] (set: *bitset [cap num_bits n]) (is: [m]i64) : bitset [cap num_bits n] =
+  def insert [n] [m] (set: *bitset [cap num_bits n]) (is: [m]i64) : *bitset [cap num_bits n] =
     let (is, bis) = map (flip find_bitset_index n) is |> unzip
     let vs = map (\i -> I.set_bit i zero 1) bis
     in reduce_by_index set (I.|) zero is vs
@@ -174,7 +174,7 @@ module mk_bitset (I: integral) : bitset = {
   def is_empty [n] (set: bitset [cap num_bits n]) : bool =
     all (I.== zero) set
 
-  def delete [n] [m] (set: *bitset [cap num_bits n]) (is: [m]i64) : bitset [cap num_bits n] =
+  def delete [n] [m] (set: *bitset [cap num_bits n]) (is: [m]i64) : *bitset [cap num_bits n] =
     let (is, bis) = map (flip find_bitset_index n) is |> unzip
     let vs = map (\i -> I.not (I.set_bit i zero 1)) bis
     in reduce_by_index set (I.&) zero is vs

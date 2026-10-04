@@ -196,7 +196,7 @@ module mk_array_key_params
            loop ( uniques: *[n]key
                 , elems: *[]key
                 , old_size
-                , old_rng
+                , old_rng: *rng
                 ) =
                   (dest, arr, 0, copy r)
            while length elems != 0 do
