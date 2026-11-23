@@ -64,4 +64,4 @@ entry bench_sort_dedup [l] [k] (ctx: [l]u8) (words: [k](i64, i64)) =
 
 -- ==
 -- entry: bench_hashset_dedup bench_sort_dedup bench_array_dedup
--- script input { mkinput ($loadbytes "words.txt") }
+-- script input { mkinput (io.loadbytes "words.txt") }
